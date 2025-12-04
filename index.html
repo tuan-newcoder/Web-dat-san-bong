@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt sân Bách Khoa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="index.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span> 
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="index.html">Trang chủ</a>
+            <a href="assets/danh-sach-san.html">Danh sách sân</a>
+            <a href="assets/chinh-sach.html">Chính sách</a>
+            <a href="assets/lien-he.html">Liên hệ</a>
+        </nav>
+
+        <div class="auth">
+            <a href="#" onclick="openModal()">Đăng nhập</a>
+            <a href="#" onclick="openRegisterModal()">Đăng ký</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>HỆ THỐNG HỖ TRỢ TÌM KIẾM<br> SÂN BÃI ONLINE</h1>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Bạn muốn đặt sân bóng ở đâu?">
+                <button id="searchButton">➜</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer-info">
+    <div class="info-container">
+
+        <div class="info-box">
+            <h3>Thông tin</h3>
+            <p>Công ty cổ phần Nhóm 15</p>
+            <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+            <p>Mã số thuế: xxxxxxxxxx</p>
+            <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+        </div>
+
+        <div class="info-box">
+            <h3>Liên hệ</h3>
+
+            <p>📧 Email: contact@datsanbk.com</p>
+            <p>📞 Điện thoại: 0363 636 363</p>
+            <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+        </div>
+
+    </div>
+    </section>
+
+    <script>
+        var input = document.getElementById("searchInput");
+        var button = document.getElementById("searchButton");
+
+        function handleSearch() {
+            var searchQuery = input.value;
+            window.location.href = "assets/search.html";
+        }
+
+        // Bắt sự kiện nhấn phím Enter trên ô input
+        input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                handleSearch();
+            }
+        });
+
+        // Bắt sự kiện nhấn chuột vào nút tìm kiếm
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            handleSearch();
+        });
+    </script>
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="login-form-container">
+            <h2>Đăng nhập</h2>
+            <input type="text" placeholder="Tên người dùng/Email">
+            <input type="password" placeholder="Mật khẩu">
+            <button type="submit">Đăng nhập</button>
+            <a class="forgo_button" href="#" onclick="openForgotPasswordModal()">Quên mật khẩu?</a>
+        </div>
+    </div>
+</div>
+
+    <script>
+    var modal = document.getElementById("loginModal");
+
+    function openModal() {
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    </script>
+    <!--Register-->
+    <div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRegisterModal()">&times;</span>
+        <div class="register-form-container">
+            <h2>Đăng ký</h2>
+            <input type="email" placeholder="Email*">
+            <input type="password" placeholder="Nhập mật khẩu*">
+            <input type="password" placeholder="Nhập lại mật khẩu*">
+            <input type="text" placeholder="Tên người dùng*">
+            <input type="text" placeholder="Số điện thoại*">
+            <button type="submit">Đăng ký</button>
+         </div>
+        </div>
+    </div>
+
+    <script>
+    var loginModal = document.getElementById("loginModal");
+    var registerModal = document.getElementById("registerModal");
+
+    function openModal() {
+        loginModal.style.display = "flex";
+    }
+
+    function closeModal() {
+        loginModal.style.display = "none";
+    }
+
+    // Hàm mở cửa sổ đăng ký
+    function openRegisterModal() {
+        registerModal.style.display = "flex";
+    }
+
+    // Hàm đóng cửa sổ đăng ký
+    function closeRegisterModal() {
+        registerModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == loginModal) {
+            loginModal.style.display = "none";
+        }
+        // Đóng modal đăng ký nếu nhấp ra ngoài
+        if (event.target == registerModal) {
+            registerModal.style.display = "none";
+        }
+    }
+    </script>
+
+    <!--Quên mật khẩu-->
+    <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+        <div class="forgot-password-container">
+            <h2>Quên mật khẩu</h2>
+            <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
+            <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
+            <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
+            
+            <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
+            <div id="verificationSection" style="display: none;">
+                <input type="text" id="verificationCode" placeholder="Mã xác minh*">
+                <button onclick="verifyCode()">Xác nhận</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    var loginModal = document.getElementById("loginModal");
+    var registerModal = document.getElementById("registerModal");
+    var forgotPasswordModal = document.getElementById("forgotPasswordModal");
+
+    // --- Chức năng chung Modal ---
+    function openModal() { loginModal.style.display = "flex"; }
+    function closeModal() { loginModal.style.display = "none"; }
+    function openRegisterModal() { registerModal.style.display = "flex"; }
+    function closeRegisterModal() { registerModal.style.display = "none"; }
+
+    // --- Chức năng Quên mật khẩu ---
+    function openForgotPasswordModal() {
+        closeModal(); // Đóng hộp đăng nhập
+        forgotPasswordModal.style.display = "flex";
+        // Reset form khi mở
+        document.getElementById('forgotEmail').value = '';
+        document.getElementById('verificationSection').style.display = 'none';
+    }
+
+    function closeForgotPasswordModal() {
+        forgotPasswordModal.style.display = "none";
+    }
+
+    function sendVerificationCode() {
+        // Đây là nơi thêm logic gửi email (cần backend xử lý)
+        alert("Mã xác minh đã được gửi đến email của bạn.");
+        document.getElementById('verificationSection').style.display = 'block';
+    }
+
+    function verifyCode() {
+        // Đây là nơi thêm logic xác minh mã (cần backend xử lý)
+        alert("Mã xác minh chính xác! Bạn có thể đặt lại mật khẩu.");
+        closeForgotPasswordModal();
+    }
+    
+    // --- Đóng Modal khi nhấn ra ngoài nền mờ ---
+    window.onclick = function(event) {
+        if (event.target == loginModal) { closeModal(); }
+        if (event.target == registerModal) { closeRegisterModal(); }
+        if (event.target == forgotPasswordModal) { closeForgotPasswordModal(); }
+    }
+    </script>
+
+
+
+</body>
+</html>

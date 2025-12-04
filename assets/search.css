@@ -1,0 +1,185 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: #fff;
+    color: #333;
+    min-height: 100vh;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit; 
+}
+
+.navbar {
+    width: 100%;
+    padding: 15px 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1b0b33;
+    color: white;
+    font-size: 15px;
+    border-bottom: 2px solid white; 
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.logo .icon {
+    margin-right: 15px;
+    display: inline-block; 
+    width: 25px;          
+    height: 25px;          
+    background-image: url('../images/calendar.png');
+    background-size: cover; 
+    vertical-align: middle; 
+}
+
+.navbar a {
+    color: white;
+    margin: 0 15px;
+}
+
+.navbar a:hover {
+    text-decoration: none;
+}
+
+/* --- HERO SECTION FOR SEARCH PAGE --- */
+
+.hero {
+    height: 100vh; 
+    background: url('../images/background.jpg') no-repeat center center/cover; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding: 0 20px;
+    position: relative; 
+}
+
+/* Ensure content is above the background for readability */
+.hero-content {
+    position: relative; 
+    color: white;
+}
+
+.hero h1 {
+    font-size: 32px; 
+    font-weight: 700; 
+    margin-bottom: 10px; 
+}
+
+.hero p {
+    font-size: 16px;
+}
+
+/* --- NEW STYLES FOR SEARCH RESULTS LIST --- */
+.main-content {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    min-height: 40vh;
+}
+
+.search-results-container h2 {
+    margin-bottom: 20px;
+    color: #1b0b33;
+    border-bottom: 2px solid #e69100;
+    padding-bottom: 10px;
+}
+
+.pitch-card {
+    display: flex;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.pitch-image {
+    flex: 0 0 200px; 
+    height: 150px;
+    background: #eee; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.pitch-details {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.pitch-details h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #e69100;
+}
+
+.pitch-details p {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.book-now-button {
+    background: #8c52ff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.book-now-button:hover {
+    background: #7a46e0;
+}
+
+
+/* --- FOOTER INFO SECTION (Copied from style.css) --- */
+.footer-info {
+    width: 100%;
+    background: #2f3b59;
+    padding: 50px 0;
+    border-top: 4px solid #8c52ff;
+    margin-top: 40px;
+}
+
+.info-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.info-box {
+    color: white;
+    width: 50%;
+    font-size: 15px;
+}
+
+.info-box h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 600;
+}
+

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Sân Bách Khoa CS1</title>
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <header class="navbar">
+       <!-- Navbar layout remains the same as index.html -->
+       <a href="index.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span> 
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="../index.html">Trang chủ</a>
+            <a href="search.html">Danh sách sân</a> 
+            <a href="chinh-sach.html">Chính sách</a>
+            <a href="lien-he.html">Liên hệ</a>
+        </nav>
+
+        <div class="auth">
+            <a href="dang-nhap.html">Đăng nhập</a>
+            <a href="dang-ky.html">Đăng ký</a>
+        </div>
+    </header>
+
+    <main class="main-content-container">
+        <!-- Cột trái: Thông tin chi tiết sân, hình ảnh, đánh giá -->
+        <section class="detail-main">
+            <h1>Sân Bách Khoa CS1</h1>
+            <p class="location">📍 Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+            
+            <!-- Khu vực hình ảnh -->
+            <div class="image-gallery">
+                <!-- Placeholder images, thay thế bằng ảnh thật của bạn -->
+                <img src="via.placeholder.com" alt="Gallery image 1">
+                <img src="via.placeholder.com" alt="Gallery image 2">
+            </div>
+
+            <!-- Tabs/Thông tin mô tả -->
+            <div class="info-section">
+                <h3>Mô tả & Tiện ích</h3>
+                <p>Sân bóng cỏ nhân tạo 7 người mới được bảo trì, đèn cao áp sáng rõ, phù hợp đá giao hữu buổi tối. Có căng tin phục vụ nước uống và phòng thay đồ sạch sẽ.</p>
+                <ul>
+                    <li>✅ Wifi miễn phí</li>
+                    <li>✅ Bãi đỗ xe máy/ô tô</li>
+                    <li>✅ Giờ mở cửa: 5h - 23h hàng ngày</li>
+                    <li>✅ Chính sách hủy: Hủy trước 4 tiếng miễn phí</li>
+                </ul>
+            </div>
+            
+            <!-- Khu vực đánh giá -->
+            <div class="info-section reviews-section">
+                <h3>Đánh giá (250)</h3>
+                <div class="review-item">
+                    <h4>Nguyễn Văn A ⭐⭐⭐⭐⭐</h4>
+                    <p>Sân đẹp, cỏ mới, đèn sáng. Chủ sân thân thiện!</p>
+                </div>
+                <div class="review-item">
+                    <h4>Trần Thị B ⭐⭐⭐⭐</h4>
+                    <p>Mọi thứ ok, nhưng hơi đông vào cuối tuần.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cột phải: Lịch đặt sân & Form (Sticky Sidebar) -->
+        <aside class="booking-sidebar">
+            <div class="booking-widget">
+                <h3>Đặt sân ngay</h3>
+                <p>Chọn ngày:</p>
+                <input type="date" class="full-width-input" value="<?php echo date('Y-m-d'); ?>">
+                
+                <p>Chọn khung giờ còn trống:</p>
+                <div class="time-slots">
+                    <!-- Các nút chọn giờ mẫu. Màu sắc do CSS quyết định -->
+                    <button class="slot available">17:00 - 18:00</button>
+                    <button class="slot booked">18:00 - 19:00</button>
+                    <button class="slot available">19:00 - 20:00</button>
+                    <button class="slot available">20:00 - 21:00</button>
+                </div>
+                
+                <div class="price-summary">
+                    <span>Tổng tiền (1 giờ):</span>
+                    <span class="total-price">250.000 VNĐ</span>
+                </div>
+
+                <!-- Form thông tin người dùng -->
+                <form action="confirmation.html" method="POST">
+                    <label for="name">Tên của bạn:</label>
+                    <input type="text" id="name" required class="full-width-input">
+                    <label for="phone">Số điện thoại:</label>
+                    <input type="tel" id="phone" required class="full-width-input">
+                    
+                    <button type="submit" class="cta-button full-width-btn">Xác nhận đặt sân</button>
+                </form>
+            </div>
+        </aside>
+    </main>
+
+    <section class="footer-info">
+        <!-- Footer layout remains the same as index.html -->
+        <div class="info-container">
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+            </div>
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
