@@ -159,7 +159,7 @@ a {
     background: #2f3b59;
     padding: 50px 0;
     border-top: 4px solid #8c52ff;
-    margin-top: 40px;
+    margin-top: 0px;
 }
 
 .info-container {
@@ -183,3 +183,111 @@ a {
     font-weight: 600;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    max-width: 90%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    border: 2px solid #8c52ff;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+.close:hover,
+.close:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.login-form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1b0b33;
+    font-size: 24px;
+}
+
+.login-form-container input,
+.register-form-container input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 2px solid #ccc;
+    border-radius: 40px; 
+    box-sizing: border-box; 
+    outline: none;
+}
+
+.login-form-container button,
+.register-form-container button {
+    background-color: #8c52ff;
+    color: white;
+    padding: 14px 20px;
+    margin: 15px 0 0 0;
+    border: none;
+    border-radius: 40px; 
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+.register-form-container button:hover,
+.login-form-container button:hover {
+    background-color: #7a46e0;
+}
+
+.register-form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1b0b33;
+    font-size: 24px;
+}
+
+.forgot-password-container h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #1b0b33;
+    font-size: 24px;
+}
+
+.forgot-password-container p {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.forgo_button {
+    display: block; 
+    text-align: center; 
+    margin-top: 10px; 
+    font-size: 14px; 
+    color: #8c52ff;
+}
