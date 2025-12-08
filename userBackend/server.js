@@ -19,7 +19,7 @@ const authenticateToken = (req, res, next) => {
 
     jwt.verify(token, SECRET_KEY, (err, user) => {
         if (err) return res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn!" });
-        
+
         // Nếu đúng, lưu thông tin user vào biến req để dùng ở bước sau
         req.user = user; 
         next(); // Cho phép đi tiếp
