@@ -1,0 +1,5 @@
+Open MySQL Workbench
+Use file schema.sql to create tables
+Use file seed.sql to create data
+Change db.js
+Run file test.js
