@@ -56,15 +56,6 @@ window.closeForgotPasswordModal = closeForgotPasswordModal;
 window.sendVerificationCode = sendVerificationCode;
 window.verifyCode = verifyCode;
 
-
-// --- Đóng Modal khi nhấn ra ngoài nền mờ ---
-window.onclick = function (event) {
-    if (event.target == loginModal) { closeModal(); }
-    if (event.target == registerModal) { closeRegisterModal(); }
-    if (event.target == forgotPasswordModal) { closeForgotPasswordModal(); }
-}
-
-
 /* === KẾT NỐI BACKEND (API Integration) === */
 
 async function apiRequest(url, options) {
