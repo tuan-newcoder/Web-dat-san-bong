@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký Sân</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <script src="../main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- FORM ĐĂNG KÝ CHỦ SÂN -->
+    <div class="form-container">
+        <h2>Đăng ký Sân</h2>
+        <form id="ownerForm">
+            <div class="form-group">
+                <label for="stadiumName">Tên sân:<span style="color: red;">*</span></label>
+                <input type="text" id="stadiumName" name="stadiumName" required>
+            </div>
+            <div class="form-group">
+                <label for="stadiumType">Loại sân:<span style="color: red;">*</span></label>
+                <input type="text" id="stadiumType" name="stadiumType" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Địa chỉ sân:<span style="color: red;">*</span></label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Mức giá (VNĐ):<span style="color: red;">*</span></label>
+                <input type="number" id="price" name="price" min="0" step="1000" style="width: 100%;height: 4vh;font-size: 15px;border-radius: 4px;" required>
+            </div>
+            <div class="filter-group">
+                <label>Khung giờ:</label>
+                <div class="time-range-group">
+                    <div class="time-input-wrapper">
+                        <span>Từ</span>
+                        <input type="time" id="timeFrom" name="timeFrom" value="07:30">
+                    </div>
+                    <div class="time-input-wrapper">
+                        <span>Đến</span>
+                        <input type="time" id="timeTo" name="timeTo" value="09:30">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="businessCert">Ảnh sân:<span style="color: red;">*</span></label>
+                <input type="file" id="businessCert" name="businessCert" accept="image/*" required>
+            </div>
+            <button type="submit">Gửi đăng ký</button>
+        </form>
+    </div>
+
+    <!-- Modal đăng nhập-->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeLogin">&times;</span>
+            <h2>Đăng nhập</h2>
+            <input type="text" id="loginUsername" placeholder="Tên đăng nhập">
+            <input type="password" id="loginPassword" placeholder="Mật khẩu">
+            <button id="loginBtn">Đăng nhập</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

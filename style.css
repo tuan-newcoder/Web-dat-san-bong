@@ -855,3 +855,55 @@ a {
 .actions button:hover {
     background: #096432;
 }
+
+/* === Form đăng ký chủ sân === */
+.form-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 20px;
+    background: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 2px solid #8c52ff;
+}
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1b0b33;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #1b0b33;
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 40px;
+    border: 2px solid #ccc;
+    outline: none;
+    box-sizing: border-box;
+}
+.form-group input[type="file"] {
+    display: block;
+    margin-top: 5px;
+}
+.form-container button {
+    background-color: #8c52ff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 40px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-container button:hover {
+    background-color: #7a46e0;
+}
