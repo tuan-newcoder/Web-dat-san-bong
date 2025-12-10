@@ -1,0 +1,6 @@
+1. npm run dev để chạy Server
+2. mở Terminal mới gõ node test-db.js để chạy
+
+lưu ý:
+- phải tạo sẵn database bằng MySQL
+- điền lại database (tên database tạo) và password (password của database mới tạo)
