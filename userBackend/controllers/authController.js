@@ -4,7 +4,7 @@ const db = require('../db');
 const { SECRET_KEY, SALT_ROUNDS} = require('../config');
 
 exports.register = async (req, res) => {
-    const { username, password, fullName, email, phoneNumber } = req.body;
+    const { username, password, HoTen, email, sdt } = req.body;
 
     if (!username || !password || !email) return res.status(400).json({Message: "Thiếu thông tin!"});
 
@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
 
         const sql = `INSERT INTO User (HoTen, username, password, email, sdt, quyen) VALUES (?, ?, ?, ?, ?, 'khachhang')`;
 
-        await db.query(sql, [fullName, username, hashPassword, email, phoneNumber]);
+        await db.query(sql, [HoTen, username, hashPassword, email, sdt]);
 
         res.status(201).json({message: "Đăng ký thành công!"});
     } catch (err) {
@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
             user: {
                 id: user.MaNguoiDung,
                 username: user.username,
-                fullName: user.HoTen,
+                HoTen: user.HoTen,
                 role: user.quyen
             }
         });
