@@ -1,5 +1,5 @@
 /* Cấu hình API URL */
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://localhost:3000/api';
 
 /* === Search box === */
 var input = document.getElementById("searchInput");
