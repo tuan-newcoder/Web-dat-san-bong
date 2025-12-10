@@ -136,6 +136,10 @@ a {
     background: #2f3b59;
     padding: 40px 0;
     border-top: 4px solid #8c52ff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 .info-container {
@@ -783,20 +787,23 @@ a {
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    height: 100 vh;
 }
 
 /* Ảnh bên trái */
 .pitch-image {
-    width: 350px;
+    width: auto;
     height: 250px;
     border-radius: 10px;
     object-fit: cover;
     background: #ddd;
+    justify-content: left;
+    display: flex;
 }
 
 /* Bên phải */
 .pitch-info {
-    flex: 1;
+    font-size: 18px;
 }
 
 /* Tên sân */
@@ -854,4 +861,73 @@ a {
 
 .actions button:hover {
     background: #096432;
+}
+
+/* === Form đăng ký chủ sân === */
+.form-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 20px;
+    background: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 2px solid #8c52ff;
+}
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1b0b33;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #1b0b33;
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 40px;
+    border: 2px solid #ccc;
+    outline: none;
+    box-sizing: border-box;
+}
+.form-group input[type="file"] {
+    display: block;
+    margin-top: 5px;
+}
+.form-container button {
+    background-color: #8c52ff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 40px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-container button:hover {
+    background-color: #7a46e0;
+}
+
+.book-now-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: rgb(27,11,51);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.image-group{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

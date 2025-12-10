@@ -1,5 +1,5 @@
 /* Cấu hình API URL */
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://localhost:3000/api';
 
 /* === Search box === */
 var input = document.getElementById("searchInput");
@@ -55,15 +55,6 @@ window.openForgotPasswordModal = openForgotPasswordModal;
 window.closeForgotPasswordModal = closeForgotPasswordModal;
 window.sendVerificationCode = sendVerificationCode;
 window.verifyCode = verifyCode;
-
-
-// --- Đóng Modal khi nhấn ra ngoài nền mờ ---
-window.onclick = function (event) {
-    if (event.target == loginModal) { closeModal(); }
-    if (event.target == registerModal) { closeRegisterModal(); }
-    if (event.target == forgotPasswordModal) { closeForgotPasswordModal(); }
-}
-
 
 /* === KẾT NỐI BACKEND (API Integration) === */
 
@@ -312,8 +303,6 @@ window.addEventListener('click', (e) => {
     }
 });
 
-
-
 /* --Detail script-- */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -381,3 +370,188 @@ function savePitchInfo() {
     console.log("Dữ liệu gửi backend:", data);
     alert("Đã lưu thông tin sân (demo)");
 }
+
+/* === JS cho trang danh-cho-chu-san.html === */
+const ownerForm = document.getElementById('ownerForm');
+const closeLogin = document.getElementById('closeLogin');
+const loginBtn = document.getElementById('loginBtn');
+
+const token = localStorage.getItem('userToken');
+
+// Lấy thông tin user nếu đã đăng nhập
+async function fetchUserInfo() {
+    try {
+        const res = await fetch(`${API_URL}/user-info`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) throw new Error('Không lấy được thông tin người dùng');
+        const data = await res.json();
+        document.getElementById('fullName').value = data.fullName || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('phone').value = data.phone || '';
+    } catch (err) {
+        console.error(err);
+        loginModal.style.display = 'flex';
+    }
+}
+
+// Modal login
+closeLogin.onclick = () => loginModal.style.display = 'none';
+window.onclick = (event) => { if (event.target == loginModal) loginModal.style.display = 'none'; };
+
+// Login
+loginBtn.onclick = async () => {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    if (!username || !password) return alert('Vui lòng nhập đầy đủ');
+
+    try {
+        const res = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        if (!res.ok) throw new Error('Đăng nhập thất bại');
+        const data = await res.json();
+        localStorage.setItem('userToken', data.token);
+        loginModal.style.display = 'none';
+        await fetchUserInfo();
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
+// Nếu đã có token thì lấy thông tin ngay
+if (token) fetchUserInfo();
+
+// Submit form đăng ký chủ sân
+ownerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('fullName', document.getElementById('fullName').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('phone', document.getElementById('phone').value);
+    formData.append('businessCert', document.getElementById('businessCert').files[0]);
+
+    try {
+        const res = await fetch(`${API_URL}/owner-register`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('userToken') },
+            body: formData
+        });
+        if (!res.ok) throw new Error('Đăng ký thất bại');
+        alert('Đăng ký chủ sân thành công!');
+        ownerForm.reset();
+    } catch (err) {
+        alert(err.message);
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const ownerForm = document.getElementById('ownerForm');
+
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    function isLoggedIn() {
+        return !!localStorage.getItem('userToken');
+    }
+
+    // Nếu chưa đăng nhập, mở modal login
+    if (!isLoggedIn()) {
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) loginModal.style.display = "flex";
+    } else {
+        // TODO: nếu cần, fetch thông tin người dùng từ backend để điền trước
+    }
+
+    // Xử lý submit form
+    ownerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (!isLoggedIn()) {
+            alert("Vui lòng đăng nhập trước khi đăng ký sân!");
+            return;
+        }
+
+        const formData = new FormData(ownerForm);
+
+        // Demo: hiển thị dữ liệu đã nhập
+        console.log("Dữ liệu đăng ký sân:", Object.fromEntries(formData.entries()));
+        alert("Đăng ký sân thành công! (demo)");
+
+        // TODO: gửi formData lên backend qua fetch
+        //fetch(`${API_URL}/register-stadium`, { method: 'POST', body: formData })
+    });
+
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const ownerForm = document.getElementById('ownerForm');
+    const loginModal = document.getElementById('loginModal');
+    const loginBtn = document.getElementById('loginBtn');
+    const closeLogin = document.getElementById('closeLogin');
+
+    // Demo: gán token giả để thử
+    if (!localStorage.getItem('userToken')) localStorage.setItem('userToken', '');
+
+    // Mở modal đăng nhập
+    function openLoginModal() { loginModal.style.display = 'flex'; }
+    function closeLoginModal() { loginModal.style.display = 'none'; }
+
+    if (closeLogin) closeLogin.addEventListener('click', closeLoginModal);
+
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            if (username && password) {
+                localStorage.setItem('userToken', 'demo-token'); // lưu token demo
+                alert("Đăng nhập thành công!");
+                closeLoginModal();
+            } else {
+                alert("Vui lòng nhập đầy đủ thông tin đăng nhập!");
+            }
+        });
+    }
+
+    if (ownerForm) {
+        ownerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                alert("Vui lòng đăng nhập trước khi đăng ký sân.");
+                openLoginModal();
+                return;
+            }
+
+            const formData = new FormData(ownerForm);
+            try {
+                // Demo: giả lập gửi lên backend
+                console.log("Dữ liệu gửi:", {
+                    stadiumName: formData.get('fullName'),
+                    type: formData.get('type'),
+                    address: formData.get('address'),
+                    price: parseInt(formData.get('price')),
+                    startTime: formData.get('startTime'),
+                    endTime: formData.get('endTime'),
+                    imageFile: formData.get('businessCert')
+                });
+
+                // Demo thành công
+                alert("Đăng ký sân thành công!");
+                ownerForm.reset();
+
+            } catch (error) {
+                alert("Có lỗi xảy ra: " + error.message);
+            }
+        });
+    }
+
+    // Đóng modal khi click ngoài
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) closeLoginModal();
+    });
+});
+
