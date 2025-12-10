@@ -300,3 +300,61 @@ a {
     width: 400px;
     padding: 20px;
 }
+
+/* User Profile Container */
+.user-profile-container {
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+    width: 25px; /* Kích thước icon */
+    height: 25px;
+    vertical-align: middle;
+}
+
+/* Dropdown Button (Icon button) */
+.dropbtn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 15px;
+}
+
+/* The dropdown container (needs position: relative to position the dropdown content) */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100;
+    right: 0; /* Căn menu về bên phải của icon */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: #1b0b33; /* Màu chữ đậm hơn cho menu */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    margin: 0; /* Bỏ margin cũ của navbar a */
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Show the dropdown menu when the user clicks on the dropdown button */
+.show {
+    display: block;
+}

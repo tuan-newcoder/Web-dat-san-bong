@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt sân Bách Khoa</title>
+    <link rel="stylesheet" href="../style.css"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <script src="../main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="../index.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="../index.html">Trang chủ</a>
+            <a href="danh-sach-san.html">Danh sách sân</a>
+            <a href="chinh-sach.html">Chính sách</a>
+            <a href="lien-he.html">Liên hệ</a>
+        </nav>
+
+        <!-- PHẦN USER PROFILE & DROPDOWN -->
+        <div class="user-profile-container">
+            <a href="#">Dành cho chủ sân</a>
+            
+            <div class="dropdown">
+                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener trong JS -->
+                <button id="dropdownButton" class="dropbtn">
+                    <img src="../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+                
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="#">Hồ sơ</a>
+                    <a href="#">Thông báo</a>
+                    <a href="#">Lịch sử đặt sân</a>
+                    <!-- Gán sự kiện click bằng addEventListener -->
+                    <a href="#" id="logoutLink">Đăng xuất</a> 
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>CHÀO MỪNG BẠN ĐÃ ĐĂNG NHẬP</h2> 
+            <p>Khám phá các sân bãi và đặt lịch ngay!</p>
+        </div>
+    </section>
+
+    <!-- FOOTER INFO SECTION -->
+    <section class="footer-info">
+        <div class="info-container">
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

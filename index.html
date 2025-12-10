@@ -7,9 +7,9 @@
     <title>Đặt sân Bách Khoa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="fonts.googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="main.js" defer></script>
+    <script src="main.js" defer></script> 
 </head>
 
 <body>
@@ -25,9 +25,10 @@
 
         <nav>
             <a href="index.html">Trang chủ</a>
-            <a href="assets/danh-sach-san.html">Danh sách sân</a>
+            <a href="assets/after-login.html">Danh sách sân</a>
             <a href="assets/chinh-sach.html">Chính sách</a>
             <a href="assets/lien-he.html">Liên hệ</a>
+            <a href="assets/danh-cho-chu-san.html">Dành cho chủ sân</a>
         </nav>
 
         <div class="auth">
@@ -69,48 +70,53 @@
 
         </div>
     </section>
-    <!-- Login -->
+    
+    <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <div class="login-form-container">
                 <h2>Đăng nhập</h2>
-                <input type="text" placeholder="Tên người dùng/Email">
-                <input type="password" placeholder="Mật khẩu">
+                <!-- THÊM ID CHO INPUT ĐĂNG NHẬP -->
+                <input type="text" id="loginUsername" placeholder="Tên người dùng/Email">
+                <input type="password" id="loginPassword" placeholder="Mật khẩu">
                 <button type="submit">Đăng nhập</button>
                 <a class="forgo_button" href="#" onclick="openForgotPasswordModal()">Quên mật khẩu?</a>
             </div>
         </div>
     </div>
 
-    <!-- Register -->
+    <!-- Register Modal -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeRegisterModal()">&times;</span>
             <div class="register-form-container">
                 <h2>Đăng ký</h2>
-                <input type="email" placeholder="Email*">
-                <input type="password" placeholder="Nhập mật khẩu*">
-                <input type="password" placeholder="Nhập lại mật khẩu*">
-                <input type="text" placeholder="Tên người dùng*">
-                <input type="text" placeholder="Số điện thoại*">
+                <!-- THÊM ID CHO INPUT ĐĂNG KÝ -->
+                <input type="email" id="registerEmail" placeholder="Email*">
+                <input type="password" id="registerPassword" placeholder="Nhập mật khẩu*">
+                <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu*">
+                <input type="text" id="registerUsername" placeholder="Tên người dùng*">
+                <input type="text" id="registerPhone" placeholder="Số điện thoại*">
                 <button type="submit">Đăng ký</button>
             </div>
         </div>
     </div>
 
-    <!-- Forgot Password -->
+    <!-- Forgot Password Modal -->
     <div id="forgotPasswordModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
             <div class="forgot-password-container">
                 <h2>Quên mật khẩu</h2>
                 <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
+                <!-- ID NÀY ĐÃ CÓ TỪ TRƯỚC -->
                 <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
                 <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
 
                 <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
                 <div id="verificationSection" style="display: none;">
+                    <!-- ID NÀY ĐÃ CÓ TỪ TRƯỚC -->
                     <input type="text" id="verificationCode" placeholder="Mã xác minh*">
                     <button onclick="verifyCode()">Xác nhận</button>
                 </div>
