@@ -1,5 +1,5 @@
 /* Cấu hình API URL */
-const API_URL = '';
+const API_URL = 'http://localhost:3000/api';
 
 /* === Search box === */
 var input = document.getElementById("searchInput");
@@ -7,7 +7,7 @@ var button = document.getElementById("searchButton");
 
 function handleSearch() {
     var searchQuery = input.value;
-    window.location.href = "assets/search.html?q=" + encodeURIComponent(searchQuery);
+    window.location.href = "../assets/search.html?q=" + encodeURIComponent(searchQuery);
 }
 
 if (input && button) {
@@ -69,7 +69,7 @@ window.onclick = function (event) {
 
 async function apiRequest(url, options) {
     try {
-        const response = await fetch('${API_URL}/auth/login', {
+        const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ async function handleLogin(username, password) {
 
         // Đăng nhập thành công
         alert("Đăng nhập thành công! Chào mừng " + (data.user || username));
-        // Ví dụ: localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userToken', data.token);
         closeModal();
 
     } catch (error) {
@@ -139,7 +139,7 @@ async function handleLogin(username, password) {
 }
 
 // 2. Xử lý Đăng ký 
-// URL mẫu cho các chức năng khác (BẠN CẦN CẬP NHẬT CHÚNG NẾU CẦN)
+// URL mẫu cho các chức năng khác
 async function handleRegister() {
     const registerUrl = `${API_URL}/api/register`; // Cập nhật URL này nếu cần
     const email = document.getElementById('registerEmail').value;
@@ -190,9 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 3. Xử lý Quên mật khẩu (Gửi mã)
 async function sendVerificationCode() {
-    const sendVerificationUrl = `${API_URL}/api/send-verification`; // Cập nhật URL này nếu cần
+    const sendVerificationUrl = `${API_URL}/api/send-verification`; // Cập nhật URL
     const email = document.getElementById('forgotEmail').value;
-    // ... (phần còn lại của hàm sendVerificationCode giống như trước) ...
 
     if (!email) { alert("Vui lòng nhập email."); return; }
     try {
@@ -229,44 +228,156 @@ async function verifyCode() {
 function handleLogout() {
     alert("Đăng xuất thành công!");
     // Xóa token hoặc session từ localStorage/cookie nếu có
-    localStorage.removeItem('userToken'); 
+    localStorage.removeItem('userToken');
     // Chuyển hướng về trang chủ
     window.location.href = "../index.html";
 }
 
-function toggleDropdown() {
-    document.getElementById("userDropdown").classList.toggle("show");
+// Toggle dropdown cha
+function toggleDropdown(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const btn = event.currentTarget;
+    const dropdownId = btn.dataset.target;
+    const target = document.getElementById(dropdownId);
+    if (!target) return;
+
+    // Đóng các dropdown khác (nhưng không chạm submenu của target)
+    document.querySelectorAll('.owner-dropdown-content.show, .dropdown-content.show')
+        .forEach(el => { if (el !== target) el.classList.remove('show'); });
+
+    target.classList.toggle('show');
 }
 
-// Gắn các sự kiện (event listeners) sau khi DOM đã tải xong
-document.addEventListener('DOMContentLoaded', (event) => {
-    // 1. Gắn sự kiện cho nút/icon mở dropdown
-    const dropdownButton = document.getElementById('dropdownButton');
-    if (dropdownButton) {
-        dropdownButton.addEventListener('click', toggleDropdown);
-    }
+// Toggle submenu (không đóng dropdown cha)
+function toggleSubmenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-    // 2. Gắn sự kiện cho link Đăng xuất
+    const btn = event.currentTarget;
+    const submenuId = btn.dataset.target;
+    const submenu = document.getElementById(submenuId);
+    if (!submenu) return;
+
+    // Đóng các submenu khác trong cùng dropdown
+    const parent = btn.closest('.owner-dropdown-content') || btn.closest('.dropdown-content') || document;
+    parent.querySelectorAll('.submenu-content')
+        .forEach(el => { if (el !== submenu) el.classList.remove('show'); });
+
+    submenu.classList.toggle('show');
+}
+
+// Đóng tất cả
+function closeAllDropdowns() {
+    document.querySelectorAll('.owner-dropdown-content.show, .dropdown-content.show, .submenu-content.show')
+        .forEach(el => el.classList.remove('show'));
+}
+
+// DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Buttons
+    const ownerBtn = document.getElementById('ownerDropdownButton');
+    const userBtn = document.getElementById('dropdownButton');
+    if (ownerBtn) ownerBtn.addEventListener('click', toggleDropdown);
+    if (userBtn) userBtn.addEventListener('click', toggleDropdown);
+
+    // Submenu buttons (they're <a> but we preventDefault in handler)
+    const manageBtn = document.getElementById('managePitchesBtn');
+    const revenueBtn = document.getElementById('revenueBtn');
+    if (manageBtn) manageBtn.addEventListener('click', toggleSubmenu);
+    if (revenueBtn) revenueBtn.addEventListener('click', toggleSubmenu);
+
+    // Logout example
     const logoutLink = document.getElementById('logoutLink');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Ngăn chuyển hướng mặc định của thẻ <a>
-            handleLogout();
+    if (logoutLink) logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Gọi hàm logout nếu có, hoặc chuyển trang
+        if (typeof handleLogout === 'function') handleLogout();
+        else alert('Đăng xuất (demo)');
+    });
+});
+
+// Đóng dropdown nếu người dùng nhấp ra ngoài cửa sổ
+window.addEventListener('click', (e) => {
+
+    //  Đóng modal nếu click nền mờ
+    if (loginModal && e.target === loginModal) closeModal();
+    if (registerModal && e.target === registerModal) closeRegisterModal();
+    if (forgotPasswordModal && e.target === forgotPasswordModal) closeForgotPasswordModal();
+
+    //  Đóng dropdown nếu click ngoài dropdown
+    if (!e.target.closest('.dropdown') && !e.target.closest('.owner-dropdown-content')) {
+        closeAllDropdowns();
+    }
+});
+
+
+
+/* --Detail script-- */
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Xử lý các nút Loại lịch (tabs)
+    const buttons = document.querySelectorAll('.calendar-type-button');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Xóa class 'active' khỏi tất cả các nút
+            buttons.forEach(btn => btn.classList.remove('active'));
+            // Thêm class 'active' vào nút vừa được click
+            button.classList.add('active');
+
+            const selectedType = button.getAttribute('data-type');
+            console.log(`Loại lịch đã chọn: ${selectedType}`);
+        });
+    });
+
+    // Ví dụ lấy giá trị ngày và giờ khi có sự thay đổi (để chuẩn bị cho việc gửi API)
+    const selectDate = document.getElementById('selectDate');
+    if (selectDate) {
+        selectDate.addEventListener('change', (e) => {
+            console.log('Ngày đã chọn:', e.target.value);
         });
     }
 });
 
-// 3. Đóng dropdown nếu người dùng nhấp ra ngoài cửa sổ
-window.onclick = function(event) {
-    // Kiểm tra xem click có phải vào nút dropdown hoặc bên trong nút đó không
-    if (!event.target.matches('.dropbtn, .dropbtn *')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            // Nếu dropdown đang mở, đóng nó lại
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
-        }
-    }
+/* Chi tiết sân cho chủ sân */
+
+/*
+    ⚠️ Sau này backend trả về ví dụ:
+    bookings = [
+        { hours: 2, price: 300000 },
+        { hours: 1.5, price: 300000 }
+    ]
+*/
+
+function calculateRevenue(bookings) {
+    let total = 0;
+    bookings.forEach(b => {
+        total += b.hours * b.price;
+    });
+    return total;
+}
+
+// DỮ LIỆU GIẢ để test (sau này thay bằng response backend)
+const demoBookings = [
+    { hours: 2, price: 300000 },
+    { hours: 1.5, price: 300000 },
+    { hours: 3, price: 300000 }
+];
+
+// Hiển thị doanh thu
+const revenueValue = calculateRevenue(demoBookings);
+document.getElementById('revenue').innerText =
+    revenueValue.toLocaleString('vi-VN') + " VNĐ";
+
+function savePitchInfo() {
+    const data = {
+        address: document.getElementById('address').value,
+        price: document.getElementById('price').value,
+        timeRange: document.getElementById('timeRange').value
+    };
+
+    console.log("Dữ liệu gửi backend:", data);
+    alert("Đã lưu thông tin sân (demo)");
 }

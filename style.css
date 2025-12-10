@@ -20,7 +20,7 @@ body {
     background: #1b0b33;
     color: white;
     font-size: 15px;
-    border-bottom: 2px solid white; 
+    border-bottom: 2px solid white;
 }
 
 .logo {
@@ -32,12 +32,12 @@ body {
 
 .logo .icon {
     margin-right: 15px;
-    display: inline-block; 
-    width: 25px;          
-    height: 25px;          
-    background-image: url('images/calendar.png'); 
-    background-size: cover; 
-    vertical-align: middle; 
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-image: url('images/calendar.png');
+    background-size: cover;
+    vertical-align: middle;
 }
 
 a {
@@ -52,17 +52,18 @@ a {
 
 /* HERO BACKGROUND & SECTION */
 .hero {
-    height: 100vh; 
+    height: 100vh;
     background: url('images/background.jpg') no-repeat center center/cover;
     display: flex;
     flex-direction: column;
     justify-content: top;
-    align-items: inherit; 
+    align-items: inherit;
     text-align: center;
     color: white;
     padding: 0 20px;
-    position: relative; 
+    position: relative;
     margin: 0 auto;
+    z-index: 0;
 }
 
 /* DARK OVERLAY */
@@ -74,31 +75,33 @@ a {
     background: rgba(30, 0, 60, 0.4);
     top: 0;
     left: 0;
+    z-index: 1;
 }
 
 /* HERO CONTENT */
 .hero-content {
-    position: relative; 
+    position: relative;
     color: white;
+    z-index: 10;
 }
 
 .hero h1 {
     margin-top: 200px;
-    font-size: 40px; 
-    font-weight: 800; 
+    font-size: 40px;
+    font-weight: 800;
     line-height: 1.3;
     margin-bottom: 40px;
-    text-align: center; 
+    text-align: center;
 }
 
 /* SEARCH BOX */
 .search-box {
     display: flex;
     background: white;
-    padding: 10px; 
-    border-radius: 40px; 
-    width: 450px; 
-    max-width: 90%; 
+    padding: 10px;
+    border-radius: 40px;
+    width: 450px;
+    max-width: 90%;
     margin: 0 auto;
     align-items: center;
 }
@@ -109,7 +112,7 @@ a {
     padding: 10px 15px;
     border-radius: 30px;
     outline: none;
-    font-size: 16px; 
+    font-size: 16px;
 }
 
 .search-box button {
@@ -132,7 +135,7 @@ a {
     width: 100%;
     background: #2f3b59;
     padding: 40px 0;
-    border-top: 4px solid #8c52ff;  
+    border-top: 4px solid #8c52ff;
 }
 
 .info-container {
@@ -166,7 +169,7 @@ a {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     justify-content: center;
     align-items: center;
 }
@@ -177,7 +180,7 @@ a {
     border-radius: 10px;
     width: 350px;
     max-width: 90%;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     border: 2px solid #8c52ff;
 }
@@ -215,8 +218,8 @@ a {
     margin: 8px 0;
     display: inline-block;
     border: 2px solid #ccc;
-    border-radius: 40px; 
-    box-sizing: border-box; 
+    border-radius: 40px;
+    box-sizing: border-box;
     outline: none;
 }
 
@@ -227,7 +230,7 @@ a {
     padding: 14px 20px;
     margin: 15px 0 0 0;
     border: none;
-    border-radius: 40px; 
+    border-radius: 40px;
     cursor: pointer;
     width: 100%;
     font-size: 16px;
@@ -260,10 +263,10 @@ a {
 }
 
 .forgo_button {
-    display: block; 
-    text-align: center; 
-    margin-top: 10px; 
-    font-size: 14px; 
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
     color: #8c52ff;
 }
 
@@ -308,7 +311,8 @@ a {
 }
 
 .user-icon {
-    width: 25px; /* Kích thước icon */
+    width: 25px;
+    /* Kích thước icon */
     height: 25px;
     vertical-align: middle;
 }
@@ -334,19 +338,22 @@ a {
     position: absolute;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    right: 0; /* Căn menu về bên phải của icon */
+    right: 0;
+    /* Căn menu về bên phải của icon */
     border-radius: 5px;
     overflow: hidden;
 }
 
 .dropdown-content a {
-    color: #1b0b33; /* Màu chữ đậm hơn cho menu */
+    color: #1b0b33;
+    /* Màu chữ đậm hơn cho menu */
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    margin: 0; /* Bỏ margin cũ của navbar a */
+    margin: 0;
+    /* Bỏ margin cũ của navbar a */
     font-size: 14px;
 }
 
@@ -357,4 +364,494 @@ a {
 /* Show the dropdown menu when the user clicks on the dropdown button */
 .show {
     display: block;
+}
+
+/* === STYLE CHO TRANG PROFILE.HTML === */
+
+/* Bố cục container chính giữa trang */
+.profile-container {
+    max-width: 500px;
+    margin: 150px auto;
+    padding: 20px;
+    background-color: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 2px solid #8c52ff;
+    text-align: left;
+}
+
+.profile-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1b0b33;
+    font-size: 28px;
+}
+
+.profile-group {
+    margin-bottom: 15px;
+}
+
+.profile-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #1b0b33;
+}
+
+.profile-group input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #ccc;
+    border-radius: 40px;
+    box-sizing: border-box;
+    outline: none;
+    cursor: default;
+    /* Không cho phép gõ vào */
+    background-color: #e9e9e9;
+}
+
+.profile-container h3 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #1b0b33;
+    font-size: 22px;
+    text-align: center;
+}
+
+.profile-container button {
+    width: 20%;
+    font-size: 12px;
+}
+
+/* CSS for Detail.html */
+
+/* --- Style cho Detail Container --- */
+.detail-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* --- Style cho Filter Component (theo hình ảnh) --- */
+.filter-container {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    /* Tạo khoảng cách với nội dung bên dưới */
+    border: 1px solid #eee;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #1b0b33;
+}
+
+/* Các nút Loại lịch (tabs) */
+.calendar-type-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-type-button {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    flex-grow: 1;
+    text-align: center;
+    color: #666;
+}
+
+.calendar-type-button.active {
+    border-color: #28a745;
+    /* Màu xanh lá cây cho active */
+    background-color: #e8f5e9;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.calendar-type-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Input Chọn ngày */
+.date-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Input Khung giờ (Từ/Đến) */
+.time-range-group {
+    display: flex;
+    gap: 20px;
+}
+
+.time-input-wrapper {
+    flex: 1;
+}
+
+.time-input-wrapper input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* --- Style cho nội dung chi tiết sân bóng (Phần dưới bộ lọc) --- */
+
+.booking-section button {
+    background-color: #e69100;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto 0 auto;
+}
+
+.related-stadiums-section {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.related-stadiums-section h2 {
+    text-align: center;
+    color: #1b0b33;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.stadium-list-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+    /* Cho phép xuống dòng trên màn hình nhỏ */
+}
+
+.stadium-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    flex: 1 1 30%;
+    /* Đảm bảo 3 thẻ trên 1 dòng khi đủ rộng */
+    min-width: 250px;
+    /* Kích thước tối thiểu cho thẻ */
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.stadium-card:hover {
+    transform: translateY(-5px);
+}
+
+.stadium-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    /* Áp dụng hiệu ứng viền tím như trong hình ảnh nếu cần */
+    border-bottom: 3px solid transparent;
+}
+
+.stadium-card:nth-child(1) img {
+    border-color: #8c52ff;
+}
+
+.stadium-card:nth-child(2) img {
+    border-color: #ff5722;
+}
+
+.stadium-card:nth-child(3) img {
+    border-color: #e69100;
+}
+
+
+.stadium-info {
+    padding: 15px;
+}
+
+.stadium-info h3 {
+    font-size: 1.2rem;
+    color: #1b0b33;
+    margin-bottom: 10px;
+}
+
+.stadium-info p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+/* --- Bổ sung style cho Dropdown Dành cho chủ sân --- */
+.user-profile-container .dropbtn span {
+    color: white;
+    font-size: 15px;
+    margin: 0 15px;
+    cursor: pointer;
+}
+
+/* Hiệu ứng hover cho nút dropdown chủ sân */
+.user-profile-container .dropbtn span:hover {
+    text-decoration: none;
+}
+
+/* Quản lý sân */
+
+.manage-stadiums-section {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.manage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.manage-header h2 {
+    color: #1b0b33;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.manage-list {
+    display: flex;
+    gap: 20px;
+    /* Tạo khoảng cách giữa các thẻ */
+    flex-wrap: wrap;
+    /* Cho phép các thẻ tự động xuống hàng */
+    justify-content: center;
+}
+
+.manage-card-link {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    flex: 1 1 calc(33.33% - 20px);
+    min-width: 250px;
+    /* Đảm bảo thẻ không quá nhỏ */
+    text-align: left;
+    transition: transform 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.manage-card-link:hover {
+    transform: translateY(-5px);
+}
+
+.manage-card-link img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.manage-info {
+    padding: 15px;
+}
+
+.manage-info h3 {
+    font-size: 1.2rem;
+    color: #1b0b33;
+    margin-bottom: 10px;
+}
+
+.manage-info .status {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.manage-info .status.active {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.manage-info .status.inactive {
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+/* --- Style cho phần Phân trang (Pagination) --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    padding: 20px 0;
+}
+
+.pagination a,
+.pagination span {
+    color: #1b0b33;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.pagination .page-link.active {
+    background-color: #8c52ff;
+    color: white;
+    border-color: #8c52ff;
+}
+
+.pagination span {
+    border: none;
+    cursor: default;
+}
+
+/*-- Submenu --*/
+
+/* Dropdown cha phải là mốc định vị */
+.dropdown-content,
+.owner-dropdown-content {
+    position: absolute;
+    overflow: visible;
+}
+
+/* Item có submenu */
+.has-submenu {
+    position: relative;
+}
+
+/* Submenu */
+.submenu-content {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 100%;
+    min-width: 200px;
+
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+
+    z-index: 2000;
+}
+
+/* Khi mở */
+.submenu-content.show {
+    display: block;
+}
+
+/* Chi tiết sân cho chủ sân */
+
+.pitch-container {
+    display: flex;
+    gap: 30px;
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Ảnh bên trái */
+.pitch-image {
+    width: 350px;
+    height: 250px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #ddd;
+}
+
+/* Bên phải */
+.pitch-info {
+    flex: 1;
+}
+
+/* Tên sân */
+.pitch-name {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+/* Các dòng thông tin */
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.info-row label {
+    width: 140px;
+    font-weight: 600;
+}
+
+.info-row input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.info-row span {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Doanh thu nổi bật */
+.revenue {
+    font-size: 18px;
+    color: #0b7c3e;
+    font-weight: bold;
+}
+
+.actions {
+    margin-top: 25px;
+}
+
+.actions button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #0b7c3e;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background: #096432;
 }

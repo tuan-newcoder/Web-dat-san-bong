@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin tài khoản</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <script src="../main.js" defer></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="../index.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="../index.html">Trang chủ</a>
+            <a href="detail.html">Danh sách sân</a>
+            <a href="chinh-sach.html">Chính sách</a>
+            <a href="lien-he.html">Liên hệ</a>
+        </nav>
+
+        <div class="user-profile-container">
+            <a href="#">Dành cho chủ sân</a>
+
+            <div class="dropdown">
+                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
+                <button id="dropdownButton" class="dropbtn" type="button">
+                    <img src="../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="profile.html">Hồ sơ</a>
+                    <a href="notification.html">Thông báo</a>
+                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <!-- Gán sự kiện click bằng addEventListener -->
+                    <a href="#" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="profile-container">
+                <h3>Thông tin tài khoản</h3>
+
+                <div class="profile-group">
+                    <label for="profileUsername">Tên người dùng:</label>
+                    <input type="text" id="profileUsername" value="" readonly>
+                </div>
+
+                <div class="profile-group">
+                    <label for="profileEmail">Email:</label>
+                    <input type="text" id="profileEmail" value="" readonly>
+                </div>
+
+                <div class="profile-group">
+                    <label for="profilePhone">Số điện thoại:</label>
+                    <input type="text" id="profilePhone" value="" readonly>
+                </div>
+
+                <button onclick="window.location.href='change-password.html'">Đổi mật khẩu</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <section class="footer-info">
+        <div class="info-container">
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

@@ -1,117 +1,129 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết Sân Bách Khoa CS1</title>
-    <link href="fonts.googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> 
+    <title>Chi tiết Sân bóng A</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../main.js" defer></script>
 </head>
+
 <body>
+
+    <!-- NAVBAR -->
     <header class="navbar">
-       <!-- Navbar layout remains the same as index.html -->
-       <a href="index.html" class="logo-link">
+        <a href="../index.html" class="logo-link">
             <div class="logo">
-                <span class="icon"></span> 
+                <span class="icon"></span>
                 <span>Đặt sân Bách Khoa</span>
             </div>
         </a>
 
         <nav>
             <a href="../index.html">Trang chủ</a>
-            <a href="search.html">Danh sách sân</a> 
+            <a href="detail.html">Danh sách sân</a>
             <a href="chinh-sach.html">Chính sách</a>
             <a href="lien-he.html">Liên hệ</a>
-            <a href="assets/danh-cho-chu-san.html">Dành cho chủ sân</a>
+            <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
         </nav>
 
         <div class="auth">
-            <a href="dang-nhap.html">Đăng nhập</a>
-            <a href="dang-ky.html">Đăng ký</a>
+            <a href="#" onclick="openModal()">Đăng nhập</a>
+            <a href="#" onclick="openRegisterModal()">Đăng ký</a>
         </div>
     </header>
 
-    <main class="main-content-container">
-        <!-- Cột trái: Thông tin chi tiết sân, hình ảnh, đánh giá -->
-        <section class="detail-main">
-            <h1>Sân Bách Khoa CS1</h1>
-            <p class="location">📍 Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
-            
-            <!-- Khu vực hình ảnh -->
-            <div class="image-gallery">
-                <!-- Placeholder images, thay thế bằng ảnh thật của bạn -->
-                <img src="via.placeholder.com" alt="Gallery image 1">
-                <img src="via.placeholder.com" alt="Gallery image 2">
+    <!-- MAIN CONTENT - Chi tiết sân bóng -->
+    <main class="detail-container">
+        <!-- BỘ LỌC TÌM KIẾM -->
+        <div class="filter-container">
+            <div class="filter-group">
+                <label>Loại lịch</label>
+                <div class="calendar-type-buttons">
+                    <button class="calendar-type-button active" data-type="san-trong">Sân trống</button>
+                    <button class="calendar-type-button" data-type="su-kien">Sự kiện / Xé vé</button>
+                    <button class="calendar-type-button" data-type="ghep-doi">Ghép đội</button>
+                </div>
             </div>
 
-            <!-- Tabs/Thông tin mô tả -->
-            <div class="info-section">
-                <h3>Mô tả & Tiện ích</h3>
-                <p>Sân bóng cỏ nhân tạo 7 người mới được bảo trì, đèn cao áp sáng rõ, phù hợp đá giao hữu buổi tối. Có căng tin phục vụ nước uống và phòng thay đồ sạch sẽ.</p>
-                <ul>
-                    <li>✅ Wifi miễn phí</li>
-                    <li>✅ Bãi đỗ xe máy/ô tô</li>
-                    <li>✅ Giờ mở cửa: 5h - 23h hàng ngày</li>
-                    <li>✅ Chính sách hủy: Hủy trước 4 tiếng miễn phí</li>
-                </ul>
+            <div class="filter-group">
+                <label>Chọn ngày</label>
+                <input type="date" id="selectDate" class="date-input" value="2025-12-04">
             </div>
-            
-            <!-- Khu vực đánh giá -->
-            <div class="info-section reviews-section">
-                <h3>Đánh giá (250)</h3>
-                <div class="review-item">
-                    <h4>Nguyễn Văn A ⭐⭐⭐⭐⭐</h4>
-                    <p>Sân đẹp, cỏ mới, đèn sáng. Chủ sân thân thiện!</p>
+
+            <div class="filter-group">
+                <label>Khung giờ</label>
+                <div class="time-range-group">
+                    <div class="time-input-wrapper">
+                        <span>Từ</span>
+                        <input type="time" value="07:30">
+                    </div>
+                    <div class="time-input-wrapper">
+                        <span>Đến</span>
+                        <input type="time" value="09:30">
+                    </div>
                 </div>
-                <div class="review-item">
-                    <h4>Trần Thị B ⭐⭐⭐⭐</h4>
-                    <p>Mọi thứ ok, nhưng hơi đông vào cuối tuần.</p>
-                </div>
+            </div>
+            <div class="booking-section">   
+                <button type="submit">Tìm kiếm</button>
+            </div>
+
+        </div>
+        <!-- KẾT THÚC BỘ LỌC TÌM KIẾM -->
+
+        <!-- PHẦN DANH SÁCH SÂN BÓNG -->
+        <section class="related-stadiums-section">
+            <h2>Danh sách sân</h2>
+
+            <div class="stadium-list-container">
+                <!-- Sân bóng A -->
+                <a href="detail.html?id=A" class="stadium-card">
+                    <img src="../images/sanA.png" alt="Sân bóng A">
+                    <div class="stadium-info">
+                        <h3>Sân bóng A</h3>
+                        <p>Địa chỉ: Số 1 Đại Cồ Việt</p>
+                        <p>Điện thoại: 0363 636 363</p>
+                        <p>Trạng thái: Đang hoạt động</p>
+                    </div>
+                </a>
+
+                <!-- Sân bóng B -->
+                <a href="detail.html?id=B" class="stadium-card">
+                    <img src="../images/sanB.png" alt="Sân bóng B">
+                    <div class="stadium-info">
+                        <h3>Sân bóng B</h3>
+                        <p>Địa chỉ: Đường Giải Phóng</p>
+                        <p>Điện thoại: 0912 345 678</p>
+                        <p>Trạng thái: Đang hoạt động</p>
+                    </div>
+                </a>
+
+                <!-- Sân bóng C -->
+                <a href="detail.html?id=C" class="stadium-card">
+                    <img src="../images/sanC.png" alt="Sân bóng C">
+                    <div class="stadium-info">
+                        <h3>Sân bóng C</h3>
+                        <p>Địa chỉ: Phố Vọng</p>
+                        <p>Điện thoại: 0987 654 321</p>
+                        <p>Trạng thái: Bảo trì</p>
+                    </div>
+                </a>
             </div>
         </section>
-
-        <!-- Cột phải: Lịch đặt sân & Form (Sticky Sidebar) -->
-        <aside class="booking-sidebar">
-            <div class="booking-widget">
-                <h3>Đặt sân ngay</h3>
-                <p>Chọn ngày:</p>
-                <input type="date" class="full-width-input" value="<?php echo date('Y-m-d'); ?>">
-                
-                <p>Chọn khung giờ còn trống:</p>
-                <div class="time-slots">
-                    <!-- Các nút chọn giờ mẫu. Màu sắc do CSS quyết định -->
-                    <button class="slot available">17:00 - 18:00</button>
-                    <button class="slot booked">18:00 - 19:00</button>
-                    <button class="slot available">19:00 - 20:00</button>
-                    <button class="slot available">20:00 - 21:00</button>
-                </div>
-                
-                <div class="price-summary">
-                    <span>Tổng tiền (1 giờ):</span>
-                    <span class="total-price">250.000 VNĐ</span>
-                </div>
-
-                <!-- Form thông tin người dùng -->
-                <form action="confirmation.html" method="POST">
-                    <label for="name">Tên của bạn:</label>
-                    <input type="text" id="name" required class="full-width-input">
-                    <label for="phone">Số điện thoại:</label>
-                    <input type="tel" id="phone" required class="full-width-input">
-                    
-                    <button type="submit" class="cta-button full-width-btn">Xác nhận đặt sân</button>
-                </form>
-            </div>
-        </aside>
     </main>
 
+    <!-- FOOTER INFO SECTION -->
     <section class="footer-info">
-        <!-- Footer layout remains the same as index.html -->
         <div class="info-container">
             <div class="info-box">
                 <h3>Thông tin</h3>
                 <p>Công ty cổ phần Nhóm 15</p>
                 <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
             </div>
+
             <div class="info-box">
                 <h3>Liên hệ</h3>
                 <p>📧 Email: contact@datsanbk.com</p>
@@ -121,5 +133,58 @@
         </div>
     </section>
 
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="login-form-container">
+                <h2>Đăng nhập</h2>
+                <!-- THÊM ID CHO INPUT ĐĂNG NHẬP -->
+                <input type="text" id="loginUsername" placeholder="Tên người dùng/Email">
+                <input type="password" id="loginPassword" placeholder="Mật khẩu">
+                <button type="submit">Đăng nhập</button>
+                <a class="forgo_button" href="#" onclick="openForgotPasswordModal()">Quên mật khẩu?</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <div class="register-form-container">
+                <h2>Đăng ký</h2>
+                <!-- THÊM ID CHO INPUT ĐĂNG KÝ -->
+                <input type="email" id="registerEmail" placeholder="Email*">
+                <input type="password" id="registerPassword" placeholder="Nhập mật khẩu*">
+                <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu*">
+                <input type="text" id="registerUsername" placeholder="Tên người dùng*">
+                <input type="text" id="registerPhone" placeholder="Số điện thoại*">
+                <button type="submit">Đăng ký</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            <div class="forgot-password-container">
+                <h2>Quên mật khẩu</h2>
+                <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
+                <!-- ID NÀY ĐÃ CÓ TỪ TRƯỚC -->
+                <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
+                <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
+
+                <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
+                <div id="verificationSection" style="display: none;">
+                    <input type="text" id="verificationCode" placeholder="Mã xác minh*">
+                    <button onclick="verifyCode()">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
+
 </html>

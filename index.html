@@ -25,7 +25,7 @@
 
         <nav>
             <a href="index.html">Trang chủ</a>
-            <a href="assets/after-login.html">Danh sách sân</a>
+            <a href="assets/detail.html">Danh sách sân</a>
             <a href="assets/chinh-sach.html">Chính sách</a>
             <a href="assets/lien-he.html">Liên hệ</a>
             <a href="assets/danh-cho-chu-san.html">Dành cho chủ sân</a>
@@ -77,7 +77,6 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <div class="login-form-container">
                 <h2>Đăng nhập</h2>
-                <!-- THÊM ID CHO INPUT ĐĂNG NHẬP -->
                 <input type="text" id="loginUsername" placeholder="Tên người dùng/Email">
                 <input type="password" id="loginPassword" placeholder="Mật khẩu">
                 <button type="submit">Đăng nhập</button>
@@ -92,7 +91,6 @@
             <span class="close" onclick="closeRegisterModal()">&times;</span>
             <div class="register-form-container">
                 <h2>Đăng ký</h2>
-                <!-- THÊM ID CHO INPUT ĐĂNG KÝ -->
                 <input type="email" id="registerEmail" placeholder="Email*">
                 <input type="password" id="registerPassword" placeholder="Nhập mật khẩu*">
                 <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu*">
@@ -116,7 +114,6 @@
 
                 <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
                 <div id="verificationSection" style="display: none;">
-                    <!-- ID NÀY ĐÃ CÓ TỪ TRƯỚC -->
                     <input type="text" id="verificationCode" placeholder="Mã xác minh*">
                     <button onclick="verifyCode()">Xác nhận</button>
                 </div>

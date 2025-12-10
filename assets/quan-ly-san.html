@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sân - Đặt sân Bách Khoa</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="../index.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="../index.html">Trang chủ</a>
+            <a href="detail.html">Danh sách sân</a>
+            <a href="chinh-sach.html">Chính sách</a>
+            <a href="lien-he.html">Liên hệ</a>
+        </nav>
+
+        <!-- PHẦN USER PROFILE & DROPDOWN -->
+        <div class="user-profile-container">
+            <div class="dropdown">
+                <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
+                    <span>Dành cho chủ sân</span>
+                </button>
+
+                <div id="ownerDropdown" class="dropdown-content">
+                    <!-- Thay thế liên kết Quản lý sân bằng một DIV/Button để mở dropdown con -->
+                    <div class="has-submenu">
+                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
+                        <div id="managePitchesDropdown" class="submenu-content">
+                            <a href="quan-ly-san.html">Danh sách sân</a>
+                            <a href="dang-ky-san.html">Đăng ký sân</a>
+                            <a href="thu-hoi-san.html">Thu hồi sân</a>
+                        </div>
+                    </div>
+
+                    <!-- Thay thế liên kết Tổng doanh thu bằng một DIV/Button để mở dropdown con -->
+                    <div class="has-submenu">
+                        <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
+                        <div id="revenueDropdown" class="submenu-content">
+                            <a href="doanh-thu-ngay.html">Theo ngày</a>
+                            <a href="doanh-thu-thang.html">Theo tháng</a>
+                            <a href="doanh-thu-toan-bo.html">Toàn bộ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dropdown User Profile giữ nguyên như cũ -->
+            <div class="dropdown">
+                <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
+                    <img src="../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="profile.html">Hồ sơ</a>
+                    <a href="notification.html">Thông báo</a>
+                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="../index.html" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT - Quản lý sân -->
+    <main class="detail-container">
+
+        <!-- PHẦN DANH SÁCH SÂN BÓNG ĐỂ QUẢN LÝ -->
+        <section class="manage-stadiums-section">
+            
+            <div class="manage-header">
+                <h2>Quản lý sân</h2>
+            </div>
+
+            <div class="manage-list">
+                <!-- Hàng 1 -->
+                <a href="chi-tiet-san-chu-san.html" class="manage-card-link" data-stadium-id="A">
+                    <img src="../images/sanA.png" alt="Sân bóng A">
+                    <div class="manage-info">
+                        <h3>Sân bóng A</h3>
+                        <p class="status active">Trạng thái: Đang hoạt động</p>
+                    </div>
+                </a>
+
+                <a href="sua-san.html?id=B" class="manage-card-link" data-stadium-id="B">
+                    <img src="../images/sanB.png" alt="Sân bóng B">
+                    <div class="manage-info">
+                        <h3>Sân bóng B</h3>
+                        <p class="status active">Trạng thái: Đang hoạt động</p>
+                    </div>
+                </a>
+
+                <a href="sua-san.html?id=C" class="manage-card-link" data-stadium-id="C">
+                    <img src="../images/sanC.png" alt="Sân bóng C">
+                    <div class="manage-info">
+                        <h3>Sân bóng C</h3>
+                        <p class="status inactive">Trạng thái: Bảo trì</p>
+                    </div>
+                </a>
+
+                <!-- Hàng 2 -->
+                 <a href="sua-san.html?id=D" class="manage-card-link" data-stadium-id="D">
+                    <img src="../images/sanA.png" alt="Sân bóng D">
+                    <div class="manage-info">
+                        <h3>Sân bóng D</h3>
+                        <p class="status active">Trạng thái: Đang hoạt động</p>
+                    </div>
+                </a>
+
+                <a href="sua-san.html?id=E" class="manage-card-link" data-stadium-id="E">
+                    <img src="../images/sanB.png" alt="Sân bóng E">
+                    <div class="manage-info">
+                        <h3>Sân bóng E</h3>
+                        <p class="status active">Trạng thái: Đang hoạt động</p>
+                    </div>
+                </a>
+
+                <a href="sua-san.html?id=F" class="manage-card-link" data-stadium-id="F">
+                    <img src="../images/sanC.png" alt="Sân bóng F">
+                    <div class="manage-info">
+                        <h3>Sân bóng F</h3>
+                        <p class="status inactive">Trạng thái: Bảo trì</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- PHẦN PHÂN TRANG -->
+        <div class="pagination">
+            <a href="#">&laquo; Trước</a>
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">3</a>
+            <a href="#" class="page-link">4</a>
+            <a href="#" class="page-link">5</a>
+            <span>...</span>
+            <a href="#" class="page-link">99</a>
+            <a href="#">Sau &raquo;</a>
+        </div>
+
+    </main>
+
+    <!-- FOOTER INFO SECTION -->
+    <section class="footer-info">
+        <div class="info-container">
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
