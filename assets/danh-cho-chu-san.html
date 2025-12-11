@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký Chủ Sân</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <script src="../main.js" defer></script>
+</head>
+<body>
+
+<!-- FORM ĐĂNG KÝ CHỦ SÂN -->
+<div class="form-container">
+    <h2>Đăng ký Chủ Sân</h2>
+    <form id="ownerForm">
+        <div class="form-group">
+            <label for="fullName">Họ và tên:<span style="color: red;">*</span></label>
+            <input type="text" id="fullName" name="fullName" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:<span style="color: red;">*</span></label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Số điện thoại:<span style="color: red;">*</span></label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="businessCert">Ảnh chứng nhận Kinh doanh hoạt động thể thao:<span style="color: red;">*</span></label>
+            <input type="file" id="businessCert" name="businessCert" accept="image/*" required>
+        </div>
+        <button type="submit">Gửi đăng ký</button>
+    </form>
+</div>
+
+<!-- Modal đăng nhập-->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeLogin">&times;</span>
+        <h2>Đăng nhập</h2>
+        <input type="text" id="loginUsername" placeholder="Tên đăng nhập">
+        <input type="password" id="loginPassword" placeholder="Mật khẩu">
+        <button id="loginBtn">Đăng nhập</button>
+    </div>
+</div>
+
+</body>
+</html>
