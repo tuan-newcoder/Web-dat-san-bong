@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biểu đồ Doanh thu theo Ngày</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    
+    <div class="chart-container">
+        <canvas id="revenueChart"></canvas>
+    </div>
+    <script>
+    // Hàm mới để lấy dữ liệu từ API server của bạn
+    async function fetchRevenueData() {
+        try {
+            const response = await fetch('http://localhost:3000/api/bookings/revenue-last-7-days');
+            if (!response.ok) {
+                throw new Error('Không thể tải dữ liệu doanh thu');
+            }
+            const data = await response.json();
+            return data; 
+        } catch (error) {
+            console.error("Lỗi khi fetch data:", error);
+
+            return []; 
+        }
+    }
+
+    // Hàm khởi tạo biểu đồ chính
+    async function initializeChart() {
+        const apiData = await fetchRevenueData();
+
+        // Tách dữ liệu ngày và doanh thu từ phản hồi API
+        const dates = apiData.map(item => item.date);
+        const revenues = apiData.map(item => item.revenue);
+
+        // Lấy thẻ canvas từ HTML
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+
+        // Khởi tạo biểu đồ với dữ liệu thực tế
+        new Chart(ctx, {
+            type: 'line', 
+            data: {
+                labels: dates, // Dữ liệu ngày từ server
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revenues, // Dữ liệu doanh thu từ server
+                    borderColor: 'rgba(75, 192, 192, 1)', 
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+                    tension: 0.3, 
+                }]
+            },
+            options: {
+                // ... (Các tùy chọn khác giữ nguyên như code gốc)
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Doanh thu 7 ngày gần nhất '
+                    }
+                }
+            }
+        });
+    }
+
+    // Chạy hàm khởi tạo biểu đồ
+    initializeChart();
+
+</script>
+</body>
+
+</html>

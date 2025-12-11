@@ -151,12 +151,12 @@ async function handleRegister() {
     }
 
     try {
-        const data = await apiRequest(registerUrl, {
+        const data = await apiRequest(`${API_URL}/auth/register`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password, username, phone }),
+            body: JSON.stringify({ HoTen ,email, password, username, phone }),
         });
 
         alert("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
@@ -332,13 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Chi tiết sân cho chủ sân */
 
-/*
-    ⚠️ Sau này backend trả về ví dụ:
-    bookings = [
-        { hours: 2, price: 300000 },
-        { hours: 1.5, price: 300000 }
-    ]
-*/
 
 function calculateRevenue(bookings) {
     let total = 0;
@@ -555,3 +548,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+       

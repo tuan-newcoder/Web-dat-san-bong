@@ -8,6 +8,7 @@
 body {
     font-family: "Roboto", sans-serif;
     background: #fff;
+    height: 100%;
 }
 
 /* NAVBAR */
@@ -136,7 +137,7 @@ a {
     background: #2f3b59;
     padding: 40px 0;
     border-top: 4px solid #8c52ff;
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -782,12 +783,13 @@ a {
     display: flex;
     gap: 30px;
     max-width: 1000px;
-    margin: auto;
     background: #fff;
+    margin: 80px auto;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    height: 100 vh;
+    height: auto;
+    overflow-y: auto;
 }
 
 /* Ảnh bên trái */
@@ -930,4 +932,15 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+
+.chart-container {
+    width: 80%; 
+    max-width: 800px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 40px auto;
 }

@@ -96,3 +96,37 @@ exports.processPayment = async (req, res) => {
         res.status(500).json({ message: "Lỗi thanh toán" });
     }
 };
+exports.getRevenueLast7Days = async (req, res) => {
+    try {
+
+        const query = `
+            SELECT 
+                DATE(booking_date) as date, 
+                SUM(price) as total_revenue
+            FROM 
+                bookings
+            WHERE 
+                booking_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY 
+                DATE(booking_date)
+            ORDER BY 
+                date ASC;
+        `;
+        
+        // --- SỬ DỤNG KẾT NỐI DB THỰC TẾ ---
+        // `results` sẽ là một mảng các hàng từ CSDL
+        const [results] = await db.query(query); 
+
+        // Định dạng dữ liệu để gửi về cho frontend
+        const data = results.map(row => ({
+            date: row.date, // Đảm bảo trường này là định dạng YYYY-MM-DD
+            revenue: row.total_revenue
+        }));
+
+        res.status(200).json(data);
+
+    } catch (error) {
+        console.error('Lỗi khi lấy doanh thu 7 ngày:', error);
+        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+    }
+};

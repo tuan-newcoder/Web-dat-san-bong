@@ -18,4 +18,8 @@ router.get('/history', authenticateToken, bookingController.getUserBookings);
 // Body cần gửi: { "maHoaDon": 5 }
 router.post('/payments', authenticateToken, bookingController.processPayment);
 
+// 4. Lấy dữ liệu doanh thu 7 ngày gần nhất (GET /api/bookings/revenue-last-7-days)
+// Cần admin quyền hoặc một middleware xác thực đặc biệt nếu cần
+router.get('/revenue-last-7-days', authenticateToken, bookingController.getRevenueLast7Days);
+
 module.exports = router;
