@@ -1,5 +1,5 @@
 /* Cấu hình API URL */
-const API_URL = 'https://localhost:3000/api';
+const API_URL = 'http://localhost:3000/api';
 
 /* === Search box === */
 var input = document.getElementById("searchInput");
@@ -60,13 +60,8 @@ window.verifyCode = verifyCode;
 
 async function apiRequest(url, options) {
     try {
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username: usernameInput, password: passwordInput }),
-        });
+        // SỬA LẠI: Dùng url và options được truyền vào tham số
+        const response = await fetch(url, options);
 
         if (!response.ok) {
             let errorData = { message: 'Lỗi máy chủ không xác định.' };
@@ -82,7 +77,8 @@ async function apiRequest(url, options) {
 
     } catch (error) {
         console.error('Lỗi API Request:', error.message);
-        throw new Error("Có lỗi xảy ra khi kết nối đến máy chủ. Vui lòng kiểm tra URL API và kết nối mạng.");
+        // Ném lỗi tiếp để các hàm handleLogin/Register bắt được và alert ra màn hình
+        throw error; 
     }
 }
 
@@ -132,7 +128,8 @@ async function handleLogin(username, password) {
 // 2. Xử lý Đăng ký 
 // URL mẫu cho các chức năng khác
 async function handleRegister() {
-    const registerUrl = `${API_URL}/api/register`; // Cập nhật URL này nếu cần
+    const registerUrl = `${API_URL}/auth/register`; // Cập nhật URL này nếu cần
+    const HoTen = document.getElementById('registerFullName').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
