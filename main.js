@@ -46,7 +46,7 @@ function openForgotPasswordModal() {
 }
 function closeForgotPasswordModal() { if (forgotPasswordModal) forgotPasswordModal.style.display = "none"; }
 
-// Gán các hàm quản lý modal vào phạm vi toàn cục (window) để index.html có thể gọi
+// Gán các hàm quản lý modal vào phạm vi toàn cục (window) để html có thể gọi
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.openRegisterModal = openRegisterModal;
@@ -60,7 +60,6 @@ window.verifyCode = verifyCode;
 
 async function apiRequest(url, options) {
     try {
-        // SỬA LẠI: Dùng url và options được truyền vào tham số
         const response = await fetch(url, options);
 
         if (!response.ok) {
@@ -77,7 +76,6 @@ async function apiRequest(url, options) {
 
     } catch (error) {
         console.error('Lỗi API Request:', error.message);
-        // Ném lỗi tiếp để các hàm handleLogin/Register bắt được và alert ra màn hình
         throw error; 
     }
 }
@@ -100,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 async function handleLogin(username, password) {
-    // SỬ DỤNG URL MỚI THEO YÊU CẦU CỦA BẠN: ${API_URL}/auth/login
     const loginUrl = `${API_URL}/auth/login`;
 
     try {
@@ -126,9 +123,8 @@ async function handleLogin(username, password) {
 }
 
 // 2. Xử lý Đăng ký 
-// URL mẫu cho các chức năng khác
 async function handleRegister() {
-    const registerUrl = `${API_URL}/auth/register`; // Cập nhật URL này nếu cần
+    const registerUrl = `${API_URL}/auth/register`; 
     const HoTen = document.getElementById('registerFullName').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
@@ -141,7 +137,6 @@ async function handleRegister() {
         return;
     }
 
-    // ... (phần còn lại của hàm handleRegister giống như trước) ...
     if (!email || !password || !username || !phone) {
         alert("Vui lòng điền đầy đủ tất cả các trường bắt buộc.");
         return;
@@ -178,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 3. Xử lý Quên mật khẩu (Gửi mã)
 async function sendVerificationCode() {
-    const sendVerificationUrl = `${API_URL}/api/send-verification`; // Cập nhật URL
+    const sendVerificationUrl = `${API_URL}/auth/send-verification`; 
     const email = document.getElementById('forgotEmail').value;
 
     if (!email) { alert("Vui lòng nhập email."); return; }
@@ -194,7 +189,7 @@ async function sendVerificationCode() {
 
 // 4. Xử lý Quên mật khẩu (Xác nhận mã và đổi mật khẩu)
 async function verifyCode() {
-    const verifyUrl = `${API_URL}/api/reset-password`; // Cập nhật URL này nếu cần
+    const verifyUrl = `${API_URL}/auth/reset-password`; 
     const email = document.getElementById('forgotEmail').value;
     const code = document.getElementById('verificationCode').value;
 
@@ -270,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ownerBtn) ownerBtn.addEventListener('click', toggleDropdown);
     if (userBtn) userBtn.addEventListener('click', toggleDropdown);
 
-    // Submenu buttons (they're <a> but we preventDefault in handler)
+    // Submenu buttons 
     const manageBtn = document.getElementById('managePitchesBtn');
     const revenueBtn = document.getElementById('revenueBtn');
     if (manageBtn) manageBtn.addEventListener('click', toggleSubmenu);
@@ -318,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Ví dụ lấy giá trị ngày và giờ khi có sự thay đổi (để chuẩn bị cho việc gửi API)
     const selectDate = document.getElementById('selectDate');
     if (selectDate) {
         selectDate.addEventListener('change', (e) => {
@@ -329,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Chi tiết sân cho chủ sân */
 
-
 function calculateRevenue(bookings) {
     let total = 0;
     bookings.forEach(b => {
@@ -338,7 +331,7 @@ function calculateRevenue(bookings) {
     return total;
 }
 
-// DỮ LIỆU GIẢ để test (sau này thay bằng response backend)
+// DỮ LIỆU GIẢ để test
 const demoBookings = [
     { hours: 2, price: 300000 },
     { hours: 1.5, price: 300000 },
@@ -452,7 +445,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const loginModal = document.getElementById('loginModal');
         if (loginModal) loginModal.style.display = "flex";
     } else {
-        // TODO: nếu cần, fetch thông tin người dùng từ backend để điền trước
     }
 
     // Xử lý submit form
@@ -466,12 +458,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(ownerForm);
 
-        // Demo: hiển thị dữ liệu đã nhập
         console.log("Dữ liệu đăng ký sân:", Object.fromEntries(formData.entries()));
         alert("Đăng ký sân thành công! (demo)");
 
-        // TODO: gửi formData lên backend qua fetch
-        //fetch(`${API_URL}/register-stadium`, { method: 'POST', body: formData })
+        fetch(`${API_URL}/register-stadium`, { method: 'POST', body: formData })
     });
 
 });
@@ -482,7 +472,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('loginBtn');
     const closeLogin = document.getElementById('closeLogin');
 
-    // Demo: gán token giả để thử
     if (!localStorage.getItem('userToken')) localStorage.setItem('userToken', '');
 
     // Mở modal đăng nhập
@@ -518,7 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(ownerForm);
             try {
-                // Demo: giả lập gửi lên backend
                 console.log("Dữ liệu gửi:", {
                     stadiumName: formData.get('fullName'),
                     type: formData.get('type'),
