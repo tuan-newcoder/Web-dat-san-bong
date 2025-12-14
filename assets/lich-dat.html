@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Lịch Đặt Sân</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css">
+
+    <style>
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: 250px;
+            background-color: #1b0b33;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .admin-content {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 20px 30px;
+            background-color: #f4f4f4;
+        }
+
+        .admin-content h1 {
+            color: #1b0b33;
+            margin-bottom: 30px;
+            font-size: 28px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .data-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-table th {
+            background-color: #f7f7f7;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Định nghĩa độ rộng cột cho Bảng Lịch Đặt */
+        .admin-table thead tr th:nth-child(1),
+        .admin-table tbody tr td:nth-child(1) {
+            /* 1. Cột Tên sân */
+            width: 13%;
+            max-width: 200px;
+        }
+
+        .admin-table thead tr th:nth-child(2),
+        .admin-table tbody tr td:nth-child(2) {
+            /* 2. Cột Địa chỉ */
+            width: 25%;
+            max-width: 250px;
+        }
+
+        .admin-table thead tr th:nth-child(3),
+        .admin-table tbody tr td:nth-child(3) {
+            /* 3. Cột Thời gian */
+            width: 10%;
+            min-width: 100px;
+        }
+
+        .admin-table thead tr th:nth-child(4),
+        .admin-table tbody tr td:nth-child(4) {
+            /* 4. Cột Ngày */
+            width: 10%;
+            min-width: 90px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <div class="admin-sidebar">
+            <h3>Admin Panel</h3>
+            <div class="admin-menu">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <a href="quan-ly-nguoi-dung.html">Quản lý Người dùng</a>
+                <a href="lich-dat.html" class="active">Quản lý lịch đặt</a>
+                <a href="duyet-san.html">Duyệt sân</a>
+                <a href="bao-cao-doanh-thu.html">Báo cáo Doanh thu</a>
+                <a href="#" onclick="handleLogout()">Đăng xuất</a>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <h1>Quản lý Lịch đặt Sân</h1>
+
+            <div class="data-section">
+                <h3>Danh sách lịch đặt đã xác nhận</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tên sân</th>
+                            <th>Địa chỉ</th>
+                            <th>Thời gian</th>
+                            <th>Ngày</th>
+                            <th>Tên khách hàng</th>
+                            <th>Số điện thoại</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booking-schedule-table">
+                        <tr>
+                            <td>Sân A (7 người)</td>
+                            <td>90 Nguyễn Văn Trỗi</td>
+                            <td>19:00 - 20:30</td>
+                            <td>16/12/2025</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>0901xxxxxx</td>
+                        </tr>
+                        <tr>
+                            <td>Sân C (11 người)</td>
+                            <td>45 Lê Lợi</td>
+                            <td>16:30 - 18:00</td>
+                            <td>16/12/2025</td>
+                            <td>Trần Thị B</td>
+                            <td>0912xxxxxx</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../main.js"></script>
+</body>
+
+</html>

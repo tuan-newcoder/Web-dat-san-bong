@@ -7,9 +7,8 @@
     <title>Đặt sân Bách Khoa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <script src="../main.js" defer></script>
 </head>
 
 <body>
@@ -25,43 +24,21 @@
 
         <nav>
             <a href="../index.html">Trang chủ</a>
-            <a href="detail.html">Danh sách sân</a>
-            <a href="chinh-sach.html">Chính sách</a>
+            <a href="detail-login.html">Danh sách sân</a>
+            <a href="chinh-sach-login.html">Chính sách</a>
             <a href="lien-he.html">Liên hệ</a>
         </nav>
 
         <!-- PHẦN USER PROFILE & DROPDOWN -->
         <div class="user-profile-container">
-            <div class="dropdown">
-                <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
-                    <span>Dành cho chủ sân</span>
-                </button>
-
-                <div id="ownerDropdown" class="dropdown-content">
-                    <div class="has-submenu">
-                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
-                        <div id="managePitchesDropdown" class="submenu-content">
-                            <a href="quan-ly-san.html">Danh sách sân</a>
-                            <a href="dang-ky-san.html">Đăng ký sân</a>
-                            <a href="thu-hoi-san.html">Thu hồi sân</a>
-                        </div>
-                    </div>
-
-                    <div class="has-submenu">
-                        <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
-                        <div id="revenueDropdown" class="submenu-content">
-                            <a href="doanh-thu-ngay.html">Theo ngày</a>
-                            <a href="doanh-thu-thang.html">Theo tháng</a>
-                            <a href="doanh-thu-toan-bo.html">Toàn bộ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
 
             <div class="dropdown">
+                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
                 <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
                     <img src="../images/user-icon.png" alt="User Icon" class="user-icon">
                 </button>
+
                 <div id="userDropdown" class="dropdown-content">
                     <a href="profile.html">Hồ sơ</a>
                     <a href="notification.html">Thông báo</a>
@@ -72,22 +49,33 @@
         </div>
     </header>
 
-    <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
-            <h1>CHÀO MỪNG BẠN ĐÃ ĐĂNG NHẬP</h1>
-            <p>Khám phá các sân bãi và đặt lịch ngay!</p>
-            <!-- SEARCH BOX -->
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Bạn muốn đặt sân bóng ở đâu?">
-                <button id="searchButton">➜</button>
-            </div>
+            <h2>CHÍNH SÁCH ĐẶT SÂN VÀ SỬ DỤNG DỊCH VỤ</h2>
+
+            <section class="policy">
+                <div class="policy-text">
+                    <p style="font-size: 24px;"><b>1. Chính sách đặt sân</b></p>
+                    <p>- Khách hàng cần đăng ký tài khoản và đăng nhập để đặt sân.</p>
+                    <p>- Việc đặt sân cần được thực hiện ít nhất 2 giờ trước thời gian sử dụng dự kiến.</p>
+                    <p>- Khách hàng có thể hủy hoặc thay đổi lịch đặt sân trước 24 giờ để được hoàn tiền hoặc thay đổi
+                        miễn phí.</p>
+
+                    <p style="font-size: 24px;"><b>2. Chính sách thanh toán</b></p>
+                    <p>- Thanh toán có thể được thực hiện qua các phương thức: thẻ tín dụng, chuyển khoản ngân hàng, ví
+                        điện tử.</p>
+                    <p>- Mọi giao dịch thanh toán đều phải tuân thủ quy định của pháp luật Việt Nam.</p>
+
+                    <p style="font-size: 24px;"><b>3. Chính sách sử dụng dịch vụ</b></p>
+                    <p>- Khách hàng phải tuân thủ các quy định về an toàn và vệ sinh khi sử dụng sân bóng.</p>
+                </div>
+            </section>
         </div>
     </section>
 
-    <!-- FOOTER INFO SECTION -->
     <section class="footer-info">
         <div class="info-container">
+
             <div class="info-box">
                 <h3>Thông tin</h3>
                 <p>Công ty cổ phần Nhóm 15</p>
@@ -103,6 +91,7 @@
                 <p>📞 Điện thoại: 0363 636 363</p>
                 <p>📘 Fanpage: Đặt sân Bách Khoa</p>
             </div>
+
         </div>
     </section>
 </body>

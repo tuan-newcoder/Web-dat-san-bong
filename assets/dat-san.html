@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt sân Bách Khoa</title>
+    <title>Đặt Sân Bách Khoa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <script src="../main.js" defer></script>
 </head>
 
 <body>
@@ -32,36 +31,14 @@
 
         <!-- PHẦN USER PROFILE & DROPDOWN -->
         <div class="user-profile-container">
-            <div class="dropdown">
-                <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
-                    <span>Dành cho chủ sân</span>
-                </button>
-
-                <div id="ownerDropdown" class="dropdown-content">
-                    <div class="has-submenu">
-                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
-                        <div id="managePitchesDropdown" class="submenu-content">
-                            <a href="quan-ly-san.html">Danh sách sân</a>
-                            <a href="dang-ky-san.html">Đăng ký sân</a>
-                            <a href="thu-hoi-san.html">Thu hồi sân</a>
-                        </div>
-                    </div>
-
-                    <div class="has-submenu">
-                        <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
-                        <div id="revenueDropdown" class="submenu-content">
-                            <a href="doanh-thu-ngay.html">Theo ngày</a>
-                            <a href="doanh-thu-thang.html">Theo tháng</a>
-                            <a href="doanh-thu-toan-bo.html">Toàn bộ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
 
             <div class="dropdown">
+                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
                 <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
                     <img src="../images/user-icon.png" alt="User Icon" class="user-icon">
                 </button>
+
                 <div id="userDropdown" class="dropdown-content">
                     <a href="profile.html">Hồ sơ</a>
                     <a href="notification.html">Thông báo</a>
@@ -71,23 +48,51 @@
             </div>
         </div>
     </header>
-
+    
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
-            <h1>CHÀO MỪNG BẠN ĐÃ ĐĂNG NHẬP</h1>
-            <p>Khám phá các sân bãi và đặt lịch ngay!</p>
-            <!-- SEARCH BOX -->
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Bạn muốn đặt sân bóng ở đâu?">
-                <button id="searchButton">➜</button>
+            <div class="booking-page-container">
+                <form id="bookingForm">
+
+                    <div class="form-group">
+                        <label for="name">Tên của bạn</label>
+                        <input type="text" id="name" name="name" required placeholder="Nhập họ và tên">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="Nhập số điện thoại">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Ngày đặt</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">Thời gian</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="note">Ghi chú</label>
+                        <textarea id="note" name="note" rows="4" placeholder="Ví dụ: Đặt sân 7 người"></textarea>
+                    </div>
+
+                    <button type="submit" class="book-now-button">
+                        Đặt sân
+                    </button>
+
+                    </p>
+                </form>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER INFO SECTION -->
-    <section class="footer-info">
+    <footer class="footer-info">
         <div class="info-container">
+
             <div class="info-box">
                 <h3>Thông tin</h3>
                 <p>Công ty cổ phần Nhóm 15</p>
@@ -103,8 +108,11 @@
                 <p>📞 Điện thoại: 0363 636 363</p>
                 <p>📘 Fanpage: Đặt sân Bách Khoa</p>
             </div>
+
         </div>
-    </section>
+    </footer>
+
+    <script src="../main.js"></script>
 </body>
 
 </html>

@@ -76,7 +76,7 @@ async function apiRequest(url, options) {
 
     } catch (error) {
         console.error('Lỗi API Request:', error.message);
-        throw error; 
+        throw error;
     }
 }
 
@@ -116,6 +116,8 @@ async function handleLogin(username, password) {
         alert("Đăng nhập thành công! Chào mừng " + (data.user || username));
         localStorage.setItem('userToken', data.token);
         closeModal();
+        // Chuyển hướng tới trang sau đăng nhập
+        window.location.href = 'after-login.html';
 
     } catch (error) {
         alert(error.message);
@@ -124,7 +126,7 @@ async function handleLogin(username, password) {
 
 // 2. Xử lý Đăng ký 
 async function handleRegister() {
-    const registerUrl = `${API_URL}/auth/register`; 
+    const registerUrl = `${API_URL}/auth/register`;
     const HoTen = document.getElementById('registerFullName').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
@@ -143,12 +145,12 @@ async function handleRegister() {
     }
 
     try {
-        const data = await apiRequest(`${API_URL}/auth/register`,{
+        const data = await apiRequest(`${API_URL}/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ HoTen ,email, password, username, phone }),
+            body: JSON.stringify({ HoTen, email, password, username, phone }),
         });
 
         alert("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
@@ -173,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 3. Xử lý Quên mật khẩu (Gửi mã)
 async function sendVerificationCode() {
-    const sendVerificationUrl = `${API_URL}/auth/send-verification`; 
+    const sendVerificationUrl = `${API_URL}/auth/send-verification`;
     const email = document.getElementById('forgotEmail').value;
 
     if (!email) { alert("Vui lòng nhập email."); return; }
@@ -189,7 +191,7 @@ async function sendVerificationCode() {
 
 // 4. Xử lý Quên mật khẩu (Xác nhận mã và đổi mật khẩu)
 async function verifyCode() {
-    const verifyUrl = `${API_URL}/auth/reset-password`; 
+    const verifyUrl = `${API_URL}/auth/reset-password`;
     const email = document.getElementById('forgotEmail').value;
     const code = document.getElementById('verificationCode').value;
 
@@ -213,7 +215,7 @@ function handleLogout() {
     // Xóa token hoặc session từ localStorage/cookie nếu có
     localStorage.removeItem('userToken');
     // Chuyển hướng về trang chủ
-    window.location.href = "../index.html";
+    window.location.href = "../../../index.html";
 }
 
 // Toggle dropdown cha
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         // Gọi hàm logout nếu có, hoặc chuyển trang
         if (typeof handleLogout === 'function') handleLogout();
-        else alert('Đăng xuất (demo)');
+        else alert('Đăng xuất');
     });
 });
 
@@ -459,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(ownerForm);
 
         console.log("Dữ liệu đăng ký sân:", Object.fromEntries(formData.entries()));
-        alert("Đăng ký sân thành công! (demo)");
+        alert("Đăng ký sân thành công!");
 
         fetch(`${API_URL}/register-stadium`, { method: 'POST', body: formData })
     });
@@ -533,5 +535,249 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+/* Scripts cho dat-san.html */
 
-       
+document.addEventListener('DOMContentLoaded', () => {
+    const bookingForm = document.getElementById('bookingForm');
+
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Lấy dữ liệu từ form
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                note: document.getElementById('note').value
+            };
+
+            // Kiểm tra tính hợp lệ cơ bản
+            if (!formData.name || !formData.phone || !formData.date || !formData.time) {
+                alert("Vui lòng điền đầy đủ thông tin bắt buộc.");
+                return;
+            }
+
+            console.log("Dữ liệu đặt sân:", formData);
+            alert("Đã gửi yêu cầu đặt sân thành công! (Demo)");
+
+            // --- LOGIC GỌI API ---
+
+            fetch(`${API_URL}/auth/bookings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('userToken')
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert("Đặt sân thành công! Mã đặt chỗ: " + data.bookingId);
+                    bookingForm.reset();
+                })
+                .catch(error => {
+                    console.error('Lỗi khi đặt sân:', error);
+                    alert("Đặt sân thất bại. Vui lòng thử lại.");
+                });
+        });
+    }
+});
+
+/* Script cho hoá đơn */
+
+function formatCurrency(number) {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+        minimumFractionDigits: 0
+    }).format(number);
+}
+
+/**
+ * Hàm tính toán lại tổng tiền khi số lượng thay đổi
+ */
+function calculateTotal() {
+    const serviceFeeRate = 0.05; // 5% phí dịch vụ
+    let runningSubtotal = 0;
+
+    // 1. Tính tổng tiền dịch vụ
+    const serviceRow = document.querySelector('tr[data-service-id="1"]');
+    if (serviceRow) {
+        const basePrice = parseInt(serviceRow.getAttribute('data-base-price')); // 100000
+        const quantity = parseInt(serviceRow.querySelector('.quantity-input').value);
+
+        const lineTotal = basePrice * quantity;
+        runningSubtotal = lineTotal;
+
+        // Cập nhật trường Thành tiền
+        serviceRow.querySelector('.subtotal-amount').textContent = formatCurrency(lineTotal);
+        serviceRow.querySelector('.price').textContent = formatCurrency(basePrice); // Cập nhật lại đơn giá
+    }
+
+    // 2. Tính Phí dịch vụ
+    const serviceFee = runningSubtotal * serviceFeeRate;
+    document.getElementById('service-fee-amount').textContent = formatCurrency(serviceFee);
+
+    // 3. Tính Tổng cộng
+    const grandTotal = runningSubtotal + serviceFee;
+    document.getElementById('grand-total').textContent = formatCurrency(grandTotal);
+}
+
+function handlePayment() {
+    const grandTotalElement = document.getElementById('grand-total');
+    const grandTotalText = grandTotalElement ? grandTotalElement.textContent : '0₫';
+
+    alert(`Xác nhận thanh toán thành công số tiền ${grandTotalText}!`);
+    console.log("Tiến hành chuyển hướng đến cổng thanh toán...");
+
+    // Thêm logic chuyển hướng đến cổng thanh toán hoặc xử lý backend tại đây.
+}
+
+// Gắn sự kiện lắng nghe vào input số lượng để tính toán
+document.addEventListener('DOMContentLoaded', () => {
+    const quantityInput = document.querySelector('.quantity-input');
+
+    if (quantityInput) {
+        quantityInput.addEventListener('change', calculateTotal);
+        quantityInput.addEventListener('keyup', calculateTotal);
+    }
+
+    calculateTotal();
+});
+
+/* Script cho thu hồi sân */
+document.addEventListener('DOMContentLoaded', () => {
+
+    const revokeForm = document.getElementById('revokeForm');
+
+    if (revokeForm) {
+        revokeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // KIỂM TRA QUYỀN TRUY CẬP TẠI ĐÂY
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+                alert("Bạn cần Đăng nhập với tư cách Chủ sân để thực hiện thao tác này.");
+                // Mở modal đăng nhập nếu có
+                if (typeof openModal === 'function') openModal();
+                return; // Chặn việc gửi form
+            }
+
+            const stadiumId = document.getElementById('stadiumSelect').value;
+            const reason = document.getElementById('reason').value;
+            const startDate = document.getElementById('startDate').value;
+
+            if (!stadiumId || !reason || !startDate) {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+
+            // Dữ liệu gửi đi
+            const formData = {
+                stadiumId: stadiumId,
+                reason: reason,
+                effectiveDate: startDate
+            };
+
+            console.log("Dữ liệu Yêu cầu Thu Hồi Sân:", formData);
+
+            // Xử lý gửi API 
+            try {
+
+                const response = await fetch(`${API_URL}/auth/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Gửi yêu cầu thất bại');
+                }
+
+                alert(`Yêu cầu thu hồi sân ${stadiumId} đã được gửi thành công! Hệ thống sẽ xử lý từ ngày ${startDate}.`);
+                revokeForm.reset();
+
+            } catch (error) {
+                alert(error.message || "Có lỗi xảy ra trong quá trình gửi yêu cầu.");
+            }
+        });
+    }
+});
+
+/* Script cho admin-dashboard */
+// Dữ liệu giả lập cho bảng người dùng 
+const userData = [
+    { stt: 1, user_id: '#9A2D', username: 'Wibuchua', fullname: 'Nguyễn Duy V', phone: '0901xxxxxx', registerDate: '2025-10-01', role: 'Chủ sân' },
+    { stt: 2, user_id: '#F3E1', username: 'user_b', fullname: 'Trần Thị H', phone: '0912xxxxxx', registerDate: '2025-11-15', role: 'Người dùng' },
+    { stt: 3, user_id: '#B6C5', username: 'user_c', fullname: 'Lê Văn T', phone: '0987xxxxxx', registerDate: '2025-12-01', role: 'Người dùng' },
+    { stt: 4, user_id: '#1G4H', username: 'admin_d', fullname: 'Phạm Q', phone: '0977xxxxxx', registerDate: '2025-09-01', role: 'Admin' },
+];
+
+
+function createUserRowHTML(user) {
+    const roles = ['Người dùng', 'Chủ sân', 'Admin'];
+    
+    // Tạo dropdown phân cấp
+    const roleOptions = roles.map(role => 
+        `<option value="${role}" ${user.role === role ? 'selected' : ''}>${role}</option>`
+    ).join('');
+
+    return `
+        <tr data-user-id="${user.user_id}">
+            <td>${user.stt}</td>
+            <td>${user.user_id}</td> <td>${user.username}</td>
+            <td>${user.fullname}</td>
+            <td>${user.phone.substring(0, 4)}...</td>
+            <td>${user.registerDate}</td>
+            <td>
+                <select class="role-select" onchange="handleRoleChange(this, '${user.user_id}')">
+                    ${roleOptions}
+                </select>
+            </td>
+        </tr>
+    `;
+}
+
+/**
+ * Tải dữ liệu người dùng vào bảng.
+ */
+function loadUserTable() {
+    const tableBody = document.getElementById('user-management-table');
+    if (tableBody) {
+        const rowsHTML = userData.map(createUserRowHTML).join('');
+        tableBody.innerHTML = rowsHTML;
+    }
+}
+
+/** Xử lý khi phân cấp người dùng bị thay đổi. */
+function handleRoleChange(selectElement, userId) {
+    const newRole = selectElement.value;
+    const oldRole = selectElement.getAttribute('data-old-role');
+
+    // Lưu vai trò cũ trước khi xác nhận
+    if (!oldRole) selectElement.setAttribute('data-old-role', userData.find(u => u.user_id === userId).role);
+    
+    if (confirm(`Xác nhận thay đổi phân cấp của người dùng ID ${userId} thành "${newRole}"?`)) {
+        console.log(`Đang gửi yêu cầu cập nhật vai trò: User ID ${userId}, Role: ${newRole}`);
+        
+        // --- LOGIC GỌI API ĐỂ CẬP NHẬT VAI TRÒ ---
+        
+        alert(`Đã cập nhật vai trò của người dùng ID ${userId} thành: ${newRole} (Demo thành công)`);
+        selectElement.setAttribute('data-old-role', newRole); // Cập nhật vai trò cũ thành mới
+
+    } else {
+        // Nếu hủy bỏ, quay lại giá trị cũ
+        selectElement.value = oldRole || userData.find(u => u.user_id === userId).role;
+    }
+}
+
+// Gán hàm vào window để HTML có thể gọi
+window.handleRoleChange = handleRoleChange;
+
+document.addEventListener('DOMContentLoaded', loadUserTable);

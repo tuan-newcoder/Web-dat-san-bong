@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt sân Bách Khoa</title>
+    <title>Thu Hồi Sân</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="fonts.googleapis.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
     <script src="../main.js" defer></script>
 </head>
-
-<body>
-
+<body class="invoice-page-body"> 
+    
     <!-- NAVBAR -->
     <header class="navbar">
         <a href="../index.html" class="logo-link">
@@ -46,7 +44,6 @@
                             <a href="thu-hoi-san.html">Thu hồi sân</a>
                         </div>
                     </div>
-
                     <div class="has-submenu">
                         <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
                         <div id="revenueDropdown" class="submenu-content">
@@ -72,18 +69,46 @@
         </div>
     </header>
 
-    <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
-            <h1>CHÀO MỪNG BẠN ĐÃ ĐĂNG NHẬP</h1>
-            <p>Khám phá các sân bãi và đặt lịch ngay!</p>
-            <!-- SEARCH BOX -->
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Bạn muốn đặt sân bóng ở đâu?">
-                <button id="searchButton">➜</button>
+                <div class="form-container">
+        <h5>Thu Hồi Quyền Cho Thuê Sân</h5>
+        <form id="revokeForm">
+            
+            <div class="form-group">
+                <label for="stadiumSelect">Chọn Sân Cần Thu Hồi</label>
+                <select id="stadiumSelect" name="stadiumId" required 
+                        style="width: 100%; padding: 10px; border-radius: 40px; border: 2px solid #ccc; outline: none; box-sizing: border-box;">
+                    <option value="" disabled selected>-- Chọn Sân --</option>
+                    <option value="A">Sân A: Sân 7 người (Đang hoạt động)</option>
+                    <option value="B">Sân B: Sân 5 người (Đang hoạt động)</option>
+                    <option value="C">Sân C: Sân 11 người (Đang hoạt động)</option>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label for="reason">Lý do Thu Hồi/Hủy Cho Thuê</label>
+                <textarea id="reason" name="reason" rows="4" required placeholder="Ví dụ: Nâng cấp, sửa chữa sân hoặc tạm dừng kinh doanh"
+                          style="width: 100%; padding: 12px 20px; margin: 8px 0; display: inline-block; border: 2px solid #ccc; border-radius: 10px; box-sizing: border-box; outline: none; resize: vertical;"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="startDate">Ngày bắt đầu Thu Hồi</label>
+                <input type="date" id="startDate" name="startDate" required>
+            </div>
+
+            <button type="submit" class="submit-revoke-button">
+                Gửi Yêu Cầu Thu Hồi
+            </button>
+            
+            <p style="text-align: center; margin-top: 15px; font-size: 12px; color: #7a46e0;">
+                * Quá trình thu hồi sẽ cần được hệ thống xác nhận.
+            </p>
+        </form>
+    </div>
         </div>
     </section>
+
 
     <!-- FOOTER INFO SECTION -->
     <section class="footer-info">
@@ -105,6 +130,6 @@
             </div>
         </div>
     </section>
-</body>
 
+</body>
 </html>

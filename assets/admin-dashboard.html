@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Quản lý Hệ thống</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css"> 
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <div class="admin-sidebar">
+            <h3>Admin Panel</h3>
+            <div class="admin-menu">
+                <a href="admin-dashboard.html" class="active">Dashboard</a>
+                <a href="quan-ly-nguoi-dung.html">Quản lý Người dùng</a>
+                <a href="lich-dat.html">Quản lý lịch đặt</a>
+                <a href="duyet-san.html">Duyệt sân</a>
+                <a href="bao-cao-doanh-thu.html">Báo cáo Doanh thu</a>
+                <a href="#" onclick="handleLogout()">Đăng xuất</a>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <h1>Dashboard Tổng quan</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card revenue">
+                    <p>Tổng Doanh thu (Tháng)</p>
+                    <h2>155.000.000.000₫</h2>
+                </div>
+                <div class="stat-card bookings">
+                    <p>Lượt Đặt sân Mới</p>
+                    <h2>450</h2> 
+                </div>
+                <div class="stat-card users">
+                    <p>Người dùng Mới Đăng nhập</p>
+                    <h2>89</h2>
+                </div>
+                <div class="stat-card pitches">
+                    <p>Người dùng Mới Đặt sân</p>
+                    <h2>7</h2> 
+                </div>
+            </div>
+
+            <div class="data-section">
+                <h3>Yêu cầu Đặt sân Mới nhất</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Người đặt</th>
+                            <th>Sân</th>
+                            <th>Ngày/Giờ</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#1001</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>Sân A (7 người)</td>
+                            <td>15/12, 19:00</td>
+                            <td><span style="color: blue;">Chờ xác nhận</span></td>
+                            <td>
+                                <button class="action-button btn-success" onclick="alert('Đã xác nhận!')">Duyệt</button>
+                                <button class="action-button btn-danger" onclick="alert('Đã hủy!')">Hủy</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1002</td>
+                            <td>Trần Thị B</td>
+                            <td>Sân C (11 người)</td>
+                            <td>16/12, 17:30</td>
+                            <td><span style="color: green;">Đã thanh toán</span></td>
+                            <td>
+                                <button class="action-button btn-info">Chi tiết</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#1003</td>
+                            <td>Lê Đình C</td>
+                            <td>Sân B (5 người)</td>
+                            <td>17/12, 20:00</td>
+                            <td><span style="color: red;">Đã hủy</span></td>
+                            <td>
+                                <button class="action-button btn-info">Chi tiết</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="data-section" style="margin-top: 30px;">
+                <h3>Yêu cầu Đăng ký Chủ sân Chờ duyệt</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên Chủ sân</th>
+                            <th>Email</th>
+                            <th>Ngày đăng ký</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#205</td>
+                            <td>Phạm Minh Cường</td>
+                            <td>cuong@example.com</td>
+                            <td>14/12/2025</td>
+                            <td>
+                                <button class="action-button btn-success" onclick="alert('Đã duyệt chủ sân!')">Duyệt</button>
+                                <button class="action-button btn-danger" onclick="alert('Đã từ chối!')">Từ chối</button>
+                                <button class="action-button btn-info" style="background-color: #8c52ff;">Xem hồ sơ</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#206</td>
+                            <td>Nguyễn Thị Hồng</td>
+                            <td>hong@example.com</td>
+                            <td>15/12/2025</td>
+                            <td>
+                                <button class="action-button btn-success" onclick="alert('Đã duyệt chủ sân!')">Duyệt</button>
+                                <button class="action-button btn-danger" onclick="alert('Đã từ chối!')">Từ chối</button>
+                                <button class="action-button btn-info" style="background-color: #8c52ff;">Xem hồ sơ</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    
+    <script src="../main.js" defer></script> 
+    </body>
+</html>

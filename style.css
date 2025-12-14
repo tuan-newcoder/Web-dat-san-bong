@@ -872,23 +872,27 @@ a {
     padding: 20px;
     background: #fefefe;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border: 2px solid #8c52ff;
 }
+
 .form-container h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #1b0b33;
 }
+
 .form-group {
     margin-bottom: 15px;
 }
+
 .form-group label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
     color: #1b0b33;
 }
+
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="tel"] {
@@ -899,10 +903,12 @@ a {
     outline: none;
     box-sizing: border-box;
 }
+
 .form-group input[type="file"] {
     display: block;
     margin-top: 5px;
 }
+
 .form-container button {
     background-color: #8c52ff;
     color: white;
@@ -913,6 +919,7 @@ a {
     cursor: pointer;
     font-size: 16px;
 }
+
 .form-container button:hover {
     background-color: #7a46e0;
 }
@@ -920,7 +927,7 @@ a {
 .book-now-button {
     margin-top: 20px;
     padding: 12px 24px;
-    background-color: rgb(27,11,51);
+    background-color: rgb(27, 11, 51);
     color: white;
     border: none;
     border-radius: 40px;
@@ -928,7 +935,7 @@ a {
     font-size: 1rem;
 }
 
-.image-group{
+.image-group {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -936,11 +943,457 @@ a {
 
 
 .chart-container {
-    width: 80%; 
+    width: 80%;
     max-width: 800px;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 40px auto;
+}
+
+/* Style cho dat-san.html */
+/* Body style cho trang đặt sân (dat-san.html) */
+.booking-page-body {
+    /* Thiết lập hình nền cỏ */
+    background: url('images/background-grass.jpg') no-repeat center center/cover;
+    background-attachment: fixed;
+    /* Giữ nền cố định khi cuộn */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container chính - Màu xanh mint và căn giữa */
+.booking-page-container {
+    max-width: 400px;
+    width: 90%;
+    padding: 30px;
+    background-color: #d1f7d5;
+    /* Màu xanh mint nhạt */
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    margin: 50px auto;
+    /* <<< SỬA: Dùng margin: auto để căn giữa form */
+    position: relative;
+    z-index: 10;
+    /* align-self: center; // Không cần thiết nếu đã dùng margin: auto */
+}
+
+/* Group input */
+.booking-page-container .form-group {
+    margin-bottom: 15px;
+}
+
+/* Label */
+.booking-page-container label {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1b0b33;
+    margin-bottom: 8px;
+}
+
+/* Input fields */
+.booking-page-container input,
+.booking-page-container textarea {
+    width: 100%;
+    padding: 15px 15px;
+    /* Tăng padding để input cao hơn */
+    border: none;
+    /* Bỏ viền để khớp với hình ảnh */
+    border-radius: 10px;
+    background-color: #e9fbe9;
+    /* Nền input hơi sáng */
+    box-sizing: border-box;
+    font-size: 16px;
+    outline: none;
+    resize: none;
+    min-height: 50px;
+}
+
+/* Nút Đặt sân - Màu tím lavender */
+.book-now-button {
+    background-color: #e0b4ff;
+    /* Màu tím lavender */
+    color: #1b0b33;
+    font-weight: 900;
+    /* In đậm hơn */
+    padding: 18px 20px;
+    border: none;
+    border-radius: 10px;
+    /* Bo góc nhẹ nhàng hơn 40px */
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.book-now-button:hover {
+    background-color: #c988fa;
+}
+
+/* Style cho hoá đơn */
+
+/* Body cho trang hóa đơn (Tùy chọn nền trắng) */
+.invoice-page-body {
+    background-color: #f4f4f4;
+    min-height: 100vh;
+}
+
+/* Container chính giữa trang */
+.invoice-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Header Hóa đơn (Màu Tím đậm) */
+.invoice-header {
+    background-color: #9c27b0;
+    /* Màu tím đậm (Magenta) */
+    color: white;
+    padding: 15px 25px;
+}
+
+.invoice-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Bảng */
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+/* Header Bảng (Màu Tím nhạt hơn) */
+.invoice-table thead th {
+    background-color: #e91e63;
+    /* Màu hồng tím */
+    color: white;
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Body Bảng (Dịch vụ) */
+.invoice-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.invoice-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.invoice-table tbody td {
+    padding: 15px 10px;
+    color: #333;
+}
+
+.service-name {
+    padding-left: 20px !important;
+    font-weight: 500;
+}
+
+/* Input Số lượng */
+.quantity-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Căn giữa các cột giá trị */
+.quantity-header,
+.price-header,
+.total-header,
+.quantity-input,
+.price,
+.subtotal-amount,
+.service-fee-rate,
+#service-fee-amount {
+    text-align: center;
+}
+
+/* Footer Bảng (Tổng) */
+.invoice-table tfoot tr {
+    background-color: #f4f4f4;
+}
+
+.invoice-table tfoot td {
+    padding: 15px 10px;
+    font-weight: bold;
+}
+
+.grand-total-label {
+    background-color: #f06292;
+    /* Màu tím hồng nhạt */
+    color: #1b0b33;
+    /* Chữ đậm */
+    text-align: center;
+}
+
+.grand-total-amount {
+    background-color: #f06292;
+    /* Màu tím hồng nhạt */
+    color: #1b0b33;
+    /* Chữ đậm */
+    text-align: center;
+}
+
+/* Nút thanh toán */
+.payment-action {
+    text-align: center;
+    /* Căn giữa nút */
+    padding: 20px 25px;
+    background-color: white;
+    border-top: 1px solid #eee;
+}
+
+/* Style cho nút Thanh toán */
+.pay-now-button {
+    background-color: #9c27b0;
+    /* Màu tím đậm (Magenta) */
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pay-now-button:hover {
+    background-color: #7b1fa2;
+}
+
+/* === STYLE RIÊNG CHO FORM THU HỒI SÂN === */
+
+/* Style cho nút Submit Thu Hồi (Màu cảnh báo/Đỏ/Tím) */
+.submit-revoke-button {
+    background-color: #e91e63;
+    /* Hồng Tím đậm (Màu cảnh báo) */
+    color: white;
+    padding: 14px 20px;
+    margin: 15px 0 0 0;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.submit-revoke-button:hover {
+    background-color: #c2185b;
+    /* Màu tối hơn khi hover */
+}
+
+.hero-content h5 {
+    margin-top: 15px;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #1b0b33;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Style cho admin-dashboard */
+/* Cấu trúc Layout (Sidebar + Content) */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Navigation */
+.admin-sidebar {
+    width: 250px;
+    background-color: #1b0b33;
+    color: white;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.admin-sidebar h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #8c52ff;
+}
+
+.admin-menu a {
+    display: block;
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    border-left: 5px solid transparent;
+    transition: background-color 0.3s, border-left-color 0.3s;
+    margin: 0;
+}
+
+.admin-menu a:hover,
+.admin-menu a.active {
+    background-color: #2f0f5c;
+    border-left-color: #e69100;
+}
+
+/* Main Content Area */
+.admin-content {
+    flex-grow: 1;
+    margin-left: 250px;
+    padding: 20px 30px;
+    background-color: #f4f4f4;
+}
+
+/* Dashboard Header */
+.admin-content h1 {
+    color: #1b0b33;
+    margin-bottom: 30px;
+    font-size: 28px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+/* Thẻ Tổng quan (Stats Cards) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid;
+}
+
+.stat-card.revenue {
+    border-color: #28a745;
+}
+
+.stat-card.bookings {
+    border-color: #8c52ff;
+}
+
+.stat-card.users {
+    border-color: #e69100;
+}
+
+.stat-card.pitches {
+    border-color: #dc3545;
+}
+
+.stat-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.stat-card h2 {
+    font-size: 28px;
+    margin: 0;
+    color: #1b0b33;
+}
+
+/* Bảng */
+.data-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.data-section h3 {
+    color: #1b0b33;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+    background-color: #f7f7f7;
+    font-weight: 600;
+    color: #333;
+}
+
+.action-button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-info {
+    background-color: #8c52ff;
+    color: white;
+}
+
+/* Cột STT nhỏ hơn */
+.admin-table th:first-child,
+.admin-table td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+.admin-table th:nth-child(2), .admin-table td:nth-child(2) {
+    width: 50px; 
+}
+
+/* Dropdown Phân cấp */
+.role-select {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 100px;
+    outline: none;
+    cursor: pointer;
 }
