@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Liên hệ</title>
+    <link rel="stylesheet" href="../../style.css">
+    <script src="../../main.js" defer></script>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="after-login.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="after-login.html">Trang chủ</a>
+            <a href="detail-login.html">Danh sách sân</a>
+            <a href="chinh-sach-login.html">Chính sách</a>
+            <a href="lien-he-login.html">Liên hệ</a>
+        </nav>
+
+        <!-- PHẦN USER PROFILE & DROPDOWN -->
+        <div class="user-profile-container">
+            <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
+
+            <div class="dropdown">
+                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
+                <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="profile.html">Hồ sơ</a>
+                    <a href="notification.html">Thông báo</a>
+                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>LIÊN HỆ VỚI CHÚNG TÔI</h2>
+            <section class="contact">
+                <div class="contact-info">
+                    <p>📧 Email: contact@datsanbk.com</p>
+                    <p>📞 Điện thoại: 0363 636 363</p>
+                    <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+                </div>
+            </section>
+        </div>
+    </section>
+    <section class="footer-info">
+        <div class="info-container">
+
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+
+</html>

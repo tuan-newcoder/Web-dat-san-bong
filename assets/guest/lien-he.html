@@ -3,20 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt sân Bách Khoa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="main.js" defer></script> 
+    <title>Liên hệ</title>
+    <link rel="stylesheet" href="../../style.css">
+    <script src="../../main.js" defer></script>
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
     <header class="navbar">
-        <a href="index.html" class="logo-link">
+        <a href="../../index.html" class="logo-link">
             <div class="logo">
                 <span class="icon"></span>
                 <span>Đặt sân Bách Khoa</span>
@@ -24,11 +19,11 @@
         </a>
 
         <nav>
-            <a href="index.html">Trang chủ</a>
-            <a href="assets/guest/detail.html">Danh sách sân</a>
-            <a href="assets/guest/chinh-sach.html">Chính sách</a>
-            <a href="assets/guest/lien-he.html">Liên hệ</a>
-            <a href="assets/guest/danh-cho-chu-san.html">Dành cho chủ sân</a>
+            <a href="../../index.html">Trang chủ</a>
+            <a href="detail.html">Danh sách sân</a>
+            <a href="chinh-sach.html">Chính sách</a>
+            <a href="lien-he.html">Liên hệ</a>
+            <a href="../after-login/danh-cho-chu-san.html">Dành cho chủ sân</a>
         </nav>
 
         <div class="auth">
@@ -37,19 +32,19 @@
         </div>
     </header>
 
-    <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
-            <h1>HỆ THỐNG HỖ TRỢ TÌM KIẾM<br> SÂN BÃI ONLINE</h1>
-
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Bạn muốn đặt sân bóng ở đâu?">
-                <button id="searchButton">➜</button>
-            </div>
+            <h2>LIÊN HỆ VỚI CHÚNG TÔI</h2>
+            <section class="contact">
+                <div class="contact-info">
+                    <p>📧 Email: contact@datsanbk.com</p>
+                    <p>📞 Điện thoại: 0363 636 363</p>
+                    <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+                </div>
+            </section>
         </div>
     </section>
-
-    <footer class="footer-info">
+    <section class="footer-info">
         <div class="info-container">
 
             <div class="info-box">
@@ -69,47 +64,44 @@
             </div>
 
         </div>
-    </footer>
-    
-    <!-- Login Modal -->
+    </section>
+
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <div class="login-form-container">
                 <h2>Đăng nhập</h2>
-                <input type="text" id="loginUsername" placeholder="Tên người dùng/Email">
-                <input type="password" id="loginPassword" placeholder="Mật khẩu">
+                <input type="text" placeholder="Tên người dùng/Email">
+                <input type="password" placeholder="Mật khẩu">
                 <button type="submit">Đăng nhập</button>
                 <a class="forgo_button" href="#" onclick="openForgotPasswordModal()">Quên mật khẩu?</a>
             </div>
         </div>
     </div>
 
-    <!-- Register Modal -->
+    <!--Register-->
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeRegisterModal()">&times;</span>
             <div class="register-form-container">
                 <h2>Đăng ký</h2>
-                <input type="text" id="registerFullName" placeholder="Họ và tên*">
-                <input type="email" id="registerEmail" placeholder="Email*">
-                <input type="password" id="registerPassword" placeholder="Nhập mật khẩu*">
-                <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu*">
-                <input type="text" id="registerUsername" placeholder="Tên người dùng*">
-                <input type="text" id="registerPhone" placeholder="Số điện thoại*">
+                <input type="email" placeholder="Email*">
+                <input type="password" placeholder="Nhập mật khẩu*">
+                <input type="password" placeholder="Nhập lại mật khẩu*">
+                <input type="text" placeholder="Tên người dùng*">
+                <input type="text" placeholder="Số điện thoại*">
                 <button type="submit">Đăng ký</button>
             </div>
         </div>
     </div>
 
-    <!-- Forgot Password Modal -->
+    <!--Quên mật khẩu-->
     <div id="forgotPasswordModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
             <div class="forgot-password-container">
                 <h2>Quên mật khẩu</h2>
                 <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
-
                 <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
                 <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
 

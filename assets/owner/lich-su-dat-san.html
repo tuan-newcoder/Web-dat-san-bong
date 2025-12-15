@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử đặt sân</title>
+    <link rel="stylesheet" href="../../style.css">
+    <script src="../../main.js" defer></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="chu-san.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="chu-san.html">Trang chủ</a>
+            <a href="detail-login.html">Danh sách sân</a>
+            <a href="chinh-sach-login.html">Chính sách</a>
+            <a href="lien-he-login.html">Liên hệ</a>
+        </nav>
+
+        <div class="user-profile-container">
+            <div class="dropdown">
+                <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
+                    <span>Dành cho chủ sân</span>
+                </button>
+
+                <div id="ownerDropdown" class="dropdown-content">
+                    <div class="has-submenu">
+                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
+                        <div id="managePitchesDropdown" class="submenu-content">
+                            <a href="quan-ly-san.html">Danh sách sân</a>
+                            <a href="dang-ky-san.html">Đăng ký sân</a>
+                            <a href="thu-hoi-san.html">Thu hồi sân</a>
+                        </div>
+                    </div>
+
+                    <div class="has-submenu">
+                        <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
+                        <div id="revenueDropdown" class="submenu-content">
+                            <a href="doanh-thu-ngay.html">Theo ngày</a>
+                            <a href="doanh-thu-thang.html">Theo tháng</a>
+                            <a href="doanh-thu-toan-bo.html">Toàn bộ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="profile.html">Hồ sơ</a>
+                    <a href="notification.html">Thông báo</a>
+                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="history-container">
+        <header class="header">
+            <h1 class="history-title">Lịch sử đặt sân của bạn</h1>
+            <p class="history-subtitle">Tổng quan về các giao dịch đặt sân đã thực hiện.</p>
+        </header>
+
+        <div class="table-responsive">
+            <table class="booking-history-table">
+                <thead>
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Tên Sân</th>
+                        <th>Ngày/Giờ</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="status-completed">
+                        <td data-label="Mã Đơn">#BSB-20251216-001</td>
+                        <td data-label="Tên Sân">Sân A</td>
+                        <td data-label="Ngày/Giờ">16/12/2025 | 19:00 - 20:30</td>
+                        <td data-label="Tổng Tiền">500.000 VNĐ</td>
+                        <td data-label="Trạng Thái">
+                            <span class="status-badge completed">Đã hoàn thành</span>
+                        </td>
+                        <td data-label="Hành Động">
+                            <button class="action-btn view-detail">Xem chi tiết</button>
+                        </td>
+                    </tr>
+                    
+                    <tr class="status-upcoming">
+                        <td data-label="Mã Đơn">#BSB-20251220-002</td>
+                        <td data-label="Tên Sân">Sân C</td>
+                        <td data-label="Ngày/Giờ">20/12/2025 | 20:30 - 22:00</td>
+                        <td data-label="Tổng Tiền">650.000 VNĐ</td>
+                        <td data-label="Trạng Thái">
+                            <span class="status-badge upcoming">Sắp tới</span>
+                        </td>
+                        <td data-label="Hành Động">
+                            <button class="action-btn cancel-booking">Hủy sân</button>
+                        </td>
+                    </tr>
+
+                    <tr class="status-cancelled">
+                        <td data-label="Mã Đơn">#BSB-20251201-003</td>
+                        <td data-label="Tên Sân">Sân B</td>
+                        <td data-label="Ngày/Giờ">01/12/2025 | 18:00 - 19:30</td>
+                        <td data-label="Tổng Tiền">450.000 VNĐ</td>
+                        <td data-label="Trạng Thái">
+                            <span class="status-badge cancelled">Đã hủy</span>
+                        </td>
+                        <td data-label="Hành Động">
+                            <button class="action-btn rebook">Đặt lại</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="chu-san.html" class="back-home-btn">← Quay lại trang chủ</a>
+    </div>
+
+    <section class="footer-info">
+        <div class="info-container">
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
