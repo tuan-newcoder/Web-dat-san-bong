@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// 3. Xử lý Quên mật khẩu (Gửi mã)
+// 3. Xử lý Quên mật khẩu (Gửi mã) (Đã có BE)
 async function sendVerificationCode() {
     const sendVerificationUrl = `${API_URL}/auth/send-verification`;
     const email = document.getElementById('forgotEmail').value;
@@ -189,7 +189,7 @@ async function sendVerificationCode() {
     } catch (error) { alert(error.message); }
 }
 
-// 4. Xử lý Quên mật khẩu (Xác nhận mã và đổi mật khẩu)
+// 4. Xử lý Quên mật khẩu (Xác nhận mã và đổi mật khẩu) (Đã có BE)
 async function verifyCode() {
     const verifyUrl = `${API_URL}/auth/reset-password`;
     const email = document.getElementById('forgotEmail').value;
