@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn thanh toán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <script src="../../main.js" defer></script>
+</head>
+
+<body class="invoice-page-body">
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <h2>Hoá đơn</h2>
+        </div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th class="service-name-header">Dịch vụ</th>
+                    <th class="unit-header">Đơn vị</th>
+                    <th class="quantity-header">Số lượng</th>
+                    <th class="price-header">Đơn giá</th>
+                    <th class="total-header">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-body">
+                <tr data-service-id="1" data-base-price="100000">
+                    <td class="service-name">Nhà hát của những tiếng cười</td>
+                    <td class="unit-display">Giờ</td>
+                    <td><input type="number" value="1" min="1" class="quantity-input" onchange="calculateTotal()"></td>
+                    <td class="price">100.000₫</td>
+                    <td class="subtotal-amount">100.000₫</td>
+                </tr>
+
+                <tr>
+                    <td class="service-name">Phí dịch vụ</td>
+                    <td></td>
+                    <td></td>
+                    <td class="service-fee-rate">5%</td>
+                    <td id="service-fee-amount">5.000₫</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="empty-cell"></td>
+                    <td class="grand-total-label">Tổng</td>
+                    <td class="grand-total-amount" id="grand-total">105.000₫</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="invoice-container">
+            <table class="invoice-table">
+            </table>
+
+            <div class="payment-action">
+                <button id="payment-button" class="pay-now-button" onclick="handlePayment()">
+                    Thanh toán
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gọi hàm tính toán lần đầu khi tải trang
+        document.addEventListener('DOMContentLoaded', calculateTotal);
+    </script>
+
+</body>
+
+</html>

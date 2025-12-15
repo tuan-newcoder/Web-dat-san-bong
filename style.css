@@ -1397,3 +1397,79 @@ a {
     outline: none;
     cursor: pointer;
 }
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.notify-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background: #2563eb;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.notify-btn:hover {
+    background: #1e40af;
+}
+
+.notification-box {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    margin-bottom: 200px;
+    margin-top: 50px;
+}
+
+.notification-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.notification-item.success {
+    background: #dcfce7;
+    border-left: 5px solid #22c55e;
+    color: black;
+}
+
+.notification-item.error {
+    background: #fee2e2;
+    border-left: 5px solid #ef4444;
+}
+
+.notification-item.info {
+    background: #e0f2fe;
+    border-left: 5px solid #0ea5e9;
+}
+
+.notification.error {
+    border-left-color: #ef4444;
+}
+
+.notification h4 {
+    margin: 0 0 5px;
+}
+
+.notification p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@keyframes slideIn {
+    from {
+    opacity: 0;
+    transform: translateX(50px);
+    }
+    to {
+    opacity: 1;
+    transform: translateX(0);
+    }
+}

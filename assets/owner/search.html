@@ -5,27 +5,61 @@
     <meta charset="UTF-8">
     <title>Kết quả tìm kiếm</title>
     <link rel="stylesheet" href="search.css">
-    <script src="../main.js" defer></script>
+    <script src="../../main.js" defer></script>
 </head>
 
 <body>
     <header class="navbar">
-        <a href="../index.html" class="logo-link">
+        <a href="chu-san.html" class="logo-link">
             <div class="logo">
                 <span class="icon"></span>
                 <span>Đặt sân Bách Khoa</span>
             </div>
         </a>
         <nav>
-            <a href="../index.html">Trang chủ</a>
-            <a href="detail.html">Danh sách sân</a>
-            <a href="chinh-sach.html">Chính sách</a>
-            <a href="lien-he.html">Liên hệ</a>
-            <a href="assets/danh-cho-chu-san.html">Dành cho chủ sân</a>
-        </nav>
-        <div class="auth">
-            <a href="#" onclick="openModal()">Đăng nhập</a>
-            <a href="#" onclick="openRegisterModal()">Đăng ký</a>
+            <a href="chu-san.html">Trang chủ</a>
+            <a href="detail-login.html">Danh sách sân</a>
+            <a href="chinh-sach-login.html">Chính sách</a>
+            <a href="lien-he-login.html">Liên hệ</a>
+        
+        <div class="user-profile-container">
+            <div class="dropdown">
+                <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
+                    <span>Dành cho chủ sân</span>
+                </button>
+
+                <div id="ownerDropdown" class="dropdown-content">
+                    <div class="has-submenu">
+                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
+                        <div id="managePitchesDropdown" class="submenu-content">
+                            <a href="quan-ly-san.html">Danh sách sân</a>
+                            <a href="dang-ky-san.html">Đăng ký sân</a>
+                            <a href="thu-hoi-san.html">Thu hồi sân</a>
+                        </div>
+                    </div>
+
+                    <div class="has-submenu">
+                        <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
+                        <div id="revenueDropdown" class="submenu-content">
+                            <a href="doanh-thu-ngay.html">Theo ngày</a>
+                            <a href="doanh-thu-thang.html">Theo tháng</a>
+                            <a href="doanh-thu-toan-bo.html">Toàn bộ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="profile.html">Hồ sơ</a>
+                    <a href="notification.html">Thông báo</a>
+                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
         </div>
     </header>
 

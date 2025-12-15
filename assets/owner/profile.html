@@ -4,19 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt sân Bách Khoa</title>
+    <title>Thông tin tài khoản</title>
+    <link rel="stylesheet" href="../../style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="fonts.googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css">
-    <script src="../main.js" defer></script>
+    <script src="../../main.js" defer></script>
 </head>
 
 <body>
-
-    <!-- NAVBAR -->
+    <!-- Navbar -->
     <header class="navbar">
-        <a href="../index.html" class="logo-link">
+        <a href="chu-san.html" class="logo-link">
             <div class="logo">
                 <span class="icon"></span>
                 <span>Đặt sân Bách Khoa</span>
@@ -24,13 +23,12 @@
         </a>
 
         <nav>
-            <a href="../index.html">Trang chủ</a>
-            <a href="detail.html">Danh sách sân</a>
-            <a href="chinh-sach.html">Chính sách</a>
-            <a href="lien-he.html">Liên hệ</a>
+            <a href="chu-san.html">Trang chủ</a>
+            <a href="detail-login.html">Danh sách sân</a>
+            <a href="chinh-sach-login.html">Chính sách</a>
+            <a href="lien-he-login.html">Liên hệ</a>
         </nav>
 
-        <!-- PHẦN USER PROFILE & DROPDOWN -->
         <div class="user-profile-container">
             <div class="dropdown">
                 <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
@@ -60,13 +58,13 @@
 
             <div class="dropdown">
                 <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
-                    <img src="../images/user-icon.png" alt="User Icon" class="user-icon">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
                 </button>
                 <div id="userDropdown" class="dropdown-content">
                     <a href="profile.html">Hồ sơ</a>
                     <a href="notification.html">Thông báo</a>
                     <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
-                    <a href="../index.html" id="logoutLink">Đăng xuất</a>
+                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
                 </div>
             </div>
         </div>
@@ -75,17 +73,35 @@
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
-            <h1>CHÀO MỪNG BẠN ĐÃ ĐĂNG NHẬP</h1>
-            <p>Khám phá các sân bãi và đặt lịch ngay!</p>
-            <!-- SEARCH BOX -->
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Bạn muốn đặt sân bóng ở đâu?">
-                <button id="searchButton">➜</button>
+            <div class="profile-container">
+                <h3>Thông tin tài khoản</h3>
+
+                <div class="profile-group">
+                    <label for="profileUsername">Tên người dùng:</label>
+                    <input type="text" id="profileUsername" value="" readonly>
+                </div>
+
+                <div class="profile-group">
+                    <label for="profileFullName">Họ và tên:</label>
+                    <input type="text" id="profileFullName" value="" readonly>
+                </div>
+
+                <div class="profile-group">
+                    <label for="profileEmail">Email:</label>
+                    <input type="text" id="profileEmail" value="" readonly>
+                </div>
+
+                <div class="profile-group">
+                    <label for="profilePhone">Số điện thoại:</label>
+                    <input type="text" id="profilePhone" value="" readonly>
+                </div>
+
+                <button onclick="window.location.href='change-password.html'">Đổi mật khẩu</button>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER INFO SECTION -->
+    <!-- Footer -->
     <section class="footer-info">
         <div class="info-container">
             <div class="info-box">
@@ -98,13 +114,13 @@
 
             <div class="info-box">
                 <h3>Liên hệ</h3>
-
                 <p>📧 Email: contact@datsanbk.com</p>
                 <p>📞 Điện thoại: 0363 636 363</p>
                 <p>📘 Fanpage: Đặt sân Bách Khoa</p>
             </div>
         </div>
     </section>
+
 </body>
 
 </html>
