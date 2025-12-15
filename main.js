@@ -81,7 +81,7 @@ async function apiRequest(url, options) {
 }
 
 
-// 1. Xử lý Đăng nhập
+// 1. Xử lý Đăng nhập (Đã có BE)
 document.addEventListener('DOMContentLoaded', () => {
     const loginFormButton = document.querySelector('#loginModal button[type="submit"]');
 
@@ -124,7 +124,7 @@ async function handleLogin(username, password) {
     }
 }
 
-// 2. Xử lý Đăng ký 
+// 2. Xử lý Đăng ký (Đã có BE)
 async function handleRegister() {
     const registerUrl = `${API_URL}/auth/register`;
     const HoTen = document.getElementById('registerFullName').value;

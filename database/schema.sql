@@ -68,3 +68,13 @@ CREATE TABLE HoaDon (
 );
 
 
+/*
+CREATE TABLE password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    otp_code VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL, -- Thời điểm hết hạn
+    INDEX (email)
+);
+*/
