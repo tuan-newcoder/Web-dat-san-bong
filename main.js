@@ -7,7 +7,7 @@ var button = document.getElementById("searchButton");
 
 function handleSearch() {
     var searchQuery = input.value;
-    window.location.href = "../assets/search.html?q=" + encodeURIComponent(searchQuery);
+    window.location.href = "/assets/after-login/search.html?q=" + encodeURIComponent(searchQuery);
 }
 
 if (input && button) {
