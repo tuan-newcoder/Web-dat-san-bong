@@ -2,30 +2,6 @@
 const API_URL = 'http://localhost:3000/api';
 const token = localStorage.getItem('userToken');
 
-/* === Search box === */
-var input = document.getElementById("searchInput");
-var button = document.getElementById("searchButton");
-
-function handleSearch() {
-    var searchQuery = input.value;
-    window.location.href = "/assets/after-login/search.html?q=" + encodeURIComponent(searchQuery);
-}
-
-if (input && button) {
-    input.addEventListener("keyup", function (event) {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            handleSearch();
-        }
-    });
-
-    button.addEventListener("click", function (event) {
-        event.preventDefault();
-        handleSearch();
-    });
-}
-
-
 /* === Quản lý Modal Boxes === */
 var loginModal = document.getElementById("loginModal");
 var registerModal = document.getElementById("registerModal");
