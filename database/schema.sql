@@ -18,6 +18,21 @@ CREATE TABLE User (
 );
 
 -- ============================
+--  TABLE: UpRole
+-- ============================
+CREATE TABLE UpRole (
+    MaUpRole INT AUTO_INCREMENT PRIMARY KEY,
+    MaNguoiDung INT,
+    HoTen VARCHAR(100),
+    Email VARCHAR(100),
+    SDT VARCHAR(15),
+    AnhGiayPhep MEDIUMBLOB,
+    TrangThai ENUM('dangxuly', 'chapnhan', 'tuchoi') DEFAULT 'dangxuly',
+    FOREIGN KEY (MaNguoiDung) REFERENCES user(MaNguoiDung)
+);
+
+
+-- ============================
 --  TABLE: SanBong
 -- ============================
 CREATE TABLE SanBong (
@@ -31,17 +46,26 @@ CREATE TABLE SanBong (
 );
 
 -- ============================
+--  TABLE: CaCoDinh
+-- ============================
+CREATE TABLE CaCoDinh (
+    MaCD INT PRIMARY KEY AUTO_INCREMENT,
+    GioBD TIME,
+    GioKT TIME
+);
+
+-- ============================
 --  TABLE: CaThueSan
 -- ============================
 CREATE TABLE CaThueSan (
     MaCaThue INT PRIMARY KEY AUTO_INCREMENT,
     MaSan INT NOT NULL,
-    GioBD TIME,
-    GioKT TIME,
+    MaCD INT NOT NULL,
     Ngay DATE,
     TrangThai ENUM('dadat','controng') DEFAULT 'controng',
     Gia INT,
-    FOREIGN KEY (MaSan) REFERENCES SanBong(MaSan)
+    FOREIGN KEY (MaSan) REFERENCES SanBong(MaSan),
+    FOREIGN KEY (MaCD) REFERENCES CaCoDinh(MaCD)
 );
 
 -- ============================
@@ -68,13 +92,3 @@ CREATE TABLE HoaDon (
 );
 
 
-/*
-CREATE TABLE password_resets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    otp_code VARCHAR(10) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NOT NULL, -- Thời điểm hết hạn
-    INDEX (email)
-);
-*/
