@@ -28,7 +28,7 @@
             <a href="detail.html">Danh sách sân</a>
             <a href="chinh-sach.html">Chính sách</a>
             <a href="lien-he.html">Liên hệ</a>
-            <a href="../after-login/danh-cho-chu-san.html">Dành cho chủ sân</a>
+            <a href="#" onclick="checkAccess(event, 'danh-cho-chu-san.html')">Dành cho chủ sân</a>
         </nav>
 
         <div class="auth">
@@ -98,6 +98,7 @@
             <span class="close" onclick="closeRegisterModal()">&times;</span>
             <div class="register-form-container">
                 <h2>Đăng ký</h2>
+                <input type="text" id="registerFullName" placeholder="Họ và tên*">
                 <input type="email" placeholder="Email*">
                 <input type="password" placeholder="Nhập mật khẩu*">
                 <input type="password" placeholder="Nhập lại mật khẩu*">

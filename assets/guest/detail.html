@@ -25,7 +25,7 @@
             <a href="detail.html">Danh sách sân</a>
             <a href="chinh-sach.html">Chính sách</a>
             <a href="lien-he.html">Liên hệ</a>
-            <a href="../after-login/danh-cho-chu-san.html">Dành cho chủ sân</a>
+            <a href="#" onclick="checkAccess(event, 'danh-cho-chu-san.html')">Dành cho chủ sân</a>
         </nav>
 
         <div class="auth">
@@ -34,7 +34,6 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT - Chi tiết sân bóng -->
     <main class="detail-container">
         <!-- BỘ LỌC TÌM KIẾM -->
         <div class="filter-container">
@@ -65,13 +64,11 @@
                     </div>
                 </div>
             </div>
-            <div class="booking-section">   
+            <div class="booking-section">
                 <button type="submit">Tìm kiếm</button>
             </div>
 
         </div>
-        <!-- KẾT THÚC BỘ LỌC TÌM KIẾM -->
-
         <!-- PHẦN DANH SÁCH SÂN BÓNG -->
         <section class="related-stadiums-section">
             <h2>Danh sách sân</h2>
@@ -139,7 +136,6 @@
             <span class="close" onclick="closeModal()">&times;</span>
             <div class="login-form-container">
                 <h2>Đăng nhập</h2>
-                <!-- THÊM ID CHO INPUT ĐĂNG NHẬP -->
                 <input type="text" id="loginUsername" placeholder="Tên người dùng/Email">
                 <input type="password" id="loginPassword" placeholder="Mật khẩu">
                 <button type="submit">Đăng nhập</button>
@@ -154,7 +150,7 @@
             <span class="close" onclick="closeRegisterModal()">&times;</span>
             <div class="register-form-container">
                 <h2>Đăng ký</h2>
-                <!-- THÊM ID CHO INPUT ĐĂNG KÝ -->
+                <input type="text" id="registerFullName" placeholder="Họ và tên*">
                 <input type="email" id="registerEmail" placeholder="Email*">
                 <input type="password" id="registerPassword" placeholder="Nhập mật khẩu*">
                 <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu*">
@@ -172,10 +168,8 @@
             <div class="forgot-password-container">
                 <h2>Quên mật khẩu</h2>
                 <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
-                <!-- ID NÀY ĐÃ CÓ TỪ TRƯỚC -->
                 <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
                 <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
-
                 <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
                 <div id="verificationSection" style="display: none;">
                     <input type="text" id="verificationCode" placeholder="Mã xác minh*">

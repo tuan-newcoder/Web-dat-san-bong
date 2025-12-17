@@ -1386,7 +1386,7 @@ a {
 
 .admin-table th:nth-child(2),
 .admin-table td:nth-child(2) {
-    width: 50px;
+    width: 200px;
 }
 
 /* Dropdown Phân cấp */
@@ -1529,12 +1529,10 @@ a {
     color: #444;
 }
 
-/* Hiệu ứng di chuột */
 .booking-history-table tbody tr:hover {
     background-color: #f9f9f9;
 }
 
-/* Nút quay lại trang chủ */
 .back-home-btn {
     display: inline-block;
     margin-top: 20px;
@@ -1670,3 +1668,127 @@ a {
     }
 }
 
+.approval-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.approval-card {
+    background: white;
+    border: 2px solid #000;
+    width: 600px;
+    padding: 30px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.approval-card h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #000;
+}
+
+.card-body {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.pitch-preview-img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.pitch-details {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #000;
+}
+
+.pitch-details p {
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.btn-approval {
+    padding: 12px 35px;
+    border-radius: 30px;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    color: #000;
+}
+
+.btn-approval:hover {
+    transform: scale(1.05);
+}
+
+.btn-accept {
+    background: linear-gradient(to right, #ffcc80, #ffab91);
+    /* Màu cam đào */
+}
+
+.btn-reject {
+    background: linear-gradient(to right, #ffcc80, #ff8a65);
+    /* Màu cam đỏ */
+}
+
+.duyet-san-table th:first-child,
+.duyet-san-table td:first-child {
+    width: 80px;
+    text-align: center;
+}
+
+.duyet-san-table th:nth-child(2),
+.duyet-san-table td:nth-child(2) {
+    width: 380px;
+}
+
+.duyet-san-table th:nth-child(5),
+.duyet-san-table td:nth-child(5) {
+    width: 150px;
+}
+
+.hoverr:hover {
+    background-color: #fbc02d;
+    cursor: pointer;
+}
+
+.quan-ly-nguoi-dung-table th:first-child,
+.quan-ly-nguoi-dung-table td:first-child {
+    width: 60px;
+    text-align: center;
+}
+
+.quan-ly-nguoi-dung-table th:nth-child(2),
+.quan-ly-nguoi-dung-table td:nth-child(2) {
+    width: 70px;
+    text-align: center;
+}
+
+.quan-ly-nguoi-dung-table th:nth-child(3),
+.quan-ly-nguoi-dung-table td:nth-child(3) {
+    width: 180px;
+}
+
+.quan-ly-nguoi-dung-table th:nth-child(4),
+.quan-ly-nguoi-dung-table td:nth-child(4) {
+    width: 200px;
+}

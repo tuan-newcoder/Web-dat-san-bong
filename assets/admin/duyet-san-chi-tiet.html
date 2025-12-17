@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duyệt Sân | Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <div class="admin-sidebar">
+            <h3>Admin Panel</h3>
+            <div class="admin-menu">
+                <a href="admin-dashboard.html">Dashboard</a>
+                <a href="quan-ly-nguoi-dung.html">Quản lý Người dùng</a>
+                <a href="lich-dat.html">Quản lý lịch đặt</a>
+                <a href="duyet-san.html" class="active">Duyệt sân</a>
+                <a href="bao-cao-doanh-thu.html">Báo cáo Doanh thu</a>
+                <a href="#" onclick="handleLogout()">Đăng xuất</a>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <h1>Yêu cầu duyệt sân</h1>
+
+            <div class="approval-container">
+
+                <div class="approval-card">
+                    <h2>Đăng ký cho thuê sân</h2>
+
+                    <div class="card-body">
+                        <img src="/images/sanA.png" alt="Sân bóng" class="pitch-preview-img">
+
+                        <div class="pitch-details">
+                            <p>Tên chủ sân: <strong>Nguyễn Văn A</strong></p>
+                            <p>Tên sân: <strong>Sân bóng Mỹ Đình</strong></p>
+                            <p>Loại sân: <strong>Sân 11 người</strong></p>
+                            <p>Địa chỉ sân: <strong>Nam Từ Liêm, Hà Nội</strong></p>
+                            <p>Giá thuê: <strong>150.000đ/giờ</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button class="btn-approval btn-accept" onclick="approvePitch(1)">Chấp nhận</button>
+                        <button class="btn-approval btn-reject" onclick="rejectPitch(1)">Từ chối</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function approvePitch(id) {
+            alert("Đã chấp nhận duyệt sân #" + id);
+        }
+
+        function rejectPitch(id) {
+            let reason = prompt("Nhập lý do từ chối:");
+            if (reason) {
+                alert("Đã từ chối sân #" + id + " với lý do: " + reason);
+            }
+        }
+    </script>
+    <script scr="/main.js"></script>
+</body>
+
+</html>

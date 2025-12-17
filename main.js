@@ -1,5 +1,6 @@
 /* Cấu hình API URL */
 const API_URL = 'http://localhost:3000/api';
+const token = localStorage.getItem('userToken');
 
 /* === Search box === */
 var input = document.getElementById("searchInput");
@@ -361,8 +362,6 @@ const ownerForm = document.getElementById('ownerForm');
 const closeLogin = document.getElementById('closeLogin');
 const loginBtn = document.getElementById('loginBtn');
 
-const token = localStorage.getItem('userToken');
-
 // Lấy thông tin user nếu đã đăng nhập
 async function fetchUserInfo() {
     try {
@@ -722,9 +721,9 @@ const userData = [
 
 function createUserRowHTML(user) {
     const roles = ['Người dùng', 'Chủ sân', 'Admin'];
-    
+
     // Tạo dropdown phân cấp
-    const roleOptions = roles.map(role => 
+    const roleOptions = roles.map(role =>
         `<option value="${role}" ${user.role === role ? 'selected' : ''}>${role}</option>`
     ).join('');
 
@@ -762,12 +761,12 @@ function handleRoleChange(selectElement, userId) {
 
     // Lưu vai trò cũ trước khi xác nhận
     if (!oldRole) selectElement.setAttribute('data-old-role', userData.find(u => u.user_id === userId).role);
-    
+
     if (confirm(`Xác nhận thay đổi phân cấp của người dùng ID ${userId} thành "${newRole}"?`)) {
         console.log(`Đang gửi yêu cầu cập nhật vai trò: User ID ${userId}, Role: ${newRole}`);
-        
+
         // --- LOGIC GỌI API ĐỂ CẬP NHẬT VAI TRÒ ---
-        
+
         alert(`Đã cập nhật vai trò của người dùng ID ${userId} thành: ${newRole} (Demo thành công)`);
         selectElement.setAttribute('data-old-role', newRole); // Cập nhật vai trò cũ thành mới
 
@@ -781,3 +780,42 @@ function handleRoleChange(selectElement, userId) {
 window.handleRoleChange = handleRoleChange;
 
 document.addEventListener('DOMContentLoaded', loadUserTable);
+
+/* Script check access */
+document.addEventListener("DOMContentLoaded", function () {
+    checkLoginStatus();
+
+    // Lắng nghe sự kiện click nút Đăng nhập trong Modal
+    const loginSubmitBtn = document.querySelector("#loginModal button[type='submit']");
+    if (loginSubmitBtn) {
+        loginSubmitBtn.addEventListener("click", handleLogin);
+    }
+});
+
+// Hàm kiểm tra trạng thái đăng nhập
+function checkLoginStatus() {
+    const token = localStorage.getItem("userToken");
+    const authSection = document.querySelector(".auth");
+
+    if (token && authSection) {
+        // Nếu đã có token, thay đổi nút Đăng nhập/Đăng ký thành thông tin User
+        authSection.innerHTML = `
+            <div class="user-profile">
+                <span>Chào, User!</span>
+                <a href="#" onclick="handleLogout()" style="margin-left: 15px; color: #ff4d4d;">Đăng xuất</a>
+            </div>
+        `;
+    }
+}
+function checkAccess(event, targetUrl) {
+    event.preventDefault(); // Chặn chuyển hướng ngay lập tức
+    const token = localStorage.getItem("userToken");
+
+    if (token) {
+        window.location.href = targetUrl; // Cho phép đi tiếp
+    } else {
+        alert("Bạn cần đăng nhập để truy cập tính năng dành cho chủ sân!");
+        openModal(); // Mở modal đăng nhập cho khách
+    }
+}
+
