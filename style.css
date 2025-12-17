@@ -1384,8 +1384,9 @@ a {
     text-align: center;
 }
 
-.admin-table th:nth-child(2), .admin-table td:nth-child(2) {
-    width: 50px; 
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) {
+    width: 50px;
 }
 
 /* Dropdown Phân cấp */
@@ -1465,11 +1466,207 @@ a {
 
 @keyframes slideIn {
     from {
-    opacity: 0;
-    transform: translateX(50px);
+        opacity: 0;
+        transform: translateX(50px);
     }
+
     to {
-    opacity: 1;
-    transform: translateX(0);
+        opacity: 1;
+        transform: translateX(0);
     }
 }
+
+/* --- PHẦN CSS CHO LỊCH SỬ ĐẶT SÂN --- */
+
+/* Container chính cho trang lịch sử */
+.history-container {
+    width: 95%;
+    max-width: 1200px;
+    padding: 30px 20px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Tiêu đề trang */
+.history-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.history-subtitle {
+    color: #777;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+/* Bảng */
+.booking-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+/* Header của bảng */
+.booking-history-table thead th {
+    background-color: #4CAF50;
+    /* Màu chủ đạo của trang đặt sân */
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+/* Các dòng trong bảng */
+.booking-history-table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+/* Hiệu ứng di chuột */
+.booking-history-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Nút quay lại trang chủ */
+.back-home-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 15px;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 700;
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.back-home-btn:hover {
+    background-color: #e6f7e6;
+}
+
+/* --- Trạng Thái (Badge) --- */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: inline-block;
+}
+
+.status-badge.completed {
+    background-color: #e6ffe6;
+    /* Xanh lá nhạt */
+    color: #388e3c;
+    /* Xanh lá đậm */
+}
+
+.status-badge.upcoming {
+    background-color: #fff8e1;
+    /* Vàng nhạt */
+    color: #fbc02d;
+    /* Vàng đậm */
+}
+
+.status-badge.cancelled {
+    background-color: #ffebee;
+    /* Đỏ nhạt */
+    color: #d32f2f;
+    /* Đỏ đậm */
+    text-decoration: line-through;
+}
+
+/* --- Nút Hành Động --- */
+.action-btn {
+    padding: 8px 12px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.action-btn.view-detail {
+    background-color: #2196F3;
+    color: white;
+}
+
+.action-btn.view-detail:hover {
+    background-color: #1e88e5;
+}
+
+.action-btn.rebook {
+    background-color: #9C27B0;
+    /* Tím */
+    color: white;
+}
+
+.action-btn.rebook:hover {
+    background-color: #8e24aa;
+}
+
+/* --- Thiết kế Responsive cho điện thoại --- */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+        /* Cho phép cuộn ngang bảng trên màn hình nhỏ */
+    }
+
+    .booking-history-table {
+        /* Bảng sẽ hiển thị theo dạng stack trên điện thoại */
+        border: 0;
+    }
+
+    .booking-history-table thead {
+        display: none;
+        /* Ẩn header trên điện thoại */
+    }
+
+    .booking-history-table tr {
+        display: block;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .booking-history-table td {
+        display: block;
+        text-align: right !important;
+        border-bottom: 1px dotted #ccc;
+        position: relative;
+        padding-left: 50%;
+        /* Dành không gian cho label */
+    }
+
+    /* Hiển thị Label (Tên cột) trước dữ liệu */
+    .booking-history-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 700;
+        text-align: left;
+        color: #333;
+    }
+
+    .booking-history-table td:last-child {
+        border-bottom: 0;
+        text-align: center !important;
+        /* Căn giữa nút hành động */
+    }
+
+    .action-btn {
+        margin: 5px;
+    }
+}
+
