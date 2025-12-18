@@ -38,20 +38,16 @@ CREATE TABLE UpRole (
 CREATE TABLE SanBong (
     MaSan INT PRIMARY KEY AUTO_INCREMENT,
     MaNguoiDung INT,
+    QrChuSan MEDIUMBLOB,
     TenSan VARCHAR(100) NOT NULL,
     LoaiSan VARCHAR(50),
     DiaChi VARCHAR(255),
+    CaBD INT,
+    CaKT INT,
+    Phuong VARCHAR(255),
+    Gia INT,
     TrangThai ENUM('hoatdong', 'baotri') DEFAULT 'hoatdong',
 	FOREIGN KEY (MaNguoiDung) REFERENCES User(MaNguoiDung)
-);
-
--- ============================
---  TABLE: CaCoDinh
--- ============================
-CREATE TABLE CaCoDinh (
-    MaCD INT PRIMARY KEY AUTO_INCREMENT,
-    GioBD TIME,
-    GioKT TIME
 );
 
 -- ============================
@@ -60,12 +56,10 @@ CREATE TABLE CaCoDinh (
 CREATE TABLE CaThueSan (
     MaCaThue INT PRIMARY KEY AUTO_INCREMENT,
     MaSan INT NOT NULL,
-    MaCD INT NOT NULL,
+    Ca INT,
     Ngay DATE,
     TrangThai ENUM('dadat','controng') DEFAULT 'controng',
-    Gia INT,
-    FOREIGN KEY (MaSan) REFERENCES SanBong(MaSan),
-    FOREIGN KEY (MaCD) REFERENCES CaCoDinh(MaCD)
+    FOREIGN KEY (MaSan) REFERENCES SanBong(MaSan)
 );
 
 -- ============================
@@ -75,20 +69,11 @@ CREATE TABLE LichDatSan (
     MaDatSan INT PRIMARY KEY AUTO_INCREMENT,
     MaNguoiDung INT NOT NULL,
     MaCaThue INT NOT NULL,
+    TongTien DECIMAL(10,2) NOT NULL,
     TrangThai ENUM('chuaxacnhan','daxacnhan','dahuy') DEFAULT 'chuaxacnhan',
     FOREIGN KEY (MaNguoiDung) REFERENCES User(MaNguoiDung),
     FOREIGN KEY (MaCaThue) REFERENCES CaThueSan(MaCaThue)
 );
 
--- ============================
---  TABLE: HoaDon
--- ============================
-CREATE TABLE HoaDon (
-    MaHoaDon INT PRIMARY KEY AUTO_INCREMENT,
-    MaDatSan INT NOT NULL,
-    TongTien DECIMAL(10,2) NOT NULL,
-    TrangThai ENUM('chuathanhtoan','dathanhtoan') DEFAULT 'chuathanhtoan',
-    FOREIGN KEY (MaDatSan) REFERENCES LichDatSan(MaDatSan)
-);
 
 
