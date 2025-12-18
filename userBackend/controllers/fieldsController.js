@@ -4,15 +4,9 @@ exports.getFields = async (req, res) => {
     const { Address } = req.query;
     try {
         let sql = "SELECT * FROM sanbong WHERE TrangThai = 'hoatdong' ";
-        let params = [];
 
-        if (Address) {
-            sql += "AND DiaChi LIKE ?";
-            params.push(`%${Address}%`);
-        }
-
-        const [fields] = await db.query(sql, params);
-        res.json(fields); 
+        const [fields] = await db.query(sql);
+        res.status(200).json(fields); 
     } catch (err) {
         console.error(err);
         res.status(500).json({message: "Lỗi lấy danh sách sân!"});
