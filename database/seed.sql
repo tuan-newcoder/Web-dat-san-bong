@@ -1,160 +1,149 @@
 -- ============================
 --  DATA GENERATION SCRIPT
---  Database: qlsanbong
 -- ============================
 USE qlsanbong;
 
--- Tắt kiểm tra khóa ngoại để làm sạch dữ liệu cũ (nếu có) và reset ID về 1
+-- Tắt kiểm tra khóa ngoại để tránh lỗi thứ tự insert
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE HoaDon;
+
+-- Xóa dữ liệu cũ (nếu muốn reset sạch sẽ)
 TRUNCATE TABLE LichDatSan;
 TRUNCATE TABLE CaThueSan;
-TRUNCATE TABLE CaCoDinh;
 TRUNCATE TABLE SanBong;
 TRUNCATE TABLE UpRole;
 TRUNCATE TABLE User;
+
+-- ============================
+--  1. INSERT USER
+--  (Pass mặc định là '123456' cho tất cả test user)
+-- ============================
+INSERT INTO User (MaNguoiDung, HoTen, username, password, email, sdt, quyen) VALUES
+-- Admin
+(1, 'Quản Trị Viên', 'admin', '123456', 'admin@qlsanbong.com', '0900000001', 'admin'),
+
+-- Chủ Sân (IDs: 2-5)
+(2, 'Nguyễn Văn A', 'chusan1', '123456', 'nguyenvana@gmail.com', '0912345678', 'chusan'),
+(3, 'Trần Thị B', 'chusan2', '123456', 'tranthib@gmail.com', '0912345679', 'chusan'),
+(4, 'Lê Văn C', 'chusan3', '123456', 'levanc@gmail.com', '0912345680', 'chusan'),
+(5, 'Phạm Hùng D', 'chusan4', '123456', 'phamhungd@gmail.com', '0912345681', 'chusan'),
+
+-- Khách Hàng (IDs: 6-15)
+(6, 'Hoàng Văn Nam', 'namhoang', '123456', 'namhoang@gmail.com', '0987654321', 'khachhang'),
+(7, 'Đỗ Thị Minh', 'minhdo', '123456', 'minhdo@gmail.com', '0987654322', 'khachhang'),
+(8, 'Bùi Tiến Dũng', 'tiendung', '123456', 'dungbui@gmail.com', '0987654323', 'khachhang'),
+(9, 'Nguyễn Quang Hải', 'quanghai', '123456', 'haiquang@gmail.com', '0987654324', 'khachhang'),
+(10, 'Đặng Văn Lâm', 'vanlam', '123456', 'lamdang@gmail.com', '0987654325', 'khachhang'),
+(11, 'Phan Văn Đức', 'vanduc', '123456', 'ducphan@gmail.com', '0987654326', 'khachhang'),
+(12, 'Lương Xuân Trường', 'xuantruong', '123456', 'truongluong@gmail.com', '0987654327', 'khachhang'),
+(13, 'Nguyễn Công Phượng', 'congphuong', '123456', 'phuongnguyen@gmail.com', '0987654328', 'khachhang'),
+(14, 'Đỗ Hùng Dũng', 'hungdung', '123456', 'dunghung@gmail.com', '0987654329', 'khachhang'),
+(15, 'User Muốn Làm Chủ', 'wannabe', '123456', 'wannabe@gmail.com', '0999999999', 'khachhang');
+
+-- ============================
+--  2. INSERT UPROLE
+--  (Yêu cầu nâng cấp quyền)
+-- ============================
+INSERT INTO UpRole (MaNguoiDung, HoTen, Email, SDT, AnhGiayPhep, TrangThai) VALUES
+(15, 'User Muốn Làm Chủ', 'wannabe@gmail.com', '0999999999', NULL, 'dangxuly'),
+(14, 'Đỗ Hùng Dũng', 'dunghung@gmail.com', '0987654329', NULL, 'tuchoi'),
+(2, 'Nguyễn Văn A', 'nguyenvana@gmail.com', '0912345678', NULL, 'chapnhan'); -- Đã được duyệt trước đó
+
+-- ============================
+--  3. INSERT SANBONG
+--  (Các sân bóng thuộc về user 2, 3, 4, 5)
+-- ============================
+INSERT INTO SanBong (MaSan, MaNguoiDung, QrChuSan, TenSan, LoaiSan, DiaChi, CaBD, CaKT, Phuong, Gia, TrangThai) VALUES
+(1, 2, NULL, 'Sân Bóng Bách Khoa', 'Sân 7', 'Số 1 Đại Cồ Việt', 5, 23, 'Bách Khoa', 300000, 'hoatdong'),
+(2, 2, NULL, 'Sân Cỏ Nhân Tạo A1', 'Sân 5', 'Số 1 Đại Cồ Việt', 5, 22, 'Bách Khoa', 200000, 'hoatdong'),
+(3, 3, NULL, 'Sân Bóng Chảo Lửa', 'Sân 7', '30 Phan Đình Giót', 6, 23, 'Phương Liệt', 350000, 'hoatdong'),
+(4, 3, NULL, 'Sân Viettel 1', 'Sân 11', 'Ngõ 155 Trường Chinh', 6, 21, 'Thanh Xuân', 800000, 'baotri'), -- Đang bảo trì
+(5, 4, NULL, 'Sân Thành Phát', 'Sân 5', '2 Hoàng Minh Giám', 5, 23, 'Trung Hòa', 250000, 'hoatdong'),
+(6, 4, NULL, 'Sân Thành Phát 2', 'Sân 5', '2 Hoàng Minh Giám', 5, 23, 'Trung Hòa', 250000, 'hoatdong'),
+(7, 5, NULL, 'Sân Bộ Công An', 'Sân 7', 'Nguyễn Xiển', 5, 22, 'Kim Giang', 400000, 'hoatdong');
+
+-- ============================
+--  4. INSERT CATHUESAN
+--  (Tạo lịch cho 3 ngày: Hôm nay, Ngày mai, Ngày kia)
+--  Mỗi ngày tạo các ca từ 17h - 20h (giờ cao điểm)
+-- ============================
+-- Lấy ngày hiện tại
+SET @today = CURRENT_DATE();
+SET @tomorrow = DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY);
+SET @dayafter = DATE_ADD(CURRENT_DATE(), INTERVAL 2 DAY);
+
+INSERT INTO CaThueSan (MaSan, Ca, Ngay, TrangThai) VALUES
+-- Sân 1 (Bách Khoa - Sân 7)
+(1, 17, @today, 'dadat'),    -- Ca 17h hôm nay đã đặt
+(1, 18, @today, 'controng'),
+(1, 19, @today, 'controng'),
+(1, 20, @today, 'controng'),
+(1, 17, @tomorrow, 'controng'),
+(1, 18, @tomorrow, 'dadat'), -- Ca 18h mai đã đặt
+(1, 19, @tomorrow, 'controng'),
+
+-- Sân 2 (Bách Khoa - Sân 5)
+(2, 17, @today, 'dadat'),
+(2, 18, @today, 'dadat'),
+(2, 19, @today, 'controng'),
+(2, 17, @tomorrow, 'controng'),
+(2, 18, @tomorrow, 'controng'),
+
+-- Sân 3 (Chảo Lửa)
+(3, 18, @today, 'dadat'),
+(3, 19, @today, 'dadat'),
+(3, 20, @today, 'controng'),
+(3, 18, @tomorrow, 'dadat'),
+(3, 19, @tomorrow, 'controng'),
+
+-- Sân 5 (Thành Phát)
+(5, 17, @today, 'controng'),
+(5, 18, @today, 'controng'),
+(5, 17, @tomorrow, 'controng'),
+(5, 18, @tomorrow, 'controng'),
+
+-- Sân 7 (Bộ Công An)
+(7, 19, @dayafter, 'dadat'), -- Đặt trước ngày kia
+(7, 20, @dayafter, 'controng');
+
+-- ============================
+--  5. INSERT LICHDATSAN
+--  (Tương ứng với các ca có trạng thái 'dadat' ở trên)
+-- ============================
+INSERT INTO LichDatSan (MaNguoiDung, MaCaThue, TongTien, TrangThai) VALUES
+-- User 6 đặt Sân 1 hôm nay lúc 17h
+(6, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 1 AND Ca = 17 AND Ngay = @today), 300000, 'daxacnhan'),
+
+-- User 7 đặt Sân 1 mai lúc 18h
+(7, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 1 AND Ca = 18 AND Ngay = @tomorrow), 300000, 'chuaxacnhan'),
+
+-- User 8 đặt Sân 2 hôm nay lúc 17h
+(8, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 2 AND Ca = 17 AND Ngay = @today), 200000, 'dahuy'), -- Đã hủy nhưng ca vẫn tính là đã đặt (logic tùy nghiệp vụ, ở đây giả sử hủy rồi thì update lại CaThueSan sau)
+
+-- User 9 đặt Sân 2 hôm nay lúc 18h
+(9, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 2 AND Ca = 18 AND Ngay = @today), 200000, 'daxacnhan'),
+
+-- User 10 đặt Sân 3 hôm nay lúc 18h
+(10, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 3 AND Ca = 18 AND Ngay = @today), 350000, 'daxacnhan'),
+
+-- User 11 đặt Sân 3 hôm nay lúc 19h
+(11, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 3 AND Ca = 19 AND Ngay = @today), 350000, 'chuaxacnhan'),
+
+-- User 12 đặt Sân 3 mai lúc 18h
+(12, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 3 AND Ca = 18 AND Ngay = @tomorrow), 350000, 'daxacnhan'),
+
+-- User 13 đặt Sân 7 ngày kia lúc 19h
+(13, (SELECT MaCaThue FROM CaThueSan WHERE MaSan = 7 AND Ca = 19 AND Ngay = @dayafter), 400000, 'daxacnhan');
+
+-- Cập nhật lại trạng thái CaThueSan cho đúng logic (Nếu đơn hàng đã hủy thì trả lại slot trống)
+-- Giả sử ID 8 hủy vé, ta update lại slot đó thành 'controng'
+UPDATE CaThueSan 
+SET TrangThai = 'controng' 
+WHERE MaCaThue IN (SELECT MaCaThue FROM LichDatSan WHERE TrangThai = 'dahuy');
+
+-- Bật lại kiểm tra khóa ngoại
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================
---  1. INSERT USER (Mật khẩu mặc định là '123456' cho dễ test)
+--  THÔNG BÁO HOÀN TẤT
 -- ============================
--- Admin (ID: 1)
-INSERT INTO User (HoTen, username, password, email, sdt, quyen) VALUES 
-('Quản Trị Viên', 'admin', '123456', 'admin@qlsanbong.com', '0900000000', 'admin');
-
--- Chủ sân (ID: 2, 3, 4)
-INSERT INTO User (HoTen, username, password, email, sdt, quyen) VALUES 
-('Nguyễn Văn Chủ', 'chusan1', '123456', 'chusan1@gmail.com', '0912345678', 'chusan'),
-('Trần Thị Sân', 'chusan2', '123456', 'chusan2@gmail.com', '0912345679', 'chusan'),
-('Lê Hoàng Long', 'chusan3', '123456', 'chusan3@gmail.com', '0912345680', 'chusan');
-
--- Khách hàng (ID: 5 -> 15)
-INSERT INTO User (HoTen, username, password, email, sdt, quyen) VALUES 
-('Phạm Văn Nam', 'nampham', '123456', 'nampham@email.com', '0987654321', 'khachhang'),
-('Lê Thị Bích', 'bichle', '123456', 'bichle@email.com', '0987654322', 'khachhang'),
-('Hoàng Văn Tuấn', 'tuanhoang', '123456', 'tuanhoang@email.com', '0987654323', 'khachhang'),
-('Đặng Tiểu Bình', 'binhdang', '123456', 'binhdang@email.com', '0987654324', 'khachhang'),
-('Võ Tấn Phát', 'phatvo', '123456', 'phatvo@email.com', '0987654325', 'khachhang'),
-('Ngô Kiến Huy', 'huyngo', '123456', 'huyngo@email.com', '0987654326', 'khachhang'),
-('Trấn Thành', 'tranthanh', '123456', 'tranthanh@email.com', '0987654327', 'khachhang'),
-('Trường Giang', 'truonggiang', '123456', 'truonggiang@email.com', '0987654328', 'khachhang'),
-('Sơn Tùng', 'sontung', '123456', 'sontung@email.com', '0987654329', 'khachhang'),
-('Đen Vâu', 'denvau', '123456', 'denvau@email.com', '0987654330', 'khachhang'),
-('Khách Vãng Lai', 'khachvanglai', '123456', 'guest@email.com', '0987654999', 'khachhang');
-
--- ============================
---  2. INSERT UPROLE (Yêu cầu nâng cấp tài khoản)
--- ============================
-INSERT INTO UpRole (MaNguoiDung, HoTen, Email, SDT, TrangThai) VALUES
-(5, 'Phạm Văn Nam', 'nampham@email.com', '0987654321', 'dangxuly'),
-(6, 'Lê Thị Bích', 'bichle@email.com', '0987654322', 'tuchoi'),
-(10, 'Đen Vâu', 'denvau@email.com', '0987654330', 'chapnhan');
-
--- ============================
---  3. INSERT SANBONG (Sân bóng thuộc về các User ID 2, 3, 4)
--- ============================
-INSERT INTO SanBong (MaNguoiDung, TenSan, LoaiSan, DiaChi, TrangThai) VALUES
--- Sân của chủ sân 1 (ID 2)
-(2, 'Sân Bóng Chuyên Việt', 'Sân 7', '123 Nguyễn Văn Cừ, Q.5, TP.HCM', 'hoatdong'),
-(2, 'Sân Cỏ Nhân Tạo A', 'Sân 5', '123 Nguyễn Văn Cừ, Q.5, TP.HCM', 'hoatdong'),
--- Sân của chủ sân 2 (ID 3)
-(3, 'Sân Vận Động Mini', 'Sân 11', '456 Lê Lợi, Q.1, TP.HCM', 'hoatdong'),
-(3, 'Sân Mini B', 'Sân 5', '456 Lê Lợi, Q.1, TP.HCM', 'baotri'),
--- Sân của chủ sân 3 (ID 4)
-(4, 'Sân Bóng Đại Học X', 'Sân 7', '789 Nguyễn Trãi, Thanh Xuân, Hà Nội', 'hoatdong'),
-(4, 'Sân Tập Luyện Y', 'Sân 5', '789 Nguyễn Trãi, Thanh Xuân, Hà Nội', 'hoatdong');
-
--- ============================
---  4. INSERT CACODINH (Các khung giờ cố định)
--- ============================
-INSERT INTO CaCoDinh (GioBD, GioKT) VALUES
-('06:00:00', '07:30:00'), -- Ca 1: Sáng sớm
-('07:30:00', '09:00:00'), -- Ca 2
-('16:00:00', '17:30:00'), -- Ca 3: Chiều
-('17:30:00', '19:00:00'), -- Ca 4: Giờ vàng 1
-('19:00:00', '20:30:00'), -- Ca 5: Giờ vàng 2
-('20:30:00', '22:00:00'); -- Ca 6: Đêm
-
--- ============================
---  5. INSERT CATHUESAN (Lịch sân cho Hôm nay và Ngày mai)
---  Logic: Tạo lịch cho các sân (ID 1, 2, 3, 5, 6). Sân 4 đang bảo trì nên không tạo.
--- ============================
-
--- --- NGÀY HÔM NAY (CURRENT_DATE) ---
-
--- Sân 1 (Sân 7 người - Giá cao)
-INSERT INTO CaThueSan (MaSan, MaCD, Ngay, TrangThai, Gia) VALUES
-(1, 1, CURRENT_DATE(), 'controng', 300000),
-(1, 3, CURRENT_DATE(), 'controng', 400000),
-(1, 4, CURRENT_DATE(), 'dadat', 600000),    -- Đã đặt
-(1, 5, CURRENT_DATE(), 'dadat', 600000),    -- Đã đặt
-(1, 6, CURRENT_DATE(), 'controng', 500000);
-
--- Sân 2 (Sân 5 người - Giá thấp hơn)
-INSERT INTO CaThueSan (MaSan, MaCD, Ngay, TrangThai, Gia) VALUES
-(2, 3, CURRENT_DATE(), 'controng', 200000),
-(2, 4, CURRENT_DATE(), 'dadat', 350000),    -- Đã đặt
-(2, 5, CURRENT_DATE(), 'controng', 350000);
-
--- Sân 3 (Sân 11 người - Giá rất cao)
-INSERT INTO CaThueSan (MaSan, MaCD, Ngay, TrangThai, Gia) VALUES
-(3, 3, CURRENT_DATE(), 'controng', 800000),
-(3, 4, CURRENT_DATE(), 'controng', 1000000);
-
--- Sân 5 (Hà Nội)
-INSERT INTO CaThueSan (MaSan, MaCD, Ngay, TrangThai, Gia) VALUES
-(5, 4, CURRENT_DATE(), 'dadat', 500000),    -- Đã đặt
-(5, 5, CURRENT_DATE(), 'dadat', 500000);    -- Đã đặt
-
--- --- NGÀY MAI (DATE_ADD 1 DAY) ---
-
--- Sân 1
-INSERT INTO CaThueSan (MaSan, MaCD, Ngay, TrangThai, Gia) VALUES
-(1, 4, DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY), 'dadat', 600000), -- Đã đặt trước
-(1, 5, DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY), 'controng', 600000);
-
--- Sân 2
-INSERT INTO CaThueSan (MaSan, MaCD, Ngay, TrangThai, Gia) VALUES
-(2, 4, DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY), 'controng', 350000),
-(2, 5, DATE_ADD(CURRENT_DATE(), INTERVAL 1 DAY), 'controng', 350000);
-
--- ============================
---  6. INSERT LICHDATSAN (Tạo booking cho các slot 'dadat' ở trên)
---  Lưu ý: Các ID của CaThueSan sẽ tự tăng từ 1. 
---  Dựa vào thứ tự insert ở trên:
---  ID 3 (Sân 1, Ca 4, Hôm nay): Đã đặt
---  ID 4 (Sân 1, Ca 5, Hôm nay): Đã đặt
---  ID 7 (Sân 2, Ca 4, Hôm nay): Đã đặt
---  ID 11 (Sân 5, Ca 4, Hôm nay): Đã đặt
---  ID 12 (Sân 5, Ca 5, Hôm nay): Đã đặt
---  ID 13 (Sân 1, Ca 4, Ngày mai): Đã đặt
--- ============================
-
-INSERT INTO LichDatSan (MaNguoiDung, MaCaThue, TrangThai) VALUES
--- Booking thành công và đã thanh toán
-(5, 3, 'daxacnhan'),  -- User 5 đặt Sân 1
-(6, 4, 'daxacnhan'),  -- User 6 đặt Sân 1
-(7, 7, 'daxacnhan'),  -- User 7 đặt Sân 2
-
--- Booking chưa xác nhận (Mới đặt)
-(8, 11, 'chuaxacnhan'), -- User 8 đặt Sân 5
-
--- Booking đã hủy (Ví dụ lịch sử cũ hoặc hủy phút chót)
-(9, 12, 'dahuy'),       -- User 9 đặt Sân 5 nhưng hủy
-
--- Booking cho ngày mai
-(5, 13, 'daxacnhan');   -- User 5 đặt tiếp ngày mai
-
--- ============================
---  7. INSERT HOADON (Chỉ tạo cho các LichDatSan có trạng thái 'daxacnhan')
---  Map ID LichDatSan với giá tiền tương ứng trong CaThueSan
--- ============================
-
-INSERT INTO HoaDon (MaDatSan, TongTien, TrangThai) VALUES
-(1, 600000, 'dathanhtoan'),  -- Hóa đơn cho booking ID 1 (Sân 1, 600k)
-(2, 600000, 'chuathanhtoan'),-- Hóa đơn cho booking ID 2 (Sân 1, 600k) - Mới cọc
-(3, 350000, 'dathanhtoan'),  -- Hóa đơn cho booking ID 3 (Sân 2, 350k)
-(6, 600000, 'chuathanhtoan');-- Hóa đơn cho booking ID 6 (Sân 1 ngày mai)
-
--- Kết thúc script
-SELECT 'Data generated successfully!' AS Status;
+SELECT 'Database generated successfully with sample data!' AS Status;
