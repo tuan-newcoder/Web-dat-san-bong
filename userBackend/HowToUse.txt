@@ -7,6 +7,7 @@
     - Chuyển vào thư mục userBackend: cd userBackend
     - Chạy server: node Server.js
     - Mở New Request của Thunder Client
+
     - Method: POST
     - URL API: http://localhost:3000/api/auth/register
     - body json: 
@@ -16,4 +17,27 @@
             "password": "password123",
             "email": "nguyenvana@gmail.com",
             "sdt": "0987654321"
+        }
+
+    - Method: PUT
+    - URL API: http://localhost:3000/api/users/2
+    - body json: 
+        {
+            "HoTen": "Trịnh Minh Tuấn",
+            "email": "tmt0512@gmail.com",
+            "sdt": "0987361232"
+        }
+    
+    - Method: GET
+    - URL API: http://localhost:3000/api/fields
+    - body json: 
+        {
+            
+        }
+    
+    - Method: GET
+    - URL API: http://localhost:3000/api/fields/2
+    - body json: 
+        {
+            
         }

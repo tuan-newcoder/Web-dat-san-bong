@@ -10,6 +10,7 @@ const PORT = 3000;
 const authRoutes = require('./routes/authRoutes');
 const fieldsRoutes = require('./routes/fieldsRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const usersRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/fields', fieldsRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/users', usersRoutes);
 
 // ==========================================
 // QUAN TRỌNG: LỆNH NÀY GIỮ SERVER KHÔNG BỊ "CLEAN EXIT"

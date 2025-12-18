@@ -1,6 +1,6 @@
 const db = require('../db'); 
 
-exports.updateUserProfile = async (req, res) => {
+exports.putUserProfile = async (req, res) => {
     const { id } = req.params; 
 
     const { HoTen, email, sdt } = req.body;
@@ -24,10 +24,10 @@ exports.updateUserProfile = async (req, res) => {
         res.status(200).json({
             message: "Cập nhật thông tin thành công!",
             updatedInfo: {
-                id: id,
-                HoTen: HoTen,
-                email: email,
-                sdt: sdt
+                id,
+                HoTen,
+                email,
+                sdt
             }
         });
 
