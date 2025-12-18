@@ -94,7 +94,7 @@ async function handleLogin(username, password) {
         localStorage.setItem('userToken', data.token);
         closeModal();
         // Chuyển hướng tới trang sau đăng nhập
-        window.location.href = 'after-login.html';
+        window.location.href = '/assets/after-login/after-login.html';
 
     } catch (error) {
         alert(error.message);
