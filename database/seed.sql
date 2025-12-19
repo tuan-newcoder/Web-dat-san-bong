@@ -53,13 +53,13 @@ INSERT INTO UpRole (MaNguoiDung, HoTen, Email, SDT, AnhGiayPhep, TrangThai) VALU
 --  (Các sân bóng thuộc về user 2, 3, 4, 5)
 -- ============================
 INSERT INTO SanBong (MaSan, MaNguoiDung, QrChuSan, TenSan, LoaiSan, DiaChi, CaBD, CaKT, Phuong, Gia, TrangThai) VALUES
-(1, 2, NULL, 'Sân Bóng Bách Khoa', 'Sân 7', 'Số 1 Đại Cồ Việt', 5, 23, 'Bách Khoa', 300000, 'hoatdong'),
-(2, 2, NULL, 'Sân Cỏ Nhân Tạo A1', 'Sân 5', 'Số 1 Đại Cồ Việt', 5, 22, 'Bách Khoa', 200000, 'hoatdong'),
-(3, 3, NULL, 'Sân Bóng Chảo Lửa', 'Sân 7', '30 Phan Đình Giót', 6, 23, 'Phương Liệt', 350000, 'hoatdong'),
-(4, 3, NULL, 'Sân Viettel 1', 'Sân 11', 'Ngõ 155 Trường Chinh', 6, 21, 'Thanh Xuân', 800000, 'baotri'), -- Đang bảo trì
-(5, 4, NULL, 'Sân Thành Phát', 'Sân 5', '2 Hoàng Minh Giám', 5, 23, 'Trung Hòa', 250000, 'hoatdong'),
-(6, 4, NULL, 'Sân Thành Phát 2', 'Sân 5', '2 Hoàng Minh Giám', 5, 23, 'Trung Hòa', 250000, 'hoatdong'),
-(7, 5, NULL, 'Sân Bộ Công An', 'Sân 7', 'Nguyễn Xiển', 5, 22, 'Kim Giang', 400000, 'hoatdong');
+(1, 2, NULL, 'Sân Bóng Bách Khoa', 'Sân 7', 'Số 1 Đại Cồ Việt', 'Bách Khoa', 300000, 'hoatdong'),
+(2, 2, NULL, 'Sân Cỏ Nhân Tạo A1', 'Sân 5', 'Số 1 Đại Cồ Việt', 'Bách Khoa', 200000, 'hoatdong'),
+(3, 3, NULL, 'Sân Bóng Chảo Lửa', 'Sân 7', '30 Phan Đình Giót', 'Phương Liệt', 350000, 'hoatdong'),
+(4, 3, NULL, 'Sân Viettel 1', 'Sân 11', 'Ngõ 155 Trường Chinh', 'Thanh Xuân', 800000, 'baotri'), -- Đang bảo trì
+(5, 4, NULL, 'Sân Thành Phát', 'Sân 5', '2 Hoàng Minh Giám', 'Trung Hòa', 250000, 'hoatdong'),
+(6, 4, NULL, 'Sân Thành Phát 2', 'Sân 5', '2 Hoàng Minh Giám', 'Trung Hòa', 250000, 'hoatdong'),
+(7, 5, NULL, 'Sân Bộ Công An', 'Sân 7', 'Nguyễn Xiển', 'Kim Giang', 400000, 'hoatdong');
 
 -- ============================
 --  4. INSERT CATHUESAN
