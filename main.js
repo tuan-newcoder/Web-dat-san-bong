@@ -795,3 +795,39 @@ function checkAccess(event, targetUrl) {
     }
 }
 
+async function fetchBookings() {
+    const tableBody = document.getElementById('bookingTableBody');
+    if (!tableBody) return;
+
+    const status = document.getElementById('statusFilter')?.value || 'all';
+    
+    try {
+        const response = await apiRequest(`${API_URL}/lichdatsan/owner?status=${status}`, {
+            method: 'GET'
+        });
+
+        tableBody.innerHTML = response.map(order => `
+            <tr>
+                <td>#${order.id}</td>
+                <td><strong>${order.customerName}</strong><br><small>${order.phone}</small></td>
+                <td>${order.pitchName}</td>
+                <td>${order.date}<br><small>${order.startTime} - ${order.endTime}</small></td>
+                <td>${formatCurrency(order.totalPrice)}</td>
+                <td><span class="status-badge ${getStatusClass(order.status)}">${getStatusText(order.status)}</span></td>
+                <td>
+                    ${order.status === 'pending' ? `
+                        <button class="action-button btn-success" onclick="updateBookingStatus(${order.id}, 'confirmed')">Duyệt</button>
+                        <button class="action-button btn-danger" onclick="updateBookingStatus(${order.id}, 'cancelled')">Từ chối</button>
+                    ` : `<button class="action-button btn-info" onclick="viewDetail(${order.id})">Chi tiết</button>`}
+                </td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Không có dữ liệu đơn đặt.</td></tr>`;
+    }
+}
+
+// Đăng ký tự động chạy khi vào trang
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('bookingTableBody')) fetchBookings();
+});

@@ -15,7 +15,6 @@
         <canvas id="revenueChart"></canvas>
     </div>
     <script>
-    // Hàm mới để lấy dữ liệu từ API server của bạn
     async function fetchRevenueData() {
         try {
             const response = await fetch('http://localhost:3000/api/bookings/revenue-last-7-days');
@@ -39,10 +38,8 @@
         const dates = apiData.map(item => item.date);
         const revenues = apiData.map(item => item.revenue);
 
-        // Lấy thẻ canvas từ HTML
         const ctx = document.getElementById('revenueChart').getContext('2d');
 
-        // Khởi tạo biểu đồ với dữ liệu thực tế
         new Chart(ctx, {
             type: 'line', 
             data: {
@@ -56,7 +53,6 @@
                 }]
             },
             options: {
-                // ... (Các tùy chọn khác giữ nguyên như code gốc)
                 plugins: {
                     title: {
                         display: true,

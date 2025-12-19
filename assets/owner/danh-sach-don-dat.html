@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin tài khoản</title>
-    <link rel="stylesheet" href="../../style.css">
+    <title>Danh sách đơn đặt | Chủ sân</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="fonts.googleapis.com" rel="stylesheet">
-    <script src="../../main.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/main.js" defer></script>
 </head>
 
 <body>
-    <!-- Navbar -->
+
+        <!-- NAVBAR -->
     <header class="navbar">
         <a href="chu-san.html" class="logo-link">
             <div class="logo">
@@ -29,6 +30,7 @@
             <a href="lien-he-login.html">Liên hệ</a>
         </nav>
 
+        <!-- PHẦN USER PROFILE & DROPDOWN -->
         <div class="user-profile-container">
             <div class="dropdown">
                 <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
@@ -71,39 +73,41 @@
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="profile-container">
-                <h3>Thông tin tài khoản</h3>
 
-                <div class="profile-group">
-                    <label for="profileUsername">Tên người dùng:</label>
-                    <input type="text" id="profileUsername" value="" readonly>
-                </div>
-
-                <div class="profile-group">
-                    <label for="profileFullName">Họ và tên:</label>
-                    <input type="text" id="profileFullName" value="" readonly>
-                </div>
-
-                <div class="profile-group">
-                    <label for="profileEmail">Email:</label>
-                    <input type="text" id="profileEmail" value="" readonly>
-                </div>
-
-                <div class="profile-group">
-                    <label for="profilePhone">Số điện thoại:</label>
-                    <input type="text" id="profilePhone" value="" readonly>
-                </div>
-
-                <button onclick="window.location.href='change-password.html'">Đổi mật khẩu</button>
+    <div class="admin-content" style="margin-left: 0; padding: 40px 10%;">
+        <div class="manage-header">
+            <h1>Quản lý đơn đặt sân</h1>
+            <div class="filter-group">
+                <select id="statusFilter" class="role-select" onchange="fetchBookings()">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="pending">Chờ xác nhận</option>
+                    <option value="confirmed">Đã xác nhận</option>
+                    <option value="cancelled">Đã hủy</option>
+                </select>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <section class="footer-info">
+        <div class="data-section">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Sân</th>
+                        <th>Ngày & Giờ</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FOOTER INFO SECTION -->
+    <section class="footer-info" style="display: flex; position: fixed;">
         <div class="info-container">
             <div class="info-box">
                 <h3>Thông tin</h3>
@@ -115,6 +119,7 @@
 
             <div class="info-box">
                 <h3>Liên hệ</h3>
+
                 <p>📧 Email: contact@datsanbk.com</p>
                 <p>📞 Điện thoại: 0363 636 363</p>
                 <p>📘 Fanpage: Đặt sân Bách Khoa</p>
