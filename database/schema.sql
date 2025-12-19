@@ -42,8 +42,6 @@ CREATE TABLE SanBong (
     TenSan VARCHAR(100) NOT NULL,
     LoaiSan VARCHAR(50),
     DiaChi VARCHAR(255),
-    CaBD INT,
-    CaKT INT,
     Phuong VARCHAR(255),
     Gia INT,
     TrangThai ENUM('hoatdong', 'baotri') DEFAULT 'hoatdong',
