@@ -1,51 +1,108 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký Chủ Sân</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="fonts.googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="../../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
     <script src="/main.js" defer></script>
 </head>
+
 <body>
 
-<!-- FORM ĐĂNG KÝ CHỦ SÂN -->
-<div class="form-container">
-    <h2>Đăng ký Chủ Sân</h2>
-    <form id="ownerForm">
-        <div class="form-group">
-            <label for="fullName">Họ và tên:<span style="color: red;">*</span></label>
-            <input type="text" id="fullName" name="fullName" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:<span style="color: red;">*</span></label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="phone">Số điện thoại:<span style="color: red;">*</span></label>
-            <input type="tel" id="phone" name="phone" required>
-        </div>
-        <div class="form-group">
-            <label for="businessCert">Ảnh chứng nhận Kinh doanh hoạt động thể thao:<span style="color: red;">*</span></label>
-            <input type="file" id="businessCert" name="businessCert" accept="image/*" required>
-        </div>
-        <button type="submit">Gửi đăng ký</button>
-    </form>
-</div>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="after-login.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
 
-<!-- Modal đăng nhập-->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeLogin">&times;</span>
-        <h2>Đăng nhập</h2>
-        <input type="text" id="loginUsername" placeholder="Tên đăng nhập">
-        <input type="password" id="loginPassword" placeholder="Mật khẩu">
-        <button id="loginBtn">Đăng nhập</button>
-    </div>
-</div>
+        <nav>
+            <a href="after-login.html">Trang chủ</a>
+            <a href="detail-login.html">Danh sách sân</a>
+            <a href="chinh-sach-login.html">Chính sách</a>
+            <a href="lien-he-login.html">Liên hệ</a>
+        </nav>
+
+        <!-- PHẦN USER PROFILE & DROPDOWN -->
+        <div class="user-profile-container">
+            <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
+
+            <div class="dropdown">
+                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
+                <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="profile.html">Hồ sơ</a>
+                    <a href="notification.html">Thông báo</a>
+                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <!-- FORM ĐĂNG KÝ CHỦ SÂN -->
+            <div class="form-container">
+                <h2 style="margin-top: 10px">Đăng ký Chủ Sân</h2>
+                <form id="ownerForm">
+                    <div class="form-group">
+                        <label for="fullName">Họ và tên:<span style="color: red;">*</span></label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:<span style="color: red;">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:<span style="color: red;">*</span></label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="businessCert">Ảnh chứng nhận Kinh doanh:<span style="color: red;">*</span></label>
+                        <input type="file" id="businessCert" name="businessCert" accept="image/*" required>
+
+                        <div id="file-name-display"></div>
+                    </div>
+                    <button type="submit">Gửi đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-info">
+        <div class="info-container">
+
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+
+        </div>
+    </footer>
+
 
 </body>
+
 </html>

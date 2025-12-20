@@ -358,8 +358,11 @@ const demoBookings = [
 
 // Hiển thị doanh thu
 const revenueValue = calculateRevenue(demoBookings);
-document.getElementById('revenue').innerText =
-    revenueValue.toLocaleString('vi-VN') + " VNĐ";
+const revenueElement = document.getElementById('revenue');
+if (revenueElement) {
+    const revenueValue = calculateRevenue(demoBookings);
+    revenueElement.innerText = revenueValue.toLocaleString('vi-VN') + " VNĐ";
+}
 
 function savePitchInfo() {
     const data = {
@@ -395,29 +398,41 @@ async function fetchUserInfo() {
 }
 
 // Modal login
-closeLogin.onclick = () => loginModal.style.display = 'none';
+if (closeLogin) {
+    closeLogin.onclick = () => {
+        if (loginModal) loginModal.style.display = 'none';
+    };
+}
 window.onclick = (event) => { if (event.target == loginModal) loginModal.style.display = 'none'; };
 
 // Login
-loginBtn.onclick = async () => {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    if (!username || !password) return alert('Vui lòng nhập đầy đủ');
+if (loginBtn) {
+    loginBtn.onclick = async () => {
+        const usernameInput = document.getElementById('loginUsername');
+        const passwordInput = document.getElementById('loginPassword');
+        
+        if (!usernameInput || !passwordInput) return;
 
-    try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        if (!res.ok) throw new Error('Đăng nhập thất bại');
-        const data = await res.json();
-        localStorage.setItem('userToken', data.token);
-        loginModal.style.display = 'none';
-        await fetchUserInfo();
-    } catch (err) {
-        alert(err.message);
-    }
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+        
+        if (!username || !password) return alert('Vui lòng nhập đầy đủ');
+
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            if (!res.ok) throw new Error('Đăng nhập thất bại');
+            const data = await res.json();
+            localStorage.setItem('userToken', data.token);
+            if (loginModal) loginModal.style.display = 'none';
+            await fetchUserInfo();
+        } catch (err) {
+            alert(err.message);
+        }
+    };
 }
 
 // Nếu đã có token thì lấy thông tin ngay
@@ -599,68 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* Script cho hoá đơn */
-
-function formatCurrency(number) {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-        minimumFractionDigits: 0
-    }).format(number);
-}
-
-/**
- * Hàm tính toán lại tổng tiền khi số lượng thay đổi
- */
-function calculateTotal() {
-    const serviceFeeRate = 0.05; // 5% phí dịch vụ
-    let runningSubtotal = 0;
-
-    // 1. Tính tổng tiền dịch vụ
-    const serviceRow = document.querySelector('tr[data-service-id="1"]');
-    if (serviceRow) {
-        const basePrice = parseInt(serviceRow.getAttribute('data-base-price')); // 100000
-        const quantity = parseInt(serviceRow.querySelector('.quantity-input').value);
-
-        const lineTotal = basePrice * quantity;
-        runningSubtotal = lineTotal;
-
-        // Cập nhật trường Thành tiền
-        serviceRow.querySelector('.subtotal-amount').textContent = formatCurrency(lineTotal);
-        serviceRow.querySelector('.price').textContent = formatCurrency(basePrice); // Cập nhật lại đơn giá
-    }
-
-    // 2. Tính Phí dịch vụ
-    const serviceFee = runningSubtotal * serviceFeeRate;
-    document.getElementById('service-fee-amount').textContent = formatCurrency(serviceFee);
-
-    // 3. Tính Tổng cộng
-    const grandTotal = runningSubtotal + serviceFee;
-    document.getElementById('grand-total').textContent = formatCurrency(grandTotal);
-}
-
-function handlePayment() {
-    const grandTotalElement = document.getElementById('grand-total');
-    const grandTotalText = grandTotalElement ? grandTotalElement.textContent : '0₫';
-
-    alert(`Xác nhận thanh toán thành công số tiền ${grandTotalText}!`);
-    console.log("Tiến hành chuyển hướng đến cổng thanh toán...");
-
-    // Thêm logic chuyển hướng đến cổng thanh toán hoặc xử lý backend tại đây.
-}
-
-// Gắn sự kiện lắng nghe vào input số lượng để tính toán
-document.addEventListener('DOMContentLoaded', () => {
-    const quantityInput = document.querySelector('.quantity-input');
-
-    if (quantityInput) {
-        quantityInput.addEventListener('change', calculateTotal);
-        quantityInput.addEventListener('keyup', calculateTotal);
-    }
-
-    calculateTotal();
-});
-
 /* Script cho thu hồi sân */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -780,8 +733,6 @@ function handleRoleChange(selectElement, userId) {
     if (confirm(`Xác nhận thay đổi phân cấp của người dùng ID ${userId} thành "${newRole}"?`)) {
         console.log(`Đang gửi yêu cầu cập nhật vai trò: User ID ${userId}, Role: ${newRole}`);
 
-        // --- LOGIC GỌI API ĐỂ CẬP NHẬT VAI TRÒ ---
-
         alert(`Đã cập nhật vai trò của người dùng ID ${userId} thành: ${newRole} (Demo thành công)`);
         selectElement.setAttribute('data-old-role', newRole); // Cập nhật vai trò cũ thành mới
 
@@ -870,3 +821,24 @@ async function fetchBookings() {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('bookingTableBody')) fetchBookings();
 });
+
+/* === XỬ LÝ HIỂN THỊ TÊN FILE CHỨNG NHẬN === */
+function initFileDisplay() {
+    const fileInput = document.getElementById('businessCert');
+    const fileNameDisplay = document.getElementById('file-name-display');
+
+    if (fileInput && fileNameDisplay) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = this.files[0].name;
+                fileNameDisplay.style.color = "#13120e";
+                console.log("Đã cập nhật tên file: ", this.files[0].name);
+            } else {
+                fileNameDisplay.textContent = "";
+            }
+        });
+    }
+}
+
+// Đảm bảo hàm này được gọi
+document.addEventListener('DOMContentLoaded', initFileDisplay);
