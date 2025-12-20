@@ -1792,3 +1792,91 @@ a {
 .quan-ly-nguoi-dung-table td:nth-child(4) {
     width: 200px;
 }
+
+/* --- Tối ưu giao diện Quên mật khẩu --- */
+
+.input-with-button {
+    display: flex;
+    gap: 8px; /* Khoảng cách giữa ô input và nút */
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+/* Ô input Email trong hàng ngang */
+.input-with-button input {
+    flex: 1; /* Để ô input chiếm hết không gian còn lại */
+    margin: 0 !important; /* Ghi đè margin cũ */
+    padding: 12px 15px !important;
+    border: 2px solid #eee;
+    border-radius: 40px;
+    font-size: 14px;
+}
+
+/* Nút Gửi mã nhỏ gọn bên phải */
+#sendCodeBtn {
+    width: auto !important; /* Không cho chiếm 100% */
+    padding: 10px 20px;
+    margin: 0;
+    background-color: #8c52ff; /* Màu tím đồng bộ */
+    color: white;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap; /* Không cho chữ xuống dòng */
+    transition: background 0.3s;
+}
+
+#sendCodeBtn:hover {
+    background-color: #7a46e0;
+}
+
+#sendCodeBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Kiểu dáng cho các ô nhập mật khẩu và mã code bên dưới */
+#verificationSection input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 2px solid #eee;
+    border-radius: 40px;
+    outline: none;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+#verificationSection input:focus {
+    border-color: #8c52ff;
+}
+
+/* Nút xác nhận cuối cùng */
+.submit-btn {
+    background-color: #8c52ff;
+    color: white;
+    padding: 14px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.submit-btn:hover {
+    background-color: #7a46e0;
+}
+
+/* Hiệu ứng mờ dần khi hiện Section */
+#verificationSection {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

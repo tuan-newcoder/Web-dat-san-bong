@@ -155,37 +155,76 @@ async function sendVerificationCode() {
     const sendVerificationUrl = `${API_URL}/auth/send-verification`;
     const email = document.getElementById('forgotEmail').value;
 
-    if (!email) { alert("Vui lòng nhập email."); return; }
+    if (!email) { 
+        alert("Vui lòng nhập email."); 
+        return; 
+    }
+
     try {
+        const btn = document.getElementById('sendCodeBtn');
+        btn.innerText = "Đang gửi...";
+        btn.disabled = true;
+
         await apiRequest(sendVerificationUrl, {
-            method: 'POST', body: JSON.stringify({ email }), headers: { 'Content-Type': 'application/json', },
+            method: 'POST', 
+            body: JSON.stringify({ email }), 
+            headers: { 'Content-Type': 'application/json' },
         });
+
         alert("Mã xác minh đã được gửi đến email của bạn.");
+        
+        // Hiện phần nhập mật khẩu mới và mã code
         const verificationSection = document.getElementById('verificationSection');
         if (verificationSection) verificationSection.style.display = 'block';
-    } catch (error) { alert(error.message); }
+        
+        btn.innerText = "Gửi lại mã";
+        btn.disabled = false;
+    } catch (error) { 
+        alert(error.message); 
+        document.getElementById('sendCodeBtn').disabled = false;
+    }
 }
-
 // 4. Xử lý Quên mật khẩu (Xác nhận mã và đổi mật khẩu) (Đã có BE)
 async function verifyCode() {
     const verifyUrl = `${API_URL}/auth/reset-password`;
     const email = document.getElementById('forgotEmail').value;
     const code = document.getElementById('verificationCode').value;
+    const newPassword = document.getElementById('newPassword').value;
 
-    if (!email || !code) { alert("Vui lòng điền đầy đủ thông tin."); return; }
+    // Kiểm tra tính hợp lệ cơ bản
+    if (!email || !code || !newPassword) { 
+        alert("Vui lòng điền đầy đủ Email, Mật khẩu mới và Mã xác minh."); 
+        return; 
+    }
+
+    if (newPassword.length < 6) {
+        alert("Mật khẩu mới phải có ít nhất 6 ký tự.");
+        return;
+    }
 
     try {
         await apiRequest(verifyUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', },
-            body: JSON.stringify({ email, code }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email: email, 
+                code: code, 
+                password: newPassword // Gửi mật khẩu mới lên backend
+            }),
         });
-        alert("Mã xác minh chính xác! Mật khẩu đã được đặt lại.");
-        closeForgotPasswordModal();
-        openModal();
-    } catch (error) { alert(error.message); }
-}
 
+        alert("Mật khẩu đã được đặt lại thành công! Vui lòng đăng nhập lại.");
+        
+        // Reset form và đóng modal
+        document.getElementById('newPassword').value = '';
+        document.getElementById('verificationCode').value = '';
+        closeForgotPasswordModal();
+        openModal(); // Mở lại modal đăng nhập
+        
+    } catch (error) { 
+        alert("Lỗi: " + error.message); 
+    }
+}
 // Hàm đăng xuất 
 function handleLogout() {
     alert("Đăng xuất thành công!");

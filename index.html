@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="main.js" defer></script> 
+    <script src="main.js" defer></script>
 </head>
 
 <body>
@@ -70,7 +70,7 @@
 
         </div>
     </footer>
-    
+
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
@@ -108,15 +108,17 @@
             <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
             <div class="forgot-password-container">
                 <h2>Quên mật khẩu</h2>
-                <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
+                <p>Nhập email để nhận mã xác minh.</p>
 
-                <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
-                <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
+                <div class="input-with-button">
+                    <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
+                    <button id="sendCodeBtn" onclick="sendVerificationCode()">Gửi mã</button>
+                </div>
 
-                <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
                 <div id="verificationSection" style="display: none;">
+                    <input type="password" id="newPassword" placeholder="Mật khẩu mới*">
                     <input type="text" id="verificationCode" placeholder="Mã xác minh*">
-                    <button onclick="verifyCode()">Xác nhận</button>
+                    <button class="submit-btn" onclick="verifyCode()">Xác nhận đổi mật khẩu</button>
                 </div>
             </div>
         </div>
