@@ -52,7 +52,7 @@ INSERT INTO UpRole (MaNguoiDung, HoTen, Email, SDT, AnhGiayPhep, TrangThai) VALU
 --  3. INSERT SANBONG
 --  (Các sân bóng thuộc về user 2, 3, 4, 5)
 -- ============================
-INSERT INTO SanBong (MaSan, MaNguoiDung, QrChuSan, TenSan, LoaiSan, DiaChi, CaBD, CaKT, Phuong, Gia, TrangThai) VALUES
+INSERT INTO SanBong (MaSan, MaNguoiDung, QrChuSan, TenSan, LoaiSan, DiaChi, Phuong, Gia, TrangThai) VALUES
 (1, 2, NULL, 'Sân Bóng Bách Khoa', 'Sân 7', 'Số 1 Đại Cồ Việt', 'Bách Khoa', 300000, 'hoatdong'),
 (2, 2, NULL, 'Sân Cỏ Nhân Tạo A1', 'Sân 5', 'Số 1 Đại Cồ Việt', 'Bách Khoa', 200000, 'hoatdong'),
 (3, 3, NULL, 'Sân Bóng Chảo Lửa', 'Sân 7', '30 Phan Đình Giót', 'Phương Liệt', 350000, 'hoatdong'),
@@ -73,37 +73,37 @@ SET @dayafter = DATE_ADD(CURRENT_DATE(), INTERVAL 2 DAY);
 
 INSERT INTO CaThueSan (MaSan, Ca, Ngay, TrangThai) VALUES
 -- Sân 1 (Bách Khoa - Sân 7)
-(1, 17, @today, 'dadat'),    -- Ca 17h hôm nay đã đặt
-(1, 18, @today, 'controng'),
-(1, 19, @today, 'controng'),
-(1, 20, @today, 'controng'),
-(1, 17, @tomorrow, 'controng'),
-(1, 18, @tomorrow, 'dadat'), -- Ca 18h mai đã đặt
-(1, 19, @tomorrow, 'controng'),
+(1, 1, @today, 'dadat'),    -- Ca 17h hôm nay đã đặt
+(1, 2, @today, 'controng'),
+(1, 3, @today, 'controng'),
+(1, 4, @today, 'controng'),
+(1, 1, @tomorrow, 'controng'),
+(1, 2, @tomorrow, 'dadat'), -- Ca 18h mai đã đặt
+(1, 3, @tomorrow, 'controng'),
 
 -- Sân 2 (Bách Khoa - Sân 5)
-(2, 17, @today, 'dadat'),
-(2, 18, @today, 'dadat'),
-(2, 19, @today, 'controng'),
-(2, 17, @tomorrow, 'controng'),
-(2, 18, @tomorrow, 'controng'),
+(2, 6, @today, 'dadat'),
+(2, 7, @today, 'dadat'),
+(2, 8, @today, 'controng'),
+(2, 9, @tomorrow, 'controng'),
+(2, 10, @tomorrow, 'controng'),
 
 -- Sân 3 (Chảo Lửa)
-(3, 18, @today, 'dadat'),
-(3, 19, @today, 'dadat'),
-(3, 20, @today, 'controng'),
-(3, 18, @tomorrow, 'dadat'),
-(3, 19, @tomorrow, 'controng'),
+(3, 1, @today, 'dadat'),
+(3, 4, @today, 'dadat'),
+(3, 6, @today, 'controng'),
+(3, 8, @tomorrow, 'dadat'),
+(3, 11, @tomorrow, 'controng'),
 
 -- Sân 5 (Thành Phát)
-(5, 17, @today, 'controng'),
-(5, 18, @today, 'controng'),
-(5, 17, @tomorrow, 'controng'),
-(5, 18, @tomorrow, 'controng'),
+(5, 2, @today, 'controng'),
+(5, 3, @today, 'controng'),
+(5, 7, @tomorrow, 'controng'),
+(5, 12, @tomorrow, 'controng'),
 
 -- Sân 7 (Bộ Công An)
-(7, 19, @dayafter, 'dadat'), -- Đặt trước ngày kia
-(7, 20, @dayafter, 'controng');
+(7, 10, @dayafter, 'dadat'), -- Đặt trước ngày kia
+(7, 11, @dayafter, 'controng');
 
 -- ============================
 --  5. INSERT LICHDATSAN
