@@ -1880,3 +1880,11 @@ a {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.file-name-display {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #710f0f;
+    font-style: italic;
+    word-break: break-all; 
+}

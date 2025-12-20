@@ -167,13 +167,17 @@
             <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
             <div class="forgot-password-container">
                 <h2>Quên mật khẩu</h2>
-                <p>Vui lòng nhập Email đã đăng ký để nhận mã xác minh.</p>
-                <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
-                <button onclick="sendVerificationCode()">Gửi mã xác minh</button>
-                <!-- Phần nhập mã xác minh (ẩn ban đầu) -->
+                <p>Nhập email để nhận mã xác minh.</p>
+
+                <div class="input-with-button">
+                    <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
+                    <button id="sendCodeBtn" onclick="sendVerificationCode()">Gửi mã</button>
+                </div>
+
                 <div id="verificationSection" style="display: none;">
+                    <input type="password" id="newPassword" placeholder="Mật khẩu mới*">
                     <input type="text" id="verificationCode" placeholder="Mã xác minh*">
-                    <button onclick="verifyCode()">Xác nhận</button>
+                    <button class="submit-btn" onclick="verifyCode()">Xác nhận đổi mật khẩu</button>
                 </div>
             </div>
         </div>
