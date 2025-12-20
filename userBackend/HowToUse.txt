@@ -8,6 +8,7 @@
     - Chạy server: node Server.js
     - Mở New Request của Thunder Client
 
+    // Đăng kí
     - Method: POST
     - URL API: http://localhost:3000/api/auth/register
     - body json: 
@@ -19,6 +20,7 @@
             "sdt": "0987654321"
         }
 
+    // Sửa thông tin
     - Method: PUT
     - URL API: http://localhost:3000/api/users/2
     - body json: 
@@ -27,16 +29,51 @@
             "email": "tmt0512@gmail.com",
             "sdt": "0987361232"
         }
-    
+
+    // Lấy danh sách sân
     - Method: GET
     - URL API: http://localhost:3000/api/fields
     - body json: 
         {
             
         }
-    
+
+    // Lấy chi tiết sân
     - Method: GET
     - URL API: http://localhost:3000/api/fields/2
+    - body json: 
+        {
+            
+        }
+
+    // Sửa thông tin sân
+    - Method: PUT
+    - URL API: http://localhost:3000/api/fields/1
+    - body json: 
+        {
+            
+            "TenSan": "Sân Bóng BK - Sân A (Mới)",
+            "LoaiSan": "Sân 5",
+            "DiaChi": "Số 1 Đại Cồ Việt, Hai Bà Trưng",
+            "TrangThai": "hoatdong"
+            
+        }
+    
+    // Thêm sân mới
+    - Method: POST
+    - URL API: http://localhost:3000/api/fields/1
+    - body json: 
+        {
+            "TenSan": "Sân Bóng BK - Sân C (VIP)",
+            "LoaiSan": "Sân 7",
+            "DiaChi": "Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
+            "Phuong": "Hai Bà Trưng",
+            "TrangThai": "hoatdong"
+        }
+                
+    // Xóa sân
+    - Method: DELETE
+    - URL API: http://localhost:3000/api/fields/1
     - body json: 
         {
             
