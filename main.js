@@ -208,8 +208,8 @@ async function verifyCode() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 email: email, 
-                code: code, 
-                password: newPassword // Gửi mật khẩu mới lên backend
+                otp: code, 
+                newPassword: newPassword // Gửi mật khẩu mới lên backend
             }),
         });
 

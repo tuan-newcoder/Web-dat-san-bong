@@ -50,7 +50,7 @@ exports.getFieldSearch = async (req, res) => {
         }
 
         if (CaThue) {
-            sql += `AND Cathue = ?`;
+            sql += `AND Ca = ?`;
             params.push(CaThue);
         }
 
