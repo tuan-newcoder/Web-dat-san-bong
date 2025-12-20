@@ -71,9 +71,9 @@ exports.getFieldSearch = async (req, res) => {
 exports.putFieldsDetails = async (req, res) => {
     const { id } = req.params;
 
-    const { TenSan, LoaiSan, DiaChi, TrangThai } = req.body;
+    const { TenSan, LoaiSan, DiaChi, Phuong, TrangThai } = req.body;
 
-    if (!TenSan || !LoaiSan || !DiaChi || !TrangThai) {
+    if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
         return res.status(400).json({
             message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Trạng thái'
         });
@@ -84,6 +84,10 @@ exports.putFieldsDetails = async (req, res) => {
          return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận 5, 7, 11)' });
     }
 
+    /*
+    const validPhuong ---------------------------------------------------------------------------------------------------------
+    */
+
     const validTrangThai = ['hoatdong', 'baotri']; // Ví dụ trạng thái
     if (!validTrangThai.includes(TrangThai)) {
          return res.status(400).json({ message: 'Trạng thái không hợp lệ!' });
@@ -91,8 +95,8 @@ exports.putFieldsDetails = async (req, res) => {
 
     try {
         const [result] = await db.execute(
-            `UPDATE sanbong SET TenSan = ?, LoaiSan = ?, DiaChi = ?, TrangThai = ? WHERE MaSan = ?`, 
-            [TenSan, LoaiSan, DiaChi, TrangThai, id]    
+            `UPDATE sanbong SET TenSan = ?, LoaiSan = ?, DiaChi = ?, Phuong = ?, TrangThai = ? WHERE MaSan = ?`, 
+            [TenSan, LoaiSan, DiaChi, Phuong, TrangThai, id]    
         );
 
         if (result.affectedRows === 0) {
@@ -106,6 +110,7 @@ exports.putFieldsDetails = async (req, res) => {
                 TenSan,
                 LoaiSan,
                 DiaChi,
+                Phuong,
                 TrangThai
             }
         })
@@ -120,20 +125,98 @@ exports.putFieldsDetails = async (req, res) => {
     }
 }
 
-exports.getShiftByDate = async (req, res) => {
-    const { fieldID, date } = req.query;
+exports.createField = async (req, res) => {
+    const { TenSan, LoaiSan, DiaChi, Phuong, TrangThai } = req.body;
 
-    if (!fieldID || !date) return res.status(400).json({message: "Thiếu mã sân"});
+    // 1. Validate dữ liệu đầu vào (giống hệt hàm PUT)
+    if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
+        return res.status(400).json({
+            message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Phường, Trạng thái'
+        });
+    }
+
+    const validLoaiSan = ['Sân 5', 'Sân 7', 'Sân 11'];
+    if (!validLoaiSan.includes(String(LoaiSan))) {
+         return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận Sân 5, Sân 7, Sân 11)' });
+    }
+
+    /*
+    const validPhuong ---------------------------------------------------------------------------------------------------------
+    */
+
+    const validTrangThai = ['hoatdong', 'baotri'];
+    if (!validTrangThai.includes(TrangThai)) {
+         return res.status(400).json({ message: 'Trạng thái không hợp lệ!' });
+    }
 
     try {
-        const sql = `
-            SELECT * FROM cathuesan
-            WHERE MaSan = ? AND Ngay = ? AND TrangThai = 'controng'
-        `;
-        const [shifts] = await db.query(sql, [fieldID, date]);
-        res.json(shifts);
+        // 2. Thực hiện câu lệnh INSERT
+        // Lưu ý: Không cần truyền MaSan (id) vì trong DB thường để Auto Increment
+        const [result] = await db.execute(
+            `INSERT INTO sanbong (TenSan, LoaiSan, DiaChi, Phuong, TrangThai) VALUES (?, ?, ?, ?, ?)`, 
+            [TenSan, LoaiSan, DiaChi, Phuong, TrangThai]    
+        );
+
+        // 3. Trả về kết quả thành công
+        res.status(201).json({ // 201 Created
+            message: "Thêm sân bóng thành công!",
+            newField: {
+                id: result.insertId, // Lấy ID vừa được database tự sinh ra
+                TenSan,
+                LoaiSan,
+                DiaChi,
+                Phuong,
+                TrangThai
+            }
+        });
+
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Lỗi lấy danh sách ca" });
+        console.error("Lỗi Create Field: ", err);
+
+        // Bắt lỗi trùng tên (nếu cột TenSan có ràng buộc UNIQUE)
+        if (err.code === 'ER_DUP_ENTRY') {
+             return res.status(409).json({ message: "Tên sân này đã tồn tại!" });
+        }
+
+        res.status(500).json({ message: "Lỗi Server nội bộ" });
+    }
+};
+
+exports.deleteField = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: "Vui lòng cung cấp ID sân cần xóa!" });
+    }
+
+    try {
+        const [result] = await db.execute(
+            `DELETE FROM sanbong WHERE MaSan = ?`, 
+            [id]
+        );
+
+        // Kiểm tra xem có dòng nào bị xóa không
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy sân để xóa!'});
+        }
+
+        res.status(200).json({
+            message: "Đã xóa sân bóng thành công!",
+            deletedId: id
+        });
+
+    } catch (err) {
+        console.error("Lỗi Delete Field: ", err);
+
+        // *** QUAN TRỌNG: Bắt lỗi ràng buộc khóa ngoại ***
+        // Mã lỗi 1451 hoặc ER_ROW_IS_REFERENCED_2: Xảy ra khi sân này đã có lịch đặt (Bookings)
+        // Không thể xóa sân cứng (Hard Delete) vì sẽ làm mất dữ liệu lịch sử đặt sân.
+        if (err.code === 'ER_ROW_IS_REFERENCED_2' || err.code === 'ER_ROW_IS_REFERENCED') {
+             return res.status(409).json({ 
+                 message: "Không thể xóa sân này vì đã có lịch đặt sân liên quan. Hãy thử chuyển trạng thái sang 'Bảo trì' hoặc 'Ngừng hoạt động'." 
+             });
+        }
+
+        res.status(500).json({ message: "Lỗi Server nội bộ" });
     }
 };
