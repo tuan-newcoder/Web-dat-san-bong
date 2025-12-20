@@ -500,17 +500,7 @@ a {
     border-radius: 5px;
 }
 
-/* Input Khung giờ (Từ/Đến) */
-.time-range-group {
-    display: flex;
-    gap: 20px;
-}
-
-.time-input-wrapper {
-    flex: 1;
-}
-
-.time-input-wrapper input {
+.ca {
     width: 100%;
     padding: 10px 15px;
     border: 1px solid #ccc;
@@ -805,6 +795,7 @@ a {
 
 /* Bên phải */
 .pitch-info {
+    color: #000;
     font-size: 18px;
 }
 
@@ -1039,150 +1030,6 @@ a {
     background-color: #c988fa;
 }
 
-/* Style cho hoá đơn */
-
-/* Body cho trang hóa đơn (Tùy chọn nền trắng) */
-.invoice-page-body {
-    background-color: #f4f4f4;
-    min-height: 100vh;
-}
-
-/* Container chính giữa trang */
-.invoice-container {
-    max-width: 600px;
-    margin: 50px auto;
-    background-color: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* Header Hóa đơn (Màu Tím đậm) */
-.invoice-header {
-    background-color: #9c27b0;
-    /* Màu tím đậm (Magenta) */
-    color: white;
-    padding: 15px 25px;
-}
-
-.invoice-header h2 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-/* Bảng */
-.invoice-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 16px;
-}
-
-/* Header Bảng (Màu Tím nhạt hơn) */
-.invoice-table thead th {
-    background-color: #e91e63;
-    /* Màu hồng tím */
-    color: white;
-    padding: 12px 10px;
-    text-align: left;
-    font-weight: 500;
-}
-
-/* Body Bảng (Dịch vụ) */
-.invoice-table tbody tr {
-    border-bottom: 1px solid #eee;
-}
-
-.invoice-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.invoice-table tbody td {
-    padding: 15px 10px;
-    color: #333;
-}
-
-.service-name {
-    padding-left: 20px !important;
-    font-weight: 500;
-}
-
-/* Input Số lượng */
-.quantity-input {
-    width: 60px;
-    padding: 5px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-}
-
-/* Căn giữa các cột giá trị */
-.quantity-header,
-.price-header,
-.total-header,
-.quantity-input,
-.price,
-.subtotal-amount,
-.service-fee-rate,
-#service-fee-amount {
-    text-align: center;
-}
-
-/* Footer Bảng (Tổng) */
-.invoice-table tfoot tr {
-    background-color: #f4f4f4;
-}
-
-.invoice-table tfoot td {
-    padding: 15px 10px;
-    font-weight: bold;
-}
-
-.grand-total-label {
-    background-color: #f06292;
-    /* Màu tím hồng nhạt */
-    color: #1b0b33;
-    /* Chữ đậm */
-    text-align: center;
-}
-
-.grand-total-amount {
-    background-color: #f06292;
-    /* Màu tím hồng nhạt */
-    color: #1b0b33;
-    /* Chữ đậm */
-    text-align: center;
-}
-
-/* Nút thanh toán */
-.payment-action {
-    text-align: center;
-    /* Căn giữa nút */
-    padding: 20px 25px;
-    background-color: white;
-    border-top: 1px solid #eee;
-}
-
-/* Style cho nút Thanh toán */
-.pay-now-button {
-    background-color: #9c27b0;
-    /* Màu tím đậm (Magenta) */
-    color: white;
-    padding: 12px 30px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.pay-now-button:hover {
-    background-color: #7b1fa2;
-}
-
 /* === STYLE RIÊNG CHO FORM THU HỒI SÂN === */
 
 /* Style cho nút Submit Thu Hồi (Màu cảnh báo/Đỏ/Tím) */
@@ -1397,83 +1244,6 @@ a {
     min-width: 100px;
     outline: none;
     cursor: pointer;
-}
-
-.container {
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.notify-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    background: #2563eb;
-    color: black;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.notify-btn:hover {
-    background: #1e40af;
-}
-
-.notification-box {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    margin-bottom: 200px;
-    margin-top: 50px;
-}
-
-.notification-item {
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-.notification-item.success {
-    background: #dcfce7;
-    border-left: 5px solid #22c55e;
-    color: black;
-}
-
-.notification-item.error {
-    background: #fee2e2;
-    border-left: 5px solid #ef4444;
-}
-
-.notification-item.info {
-    background: #e0f2fe;
-    border-left: 5px solid #0ea5e9;
-}
-
-.notification.error {
-    border-left-color: #ef4444;
-}
-
-.notification h4 {
-    margin: 0 0 5px;
-}
-
-.notification p {
-    margin: 0;
-    font-size: 14px;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(50px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
 }
 
 /* --- PHẦN CSS CHO LỊCH SỬ ĐẶT SÂN --- */
@@ -1797,15 +1567,18 @@ a {
 
 .input-with-button {
     display: flex;
-    gap: 8px; /* Khoảng cách giữa ô input và nút */
+    gap: 8px;
+    /* Khoảng cách giữa ô input và nút */
     margin-bottom: 15px;
     align-items: center;
 }
 
 /* Ô input Email trong hàng ngang */
 .input-with-button input {
-    flex: 1; /* Để ô input chiếm hết không gian còn lại */
-    margin: 0 !important; /* Ghi đè margin cũ */
+    flex: 1;
+    /* Để ô input chiếm hết không gian còn lại */
+    margin: 0 !important;
+    /* Ghi đè margin cũ */
     padding: 12px 15px !important;
     border: 2px solid #eee;
     border-radius: 40px;
@@ -1814,17 +1587,20 @@ a {
 
 /* Nút Gửi mã nhỏ gọn bên phải */
 #sendCodeBtn {
-    width: auto !important; /* Không cho chiếm 100% */
+    width: auto !important;
+    /* Không cho chiếm 100% */
     padding: 10px 20px;
     margin: 0;
-    background-color: #8c52ff; /* Màu tím đồng bộ */
+    background-color: #8c52ff;
+    /* Màu tím đồng bộ */
     color: white;
     border: none;
     border-radius: 40px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 500;
-    white-space: nowrap; /* Không cho chữ xuống dòng */
+    white-space: nowrap;
+    /* Không cho chữ xuống dòng */
     transition: background 0.3s;
 }
 
@@ -1877,8 +1653,15 @@ a {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .file-name-display {
@@ -1886,5 +1669,117 @@ a {
     font-size: 14px;
     color: #710f0f;
     font-style: italic;
-    word-break: break-all; 
+    word-break: break-all;
+}
+
+/* Style cho chi tiết sân */
+/* Nút Đặt sân ngay dưới ảnh */
+.book-now-btn {
+    width: 30%;
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #8c52ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Bảng lịch trình */
+.schedule-section {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Bảng lịch trình */
+.pitch-schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.pitch-schedule-table th,
+.pitch-schedule-table td {
+    border: 1px solid #ddd;
+    padding: 12px 8px;
+    text-align: center;
+    min-width: 60px;
+}
+
+/* Ô tiêu đề đường chéo */
+.diagonal-header {
+    background: linear-gradient(to top right, #fff 49.5%, #ddd 49.5%, #ddd 50.5%, #fff 50.5%);
+    position: relative;
+    min-width: 150px;
+    height: 80px;
+}
+
+.ca-text {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-weight: bold;
+}
+
+.ngay-text {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    font-weight: bold;
+}
+
+/* Trạng thái ô */
+.slot-cell.booked {
+    background-color: #ff4d4d !important;
+    color: white;
+    cursor: not-allowed;
+}
+
+.slot-cell.available {
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.slot-cell.available:hover {
+    background-color: #f0e6ff;
+}
+
+.slot-cell.selected {
+    background-color: #28a745 !important;
+    color: white;
+}
+
+.confirm-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Đảm bảo modal lịch có thể cuộn nếu màn hình nhỏ */
+#scheduleModal .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 3px solid #8c52ff;
+    /* Viền tím đặc trưng */
+}
+
+/* Tăng kích thước ô để dễ nhìn trong modal */
+.pitch-schedule-table td {
+    min-width: 80px;
+    height: 50px;
+    font-size: 13px;
+}
+
+.diagonal-header {
+    min-width: 120px !important;
 }

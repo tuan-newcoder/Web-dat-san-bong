@@ -39,7 +39,6 @@
 
                 <div id="userDropdown" class="dropdown-content">
                     <a href="profile.html">Hồ sơ</a>
-                    <a href="notification.html">Thông báo</a>
                     <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
                     <a href="/index.html" id="logoutLink">Đăng xuất</a>
                 </div>
@@ -61,25 +60,44 @@
             </div>
 
             <div class="filter-group">
-                <label>Chọn ngày</label>
-                <input type="date" id="selectDate" class="date-input" value="2025-12-04">
+                <label>Chọn Phường</label>
+                <select id="selectDate" class="ca" value="Phường Hoàng Mai">
+                            <option>-- Chọn phường --</option>
+                            <option>Phường Bách Khoa</option>
+                            <option>Phường Đồng Tâm</option>
+                            <option>Phường Lê Đại Hành</option>
+                            <option>Phường Quỳnh Lôi</option>
+                            <option>Phường Vĩnh Tuy</option>
+                            <option>Phường Thanh Lương</option>
+                            <option>Phường Trương Định</option>
+                            <option>Phường Hoàng Văn Thụ</option>
+                            <option>Phường Minh Khai</option>
+                            <option>Phường Mai Động</option>
+                            <option>Phường Tương Mai</option>
+                            <option>Phường Yên Sở</option>
+                        </select>
             </div>
 
             <div class="filter-group">
-                <label>Khung giờ</label>
-                <div class="time-range-group">
-                    <div class="time-input-wrapper">
-                        <span>Từ</span>
-                        <input type="time" value="07:30">
-                    </div>
-                    <div class="time-input-wrapper">
-                        <span>Đến</span>
-                        <input type="time" value="09:30">
-                    </div>
-                </div>
+                <label>Ca</label>
+                <select id="caSelect" class="ca">
+                            <option>-- Chọn ca --</option>
+                            <option>1(06:00-07:30)</option>
+                            <option>2(07:30-09:00)</option>
+                            <option>3(09:00-10:30)</option>
+                            <option>4(10:30-12:00)</option>
+                            <option>5(12:00-13:30)</option>
+                            <option>6(13:30-15:00)</option>
+                            <option>7(15:00-16:30)</option>
+                            <option>8(16:30-18:00)</option>
+                            <option>9(18:00-19:30)</option>
+                            <option>10(19:30-21:00)</option>
+                            <option>11(21:00-22:30)</option>
+                            <option>12(22:30-24:00)</option>
+                        </select>
             </div>
-            <div class="booking-section">   
-                <button type="submit">Tìm kiếm</button>
+            <div class="booking-section">
+                <button type="submit" onclick="location.href='#related-stadiums-section'">Tìm kiếm</button>
             </div>
 
         </div>

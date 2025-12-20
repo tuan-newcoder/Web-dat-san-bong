@@ -209,13 +209,12 @@ async function verifyCode() {
             body: JSON.stringify({ 
                 email: email, 
                 otp: code, 
-                newPassword: newPassword // Gửi mật khẩu mới lên backend
+                newPassword: newPassword 
             }),
         });
 
         alert("Mật khẩu đã được đặt lại thành công! Vui lòng đăng nhập lại.");
-        
-        // Reset form và đóng modal
+
         document.getElementById('newPassword').value = '';
         document.getElementById('verificationCode').value = '';
         closeForgotPasswordModal();
@@ -228,10 +227,8 @@ async function verifyCode() {
 // Hàm đăng xuất 
 function handleLogout() {
     alert("Đăng xuất thành công!");
-    // Xóa token hoặc session từ localStorage/cookie nếu có
     localStorage.removeItem('userToken');
-    // Chuyển hướng về trang chủ
-    window.location.href = "../../../index.html";
+    window.location.href = "/index.html";
 }
 
 // Toggle dropdown cha
@@ -244,14 +241,14 @@ function toggleDropdown(event) {
     const target = document.getElementById(dropdownId);
     if (!target) return;
 
-    // Đóng các dropdown khác (nhưng không chạm submenu của target)
+    // Đóng các dropdown khác 
     document.querySelectorAll('.owner-dropdown-content.show, .dropdown-content.show')
         .forEach(el => { if (el !== target) el.classList.remove('show'); });
 
     target.classList.toggle('show');
 }
 
-// Toggle submenu (không đóng dropdown cha)
+// Toggle submenu 
 function toggleSubmenu(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -372,120 +369,123 @@ function savePitchInfo() {
     };
 
     console.log("Dữ liệu gửi backend:", data);
-    alert("Đã lưu thông tin sân (demo)");
+    alert("Đã lưu thông tin sân");
 }
 
-/* === JS cho trang danh-cho-chu-san.html === */
-const ownerForm = document.getElementById('ownerForm');
-const closeLogin = document.getElementById('closeLogin');
-const loginBtn = document.getElementById('loginBtn');
-
-// Lấy thông tin user nếu đã đăng nhập
+// Hàm lấy thông tin user từ Token và điền vào form (Chưa có BE)
+// 1. Hàm tự động lấy thông tin (Chỉ chạy nếu có Token và không ép đăng nhập)
 async function fetchUserInfo() {
+    const currentToken = localStorage.getItem('userToken'); 
+    if (!currentToken || currentToken === 'demo-token') return; // Im lặng nếu không có token chuẩn
+
     try {
         const res = await fetch(`${API_URL}/user-info`, {
-            headers: { 'Authorization': 'Bearer ' + token }
+            headers: { 'Authorization': 'Bearer ' + currentToken }
         });
-        if (!res.ok) throw new Error('Không lấy được thông tin người dùng');
-        const data = await res.json();
-        document.getElementById('fullName').value = data.fullName || '';
-        document.getElementById('email').value = data.email || '';
-        document.getElementById('phone').value = data.phone || '';
+
+        if (res.ok) {
+            const data = await res.json();
+            const nameField = document.getElementById('fullName');
+            const emailField = document.getElementById('email');
+            const phoneField = document.getElementById('phone');
+
+            if (nameField) nameField.value = data.fullName || '';
+            if (emailField) emailField.value = data.email || '';
+            if (phoneField) phoneField.value = data.phone || '';
+            console.log("Đã tự động điền thông tin người dùng.");
+        }
     } catch (err) {
-        console.error(err);
-        loginModal.style.display = 'flex';
+        console.warn("Lưu ý: Không thể tự động lấy thông tin người dùng.");
     }
 }
 
-// Modal login
-if (closeLogin) {
-    closeLogin.onclick = () => {
-        if (loginModal) loginModal.style.display = 'none';
-    };
-}
-window.onclick = (event) => { if (event.target == loginModal) loginModal.style.display = 'none'; };
+// 2. Xử lý Submit Form Đăng ký chủ sân
+const ownerForm = document.getElementById('ownerForm');
+if (ownerForm) {
+    ownerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('userToken');
 
-// Login
-if (loginBtn) {
-    loginBtn.onclick = async () => {
-        const usernameInput = document.getElementById('loginUsername');
-        const passwordInput = document.getElementById('loginPassword');
-        
-        if (!usernameInput || !passwordInput) return;
-
-        const username = usernameInput.value;
-        const password = passwordInput.value;
-        
-        if (!username || !password) return alert('Vui lòng nhập đầy đủ');
+        const formData = new FormData(ownerForm);
 
         try {
-            const res = await fetch(`${API_URL}/auth/login`, {
+            const submitBtn = ownerForm.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Đang xử lý...";
+            }
+
+            const res = await fetch(`${API_URL}/owner-register`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
             });
-            if (!res.ok) throw new Error('Đăng nhập thất bại');
-            const data = await res.json();
-            localStorage.setItem('userToken', data.token);
-            if (loginModal) loginModal.style.display = 'none';
-            await fetchUserInfo();
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Gửi yêu cầu thất bại.');
+            }
+
+            alert('Đăng ký chủ sân thành công! Chúng tôi sẽ phản hồi sớm qua Email.');
+            ownerForm.reset();
+            if (document.getElementById('file-name-display')) {
+                document.getElementById('file-name-display').textContent = "";
+            }
+
         } catch (err) {
-            alert(err.message);
+            alert("Lỗi: " + err.message);
+        } finally {
+            const submitBtn = ownerForm.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Gửi đăng ký";
+            }
         }
-    };
+    });
 }
 
-// Nếu đã có token thì lấy thông tin ngay
-if (token) fetchUserInfo();
+// 3. Khởi tạo khi trang tải xong
+document.addEventListener('DOMContentLoaded', () => {
+    // Tự động điền nếu đã có token
+    fetchUserInfo();
 
-// Submit form đăng ký chủ sân
-ownerForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('fullName', document.getElementById('fullName').value);
-    formData.append('email', document.getElementById('email').value);
-    formData.append('phone', document.getElementById('phone').value);
-    formData.append('businessCert', document.getElementById('businessCert').files[0]);
-
-    try {
-        const res = await fetch(`${API_URL}/owner-register`, {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('userToken') },
-            body: formData
-        });
-        if (!res.ok) throw new Error('Đăng ký thất bại');
-        alert('Đăng ký chủ sân thành công!');
-        ownerForm.reset();
-    } catch (err) {
-        alert(err.message);
-    }
+    // Khởi tạo hiển thị tên file
+    initFileDisplay();
+    
+    // Tải dữ liệu bảng nếu đang ở trang Admin
+    if (document.getElementById('bookingTableBody')) fetchBookings();
+    if (document.getElementById('user-management-table')) loadUserTable();
 });
 
+/* === XỬ LÝ HIỂN THỊ TÊN FILE CHỨNG NHẬN === */
+function initFileDisplay() {
+    const fileInput = document.getElementById('businessCert');
+    const fileNameDisplay = document.getElementById('file-name-display');
 
+    if (fileInput && fileNameDisplay) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = this.files[0].name;
+                fileNameDisplay.style.color = "#040308ff";
+                fileNameDisplay.style.fontWeight = "bold";
+            } else {
+                fileNameDisplay.textContent = "";
+            }
+        });
+    }
+}
+// Đảm bảo hàm này được gọi
+document.addEventListener('DOMContentLoaded', initFileDisplay);
 document.addEventListener('DOMContentLoaded', () => {
 
     const ownerForm = document.getElementById('ownerForm');
-
-    // Kiểm tra xem người dùng đã đăng nhập chưa
     function isLoggedIn() {
         return !!localStorage.getItem('userToken');
-    }
-
-    // Nếu chưa đăng nhập, mở modal login
-    if (!isLoggedIn()) {
-        const loginModal = document.getElementById('loginModal');
-        if (loginModal) loginModal.style.display = "flex";
-    } else {
     }
 
     // Xử lý submit form
     ownerForm.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        if (!isLoggedIn()) {
-            alert("Vui lòng đăng nhập trước khi đăng ký sân!");
-            return;
-        }
 
         const formData = new FormData(ownerForm);
 
@@ -530,11 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
 
             const token = localStorage.getItem('userToken');
-            if (!token) {
-                alert("Vui lòng đăng nhập trước khi đăng ký sân.");
-                openLoginModal();
-                return;
-            }
 
             const formData = new FormData(ownerForm);
             try {
@@ -548,7 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     imageFile: formData.get('businessCert')
                 });
 
-                // Demo thành công
                 alert("Đăng ký sân thành công!");
                 ownerForm.reset();
 
@@ -612,6 +606,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Kiểm tra xem có đang ở trang đặt sân không
+    const bookingForm = document.getElementById('bookingForm');
+    if (!bookingForm) return;
+
+    // 2. Lấy dữ liệu từ sessionStorage (được lưu từ trang chi-tiet-san.html)
+    const pendingBooking = JSON.parse(sessionStorage.getItem('pendingBooking'));
+
+    if (pendingBooking && pendingBooking.length > 0) {
+        console.log("Dữ liệu nhận được:", pendingBooking);
+
+        // Lấy các phần tử input
+        const dateInput = document.getElementById('date');
+        const caInput = document.getElementById('number');
+
+        // 3. Điền ngày (lấy từ bản ghi đầu tiên vì thường là cùng 1 ngày)
+        if (dateInput) {
+            dateInput.value = pendingBooking[0].date;
+        }
+
+        // 4. Điền danh sách các ca (nối các ca bằng dấu phẩy)
+        if (caInput) {
+            const listCa = pendingBooking.map(item => item.ca).join(', ');
+            caInput.value = listCa;
+        }
+    } else {
+        // Nếu không có dữ liệu, cảnh báo và quay lại trang danh sách
+        alert("Bạn chưa chọn ca đặt sân nào. Vui lòng chọn ca trước!");
+        window.location.href = "/assets/after-login/detail-login.html";
+    }
+
+    // 5. Xử lý khi nhấn nút "Đặt sân" gửi về Backend
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const token = localStorage.getItem('userToken');
+        const formData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            date: document.getElementById('date').value,
+            ca: document.getElementById('number').value,
+            note: document.getElementById('note').value
+        };
+
+        try {
+            const response = await apiRequest(`${API_URL}/auth/bookings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(formData)
+            });
+
+            alert("Đặt sân thành công! Chúng tôi sẽ liên hệ sớm.");
+            sessionStorage.removeItem('pendingBooking'); // Xóa dữ liệu tạm sau khi đặt xong
+            window.location.href = "lich-su-dat-san.html"; // Chuyển đến lịch sử
+        } catch (error) {
+            alert("Lỗi khi đặt sân: " + error.message);
+        }
+    });
 });
 
 /* Script cho thu hồi sân */
@@ -751,7 +808,6 @@ document.addEventListener('DOMContentLoaded', loadUserTable);
 document.addEventListener("DOMContentLoaded", function () {
     checkLoginStatus();
 
-    // Lắng nghe sự kiện click nút Đăng nhập trong Modal
     const loginSubmitBtn = document.querySelector("#loginModal button[type='submit']");
     if (loginSubmitBtn) {
         loginSubmitBtn.addEventListener("click", handleLogin);
@@ -822,23 +878,73 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('bookingTableBody')) fetchBookings();
 });
 
-/* === XỬ LÝ HIỂN THỊ TÊN FILE CHỨNG NHẬN === */
-function initFileDisplay() {
-    const fileInput = document.getElementById('businessCert');
-    const fileNameDisplay = document.getElementById('file-name-display');
+/* Script cho chi tiết sân */
 
-    if (fileInput && fileNameDisplay) {
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files.length > 0) {
-                fileNameDisplay.textContent = this.files[0].name;
-                fileNameDisplay.style.color = "#13120e";
-                console.log("Đã cập nhật tên file: ", this.files[0].name);
-            } else {
-                fileNameDisplay.textContent = "";
-            }
+const toggleModal = (show) => {
+    const modal = document.getElementById('scheduleModal');
+    if (modal) modal.style.display = show ? 'flex' : 'none';
+};
+
+// Gán hàm vào window để gọi từ HTML
+window.scrollToSchedule = () => { toggleModal(true); renderPitchSchedule(1); };
+window.closeScheduleModal = () => toggleModal(false);
+
+// Đóng modal khi click ra ngoài
+window.addEventListener('click', (e) => e.target.id === 'scheduleModal' && toggleModal(false));
+
+/**
+ * Render lịch đặt sân 7 ngày
+ */
+async function renderPitchSchedule(maSan) {
+    const tbody = document.getElementById('schedule-body');
+    if (!tbody) return;
+
+    let bookedSlots = [];
+    try {
+        bookedSlots = await apiRequest(`${API_URL}/ca-thue-san/${maSan}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
         });
-    }
+    } catch (e) { console.warn("Lỗi tải lịch:", e.message); }
+
+    const today = new Date();
+    
+    tbody.innerHTML = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        
+        const isoDate = date.toISOString().split('T')[0];
+        const displayDate = date.toLocaleDateString('vi-VN'); 
+        
+        let cells = `<td style="font-weight:bold; background:#f4f4f4;">${i === 0 ? displayDate + ' (Hôm nay)' : displayDate}</td>`;
+
+        for (let ca = 1; ca <= 12; ca++) {
+            const isBooked = bookedSlots.some(s => s.Ngay === isoDate && s.Ca == ca);
+            cells += `
+                <td class="slot-cell ${isBooked ? 'booked' : 'available'}" 
+                    data-date="${isoDate}" data-ca="${ca}" onclick="toggleSelectSlot(this)">
+                    ${isBooked ? 'Hết' : ''}
+                </td>`;
+        }
+        return `<tr>${cells}</tr>`;
+    }).join('');
 }
 
-// Đảm bảo hàm này được gọi
-document.addEventListener('DOMContentLoaded', initFileDisplay);
+/**
+ * Logic chọn/hủy ca
+ */
+window.toggleSelectSlot = (el) => !el.classList.contains('booked') && el.classList.toggle('selected');
+
+/**
+ * Chuyển hướng đặt sân
+ */
+window.proceedToBooking = () => {
+    const selected = [...document.querySelectorAll('.slot-cell.selected')];
+    if (!selected.length) return alert("Vui lòng chọn ít nhất một ca!");
+
+    const data = selected.map(el => ({ date: el.dataset.date, ca: el.dataset.ca }));
+    sessionStorage.setItem('pendingBooking', JSON.stringify(data));
+    window.location.href = "/assets/after-login/dat-san.html";
+};
+
+/* === KHỞI TẠO === */
+document.addEventListener('DOMContentLoaded', () => renderPitchSchedule(1));
