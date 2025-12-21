@@ -235,6 +235,64 @@ async function verifyCode() {
         alert("Lỗi: " + error.message);
     }
 }
+// 5. Xử lý Đổi mật khẩu Profile 
+const changePasswordModal = document.getElementById("changePasswordModal");
+
+window.openChangePasswordModal = () => {
+    if (changePasswordModal) changePasswordModal.style.display = "flex";
+};
+
+window.closeChangePasswordModal = () => {
+    if (changePasswordModal) {
+        changePasswordModal.style.display = "none";
+        // Reset form khi đóng
+        document.getElementById('changePasswordForm').reset();
+    }
+};
+
+/**
+ * Xử lý gọi API Đổi mật khẩu
+ */
+async function handleChangePassword() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPass').value;
+    const confirmPassword = document.getElementById('confirmNewPass').value;
+
+    // 1. Kiểm tra tính hợp lệ cơ bản
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        return alert("Vui lòng điền đầy đủ tất cả các ô.");
+    }
+
+    if (currentPassword !== confirmPassword) {
+        alert("Mật khẩu xác nhận không khớp!");
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('userToken');
+        if (!token) throw new Error("Bạn cần đăng nhập để thực hiện thao tác này.");
+
+        // 2. Gọi API gửi lên Backend
+        await apiRequest(`${API_URL}/auth/change-password`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({
+                password: currentPassword,
+                newPassword: newPassword
+            }),
+        });
+
+        // 3. Xử lý thành công
+        alert("Đổi mật khẩu thành công!");
+        closeChangePasswordModal();
+
+    } catch (error) {
+        alert("Lỗi: " + error.message);
+    }
+}
 // Hàm đăng xuất 
 function handleLogout() {
     alert("Đăng xuất thành công!");
@@ -684,92 +742,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Scripts cho dat-san.html */
 
+/* === LOGIC TRANG ĐẶT SÂN: ĐIỀN THÔNG TIN USER & LỊCH ĐẶT === */
+
 document.addEventListener('DOMContentLoaded', async () => {
     const bookingForm = document.getElementById('bookingForm');
     if (!bookingForm) return;
 
-    // 1. Lấy dữ liệu tạm từ sessionStorage
+    // 1. Lấy dữ liệu tạm từ sessionStorage (Lịch đặt sân)
     const pendingBooking = JSON.parse(sessionStorage.getItem('pendingBooking'));
 
-    // 2. Kiểm tra dữ liệu: Nếu không có, chặn người dùng ở lại trang này
-    if (!pendingBooking || pendingBooking.length === 0) {
-        alert("Bạn chưa chọn ca đặt sân nào. Vui lòng chọn ca trước!");
-        window.location.href = "detail-login.html"; // Chỉnh đường dẫn cho khớp với cấu trúc thư mục của bạn
-        return;
-    }
-
-    // 3. Lấy thông tin cần thiết từ dữ liệu tạm
-    const maSan = pendingBooking[0].maSan;
-    const selectedDate = pendingBooking[0].date;
-    const selectedCa = pendingBooking.map(item => item.ca).join(', ');
-
-    // 4. Tự động điền dữ liệu vào Form
-    const dateInput = document.getElementById('date');
-    const caInput = document.getElementById('number');
-    if (dateInput) dateInput.value = selectedDate;
-    if (caInput) caInput.value = selectedCa;
-
-    // 5. Tải QR Code của chủ sân từ Backend
-    if (maSan) {
-        try {
-            const stadium = await apiRequest(`${API_URL}/fields/${maSan}`);
-            if (stadium && stadium.QrChuSan) {
-                const qrContainer = document.getElementById('qrContainer');
-                const qrImage = document.getElementById('qrOwnerImage');
-                if (qrContainer && qrImage) {
-                    qrImage.src = stadium.QrChuSan;
-                    qrContainer.style.display = 'block';
-                }
-            }
-        } catch (error) {
-            console.error("Lỗi khi tải thông tin sân hoặc QR:", error);
-        }
-    }
-
-    // 6. Xử lý khi nhấn nút "Đặt sân"
-    bookingForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const token = localStorage.getItem('userToken');
+    if (pendingBooking && pendingBooking.length > 0) {
+        const maSan = pendingBooking[0].maSan;
         
-        // QUAN TRỌNG: Phải bao gồm maSan để Backend xử lý
-        const formData = {
-            maSan: maSan, // Gửi mã sân lên server
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            date: document.getElementById('date').value,
-            ca: document.getElementById('number').value,
-            note: document.getElementById('note').value
-        };
+        // Điền Ngày và Ca vào form
+        const dateInput = document.getElementById('date');
+        const caInput = document.getElementById('number');
+        if (dateInput) dateInput.value = pendingBooking[0].date;
+        if (caInput) caInput.value = pendingBooking.map(item => item.ca).join(', ');
 
-        try {
-            // Thay đổi trạng thái nút để tránh click nhiều lần
-            const submitBtn = bookingForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Đang xử lý...";
-
-            const response = await apiRequest(`${API_URL}/bookings`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify(formData)
-            });
-
-            alert("Đặt sân thành công! Chúng tôi sẽ liên hệ sớm.");
-            sessionStorage.removeItem('pendingBooking'); // Xóa dữ liệu tạm
-            window.location.href = "lich-su-dat-san.html"; 
-
-        } catch (error) {
-            alert("Lỗi khi đặt sân: " + error.message);
-            // Khôi phục nút nếu lỗi
-            const submitBtn = bookingForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Đặt sân";
-        }
-    });
+        // Tải QR Code và Thông tin người dùng song song để tối ưu tốc độ
+        await Promise.all([
+            loadOwnerQR(maSan),
+            fillLoggedUserInfo() // Hàm mới để lấy thông tin Tên & SĐT
+        ]);
+    } else {
+        alert("Bạn chưa chọn ca đặt sân nào!");
+        window.location.href = "detail-login.html";
+    }
 });
+
+/**
+ * Hàm lấy thông tin người dùng đang đăng nhập từ BE và điền vào form
+ */
+async function fillLoggedUserInfo() {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+
+    try {
+        // Gọi API lấy thông tin profile của user đang log
+        const userData = await apiRequest(`${API_URL}/users/${userId}`, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (userData) {
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
+
+            // Điền thông tin vào các ô input nếu chúng tồn tại
+            // 'HoTen' và 'phone' là các trường giả định từ JSON của bạn
+            if (nameInput) nameInput.value = userData.HoTen || userData.fullName || "";
+            if (phoneInput) phoneInput.value = userData.sdt || userData.SoDienThoai || "";
+            
+        }
+    } catch (error) {
+        console.warn("Không thể tự động lấy thông tin người dùng:", error.message);
+        
+        const savedUser = JSON.parse(localStorage.getItem('user'));
+        if (savedUser) {
+            if (document.getElementById('name')) document.getElementById('name').value = savedUser.username || "";
+
+        }
+    }
+}
+
+/**
+ * Hàm tải mã QR của chủ sân (Giữ nguyên logic cũ)
+ */
+async function loadOwnerQR(maSan) {
+    try {
+        const stadium = await apiRequest(`${API_URL}/fields/${maSan}`);
+        if (stadium && stadium.QrChuSan) {
+            const qrContainer = document.getElementById('qrContainer');
+            const qrImage = document.getElementById('qrOwnerImage');
+            if (qrContainer && qrImage) {
+                qrImage.src = stadium.QrChuSan;
+                qrContainer.style.display = 'block';
+            }
+        }
+    } catch (e) {
+        console.error("Lỗi tải QR chủ sân:", e);
+    }
+}
 /* Script cho thu hồi sân */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -1097,3 +1151,134 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPitchDetails();
     }
 });
+
+/* === Script cho Profile === */
+
+async function loadUserProfile() {
+    // 1. Lấy thông tin user từ localStorage (đã lưu khi đăng nhập)
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return;
+
+    const userLocal = JSON.parse(userStr);
+    const userId = userLocal.MaNguoiDung || userLocal.id; // Tùy vào key Backend của bạn
+
+    if (!userId) {
+        console.error("Không tìm thấy ID người dùng.");
+        return;
+    }
+
+    try {
+        // 2. Gọi API lấy chi tiết người dùng
+        // Sử dụng hàm apiRequest đã có để tự động đính kèm Token
+        const userData = await apiRequest(`${API_URL}/users/${userId}`,{
+            method: 'GET'
+        });
+
+        if (userData) {
+            // 3. Đổ dữ liệu vào các ô input
+            const fields = {
+                'profileUsername': userData.username || userData.TenDangNhap,
+                'profileFullName': userData.HoTen || userData.fullname,
+                'profileEmail': userData.email,
+                'profilePhone': userData.phone || userData.SoDienThoai
+            };
+
+            for (const [id, value] of Object.entries(fields)) {
+                const el = document.getElementById(id);
+                if (el) el.value = value || "Chưa cập nhật";
+            }
+        }
+    } catch (error) {
+        console.error("Lỗi khi tải thông tin profile:", error.message);
+    }
+}
+
+/* === KHỞI TẠO === */
+document.addEventListener('DOMContentLoaded', () => {
+    // Kiểm tra nếu đang ở trang profile (dựa vào sự tồn tại của id profileUsername)
+    if (document.getElementById('profileUsername')) {
+        loadUserProfile();
+    }
+});
+
+// Thay đổi thông tin người dùng
+const mainBtn = document.getElementById('mainBtn');
+// Chỉ chọn các ô có thể sửa 
+const editableInputs = [
+    document.getElementById('profileUsername'),
+    document.getElementById('profileFullName'),
+    document.getElementById('profileEmail'),
+    document.getElementById('profilePhone')
+];
+
+if (mainBtn) {
+    mainBtn.addEventListener('click', async function () {
+        if (this.innerText === "Chỉnh sửa thông tin") {
+            // BẬT CHẾ ĐỘ CHỈNH SỬA
+            editableInputs.forEach(input => {
+                if (input) {
+                    input.removeAttribute('readonly');
+                    input.classList.add('editable');
+                }
+            });
+            this.innerText = "Lưu thông tin";
+            this.style.backgroundColor = "#16a34a"; // Màu xanh lá
+            if (editableInputs[0]) editableInputs[0].focus();
+        } else {
+            // THỰC HIỆN LƯU VỀ BACKEND
+            await saveAction();
+        }
+    });
+}
+
+async function saveAction() {
+    // 1. Lấy userId từ localStorage
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return alert("Hết phiên làm việc, vui lòng đăng nhập lại!");
+    
+    const userLocal = JSON.parse(userStr);
+    const userId = userLocal.MaNguoiDung || userLocal.id;
+
+    // 2. Gom dữ liệu từ các ô input
+    const updatedData = {
+        username: document.getElementById('profileUsername').value,
+        HoTen: document.getElementById('profileFullName').value,
+        email: document.getElementById('profileEmail').value,
+        phone: document.getElementById('profilePhone').value
+    };
+
+    try {
+        // Hiển thị trạng thái đang xử lý
+        mainBtn.innerText = "Đang lưu...";
+        mainBtn.disabled = true;
+
+        // 3. Gọi API Cập nhật (Sử dụng hàm apiRequest đã có)
+        const response = await apiRequest(`${API_URL}/users/${userId}`, {
+            method: 'PUT', 
+            body: JSON.stringify(updatedData)
+        });
+
+        // 4. THÀNH CÔNG
+        alert("Cập nhật thông tin thành công!");
+
+        // Cập nhật lại localStorage nếu cần (để đồng bộ tên trên Navbar)
+        userLocal.HoTen = updatedData.HoTen; 
+        localStorage.setItem('user', JSON.stringify(userLocal));
+
+        // KHÓA LẠI CÁC Ô NHẬP
+        editableInputs.forEach(input => {
+            if (input) {
+                input.setAttribute('readonly', true);
+                input.classList.remove('editable');
+            }
+        });
+        mainBtn.innerText = "Chỉnh sửa thông tin";
+        mainBtn.style.backgroundColor = "#2563eb"; // Về màu xanh dương
+
+    } catch (error) {
+        alert("Lỗi khi lưu dữ liệu: " + error.message);
+        mainBtn.innerText = "Lưu thông tin";
+    } finally {
+        mainBtn.disabled = false;
+    }
+}

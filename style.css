@@ -217,7 +217,8 @@ a {
 }
 
 .login-form-container input,
-.register-form-container input {
+.register-form-container input,
+.change-password-form-container input{
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -229,7 +230,8 @@ a {
 }
 
 .login-form-container button,
-.register-form-container button {
+.register-form-container button,
+.change-password-form-container button {
     background-color: #8c52ff;
     color: white;
     padding: 14px 20px;
@@ -242,7 +244,8 @@ a {
 }
 
 .register-form-container button:hover,
-.login-form-container button:hover {
+.login-form-container button:hover,
+.change-password-form-container button:hover {
     background-color: #7a46e0;
 }
 
