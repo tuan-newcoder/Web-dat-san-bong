@@ -684,91 +684,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* Scripts cho dat-san.html */
 
-document.addEventListener('DOMContentLoaded', () => {
-    const bookingForm = document.getElementById('bookingForm');
-
-    if (bookingForm) {
-        bookingForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Lấy dữ liệu từ form
-            const formData = {
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value,
-                note: document.getElementById('note').value
-            };
-
-            // Kiểm tra tính hợp lệ cơ bản
-            if (!formData.name || !formData.phone || !formData.date || !formData.time) {
-                alert("Vui lòng điền đầy đủ thông tin bắt buộc.");
-                return;
-            }
-
-            console.log("Dữ liệu đặt sân:", formData);
-            alert("Đã gửi yêu cầu đặt sân thành công! (Demo)");
-
-            // --- LOGIC GỌI API ---
-
-            fetch(`${API_URL}/auth/bookings`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('userToken')
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert("Đặt sân thành công! Mã đặt chỗ: " + data.bookingId);
-                    bookingForm.reset();
-                })
-                .catch(error => {
-                    console.error('Lỗi khi đặt sân:', error);
-                    alert("Đặt sân thất bại. Vui lòng thử lại.");
-                });
-        });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Kiểm tra xem có đang ở trang đặt sân không
+document.addEventListener('DOMContentLoaded', async () => {
     const bookingForm = document.getElementById('bookingForm');
     if (!bookingForm) return;
 
-    // 2. Lấy dữ liệu từ sessionStorage (được lưu từ trang chi-tiet-san.html)
+    // 1. Lấy dữ liệu tạm từ sessionStorage
     const pendingBooking = JSON.parse(sessionStorage.getItem('pendingBooking'));
 
-    if (pendingBooking && pendingBooking.length > 0) {
-        console.log("Dữ liệu nhận được:", pendingBooking);
-
-        // Lấy các phần tử input
-        const dateInput = document.getElementById('date');
-        const caInput = document.getElementById('number');
-
-        // 3. Điền ngày (lấy từ bản ghi đầu tiên vì thường là cùng 1 ngày)
-        if (dateInput) {
-            dateInput.value = pendingBooking[0].date;
-        }
-
-        // 4. Điền danh sách các ca (nối các ca bằng dấu phẩy)
-        if (caInput) {
-            const listCa = pendingBooking.map(item => item.ca).join(', ');
-            caInput.value = listCa;
-        }
-    } else {
-        // Nếu không có dữ liệu, cảnh báo và quay lại trang danh sách
+    // 2. Kiểm tra dữ liệu: Nếu không có, chặn người dùng ở lại trang này
+    if (!pendingBooking || pendingBooking.length === 0) {
         alert("Bạn chưa chọn ca đặt sân nào. Vui lòng chọn ca trước!");
-        window.location.href = "/assets/after-login/detail-login.html";
+        window.location.href = "detail-login.html"; // Chỉnh đường dẫn cho khớp với cấu trúc thư mục của bạn
+        return;
     }
 
-    // 5. Xử lý khi nhấn nút "Đặt sân" gửi về Backend
+    // 3. Lấy thông tin cần thiết từ dữ liệu tạm
+    const maSan = pendingBooking[0].maSan;
+    const selectedDate = pendingBooking[0].date;
+    const selectedCa = pendingBooking.map(item => item.ca).join(', ');
+
+    // 4. Tự động điền dữ liệu vào Form
+    const dateInput = document.getElementById('date');
+    const caInput = document.getElementById('number');
+    if (dateInput) dateInput.value = selectedDate;
+    if (caInput) caInput.value = selectedCa;
+
+    // 5. Tải QR Code của chủ sân từ Backend
+    if (maSan) {
+        try {
+            const stadium = await apiRequest(`${API_URL}/fields/${maSan}`);
+            if (stadium && stadium.QrChuSan) {
+                const qrContainer = document.getElementById('qrContainer');
+                const qrImage = document.getElementById('qrOwnerImage');
+                if (qrContainer && qrImage) {
+                    qrImage.src = stadium.QrChuSan;
+                    qrContainer.style.display = 'block';
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải thông tin sân hoặc QR:", error);
+        }
+    }
+
+    // 6. Xử lý khi nhấn nút "Đặt sân"
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const token = localStorage.getItem('userToken');
+        
+        // QUAN TRỌNG: Phải bao gồm maSan để Backend xử lý
         const formData = {
+            maSan: maSan, // Gửi mã sân lên server
             name: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
             date: document.getElementById('date').value,
@@ -777,7 +743,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await apiRequest(`${API_URL}/auth/bookings`, {
+            // Thay đổi trạng thái nút để tránh click nhiều lần
+            const submitBtn = bookingForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Đang xử lý...";
+
+            const response = await apiRequest(`${API_URL}/bookings`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -787,14 +758,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             alert("Đặt sân thành công! Chúng tôi sẽ liên hệ sớm.");
-            sessionStorage.removeItem('pendingBooking'); // Xóa dữ liệu tạm sau khi đặt xong
-            window.location.href = "lich-su-dat-san.html"; // Chuyển đến lịch sử
+            sessionStorage.removeItem('pendingBooking'); // Xóa dữ liệu tạm
+            window.location.href = "lich-su-dat-san.html"; 
+
         } catch (error) {
             alert("Lỗi khi đặt sân: " + error.message);
+            // Khôi phục nút nếu lỗi
+            const submitBtn = bookingForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Đặt sân";
         }
     });
 });
-
 /* Script cho thu hồi sân */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -1066,9 +1041,21 @@ window.proceedToBooking = () => {
     const selected = [...document.querySelectorAll('.slot-cell.selected')];
     if (!selected.length) return alert("Vui lòng chọn ít nhất một ca!");
 
-    const data = selected.map(el => ({ date: el.dataset.date, ca: el.dataset.ca }));
+    // Lấy maSan từ URL của trang chi tiết hiện tại
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentMaSan = urlParams.get('id'); 
+
+    if (!currentMaSan) return alert("Không tìm thấy mã sân!");
+
+    // Lưu thêm maSan vào từng đối tượng trong mảng
+    const data = selected.map(el => ({ 
+        maSan: currentMaSan, 
+        date: el.dataset.date, 
+        ca: el.dataset.ca 
+    }));
+
     sessionStorage.setItem('pendingBooking', JSON.stringify(data));
-    window.location.href = "/assets/after-login/dat-san.html";
+    window.location.href = `/assets/after-login/dat-san.html?id=${currentMaSan}`;
 };
 
 /* === KHỞI TẠO === */

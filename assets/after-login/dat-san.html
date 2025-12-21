@@ -47,7 +47,7 @@
             </div>
         </div>
     </header>
-    
+
     <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
@@ -71,12 +71,22 @@
 
                     <div class="form-group">
                         <label for="time">Ca</label>
-                        <input type="text" id="number" name="number" required readonly >
+                        <input type="text" id="number" name="number" required readonly>
                     </div>
 
                     <div class="form-group">
                         <label for="note">Ghi chú</label>
                         <textarea id="note" name="note" rows="4" placeholder="Ví dụ: Đặt sân 7 người"></textarea>
+                    </div>
+
+                    <div id="qrContainer"
+                        style="display: none; margin-bottom: 20px; text-align: center; padding: 15px; border: 2px dashed #8c52ff; border-radius: 10px; background-color: #f9f7ff;">
+                        <p style="font-weight: bold; color: #8c52ff; margin-bottom: 10px;">Mã QR Thanh Toán của Chủ Sân
+                        </p>
+                        <img id="qrOwnerImage" src="" alt="QR Chủ Sân"
+                            style="max-width: 200px; border: 1px solid #ddd; border-radius: 8px;">
+                        <p style="font-size: 12px; color: #666; margin-top: 5px;">* Vui lòng quét mã để thực hiện đặt
+                            cọc/thanh toán</p>
                     </div>
 
                     <button type="submit" class="book-now-button">

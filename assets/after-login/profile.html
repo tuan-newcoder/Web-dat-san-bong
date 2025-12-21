@@ -53,28 +53,32 @@
             <div class="profile-container">
                 <h3>Thông tin tài khoản</h3>
 
-                <div class="profile-group">
-                    <label for="profileUsername">Tên người dùng:</label>
-                    <input type="text" id="profileUsername" value="" readonly>
+                <div class="form-group">
+                    <label>Tên người dùng:</label>
+                    <input type="text" value="nguyenvan_a" readonly>
                 </div>
 
-                <div class="profile-group">
-                    <label for="profileFullName">Họ và tên:</label>
-                    <input type="text" id="profileFullName" value="" readonly>
+                <div class="form-group">
+                    <label>Họ và tên:</label>
+                    <input type="text" value="Nguyễn Văn A" readonly>
                 </div>
 
-                <div class="profile-group">
-                    <label for="profileEmail">Email:</label>
-                    <input type="text" id="profileEmail" value="" readonly>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" value="anv@example.com" readonly>
                 </div>
 
-                <div class="profile-group">
-                    <label for="profilePhone">Số điện thoại:</label>
-                    <input type="text" id="profilePhone" value="" readonly>
+                <div class="form-group">
+                    <label>Số điện thoại:</label>
+                    <input type="text" value="0901234567" readonly>
                 </div>
 
-                <button onclick="window.location.href='change-password.html'">Đổi mật khẩu</button>
+                <div class="button-group">
+                    <button class="btn-edit" id="mainBtn">Chỉnh sửa thông tin</button>
+                    <button onclick="window.location.href='change-password.html'" class="btn-pass">Đổi mật khẩu</button>
+                </div>
             </div>
+
         </div>
     </section>
 
@@ -98,6 +102,40 @@
         </div>
     </section>
 
+    <script>
+        const mainBtn = document.getElementById('mainBtn');
+        const inputs = document.querySelectorAll('input');
+
+        mainBtn.addEventListener('click', function () {
+            // Kiểm tra xem đang ở trạng thái "Chỉnh sửa" hay "Lưu"
+            if (this.innerText === "Chỉnh sửa thông tin") {
+                // BẬT CHẾ ĐỘ CHỈNH SỬA
+                inputs.forEach(input => {
+                    input.removeAttribute('readonly'); // Bỏ thuộc tính chỉ đọc
+                    input.classList.add('editable');  // Thêm class để đổi màu nền trắng
+                });
+                this.innerText = "Lưu thông tin";
+                this.style.backgroundColor = "#16a34a"; // Đổi sang màu xanh lá
+                inputs[0].focus(); // Tự động đặt con trỏ vào ô đầu tiên
+            } else {
+                // THỰC HIỆN LƯU
+                saveAction();
+            }
+        });
+
+        function saveAction() {
+            // Giả lập gửi dữ liệu
+            alert("Đang lưu dữ liệu... Thành công!");
+
+            // TẮT CHẾ ĐỘ CHỈNH SỬA (Khóa lại)
+            inputs.forEach(input => {
+                input.setAttribute('readonly', true);
+                input.classList.remove('editable');
+            });
+            mainBtn.innerText = "Chỉnh sửa thông tin";
+            mainBtn.style.backgroundColor = "#2563eb"; // Về màu xanh dương
+        }
+    </script>
 </body>
 
 </html>

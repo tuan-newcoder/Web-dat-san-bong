@@ -1803,3 +1803,41 @@ a {
 .diagonal-header {
     min-width: 120px !important;
 }
+
+/* Container chứa các nút */
+.button-group {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa 2 nút */
+    margin-top: 20px;
+}
+
+/* Kiểu dáng chung cho nút */
+button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* Nút Chỉnh sửa thông tin (Màu xanh dương làm điểm nhấn) */
+.btn-edit {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.btn-edit:hover {
+    background-color: #1d4ed8;
+}
+
+/* Nút Đổi mật khẩu (Giữ nguyên phong cách cũ của bạn) */
+.btn-password {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.btn-password:hover {
+    background-color: #e5e7eb;
+}
