@@ -14,7 +14,7 @@
 
 <body>
     <header class="navbar">
-        <a href="after-login.html" class="logo-link">
+        <a href="../after-login/after-login.html" class="logo-link">
             <div class="logo">
                 <span class="icon"></span>
                 <span>Đặt sân Bách Khoa</span>
@@ -22,15 +22,15 @@
         </a>
 
         <nav>
-            <a href="after-login.html">Trang chủ</a>
-            <a href="detail-login.html">Danh sách sân</a>
-            <a href="chinh-sach-login.html">Chính sách</a>
-            <a href="lien-he-login.html">Liên hệ</a>
+            <a href="../after-login/after-login.html">Trang chủ</a>
+            <a href="../after-login/detail-login.html">Danh sách sân</a>
+            <a href="../after-login/chinh-sach-login.html">Chính sách</a>
+            <a href="../after-login/lien-he-login.html">Liên hệ</a>
         </nav>
 
         <!-- PHẦN USER PROFILE & DROPDOWN -->
         <div class="user-profile-container">
-            <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
+            <a href="../after-login/danh-cho-chu-san.html">Dành cho chủ sân</a>
 
             <div class="dropdown">
                 <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
@@ -39,8 +39,8 @@
                 </button>
 
                 <div id="userDropdown" class="dropdown-content">
-                    <a href="profile.html">Hồ sơ</a>
-                    <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="../after-login/profile.html">Hồ sơ</a>
+                    <a href="../after-login/lich-su-dat-san.html">Lịch sử đặt sân</a>
                     <a href="../../index.html" id="logoutLink">Đăng xuất</a>
                 </div>
             </div>
@@ -56,21 +56,31 @@
                 </div>
 
                 <div class="pitch-info">
-                    <div class="pitch-name">Sân A</div>
-                    <div class="info-row">Chủ sân:</div>
-                    <div class="info-row">Số điện thoại:</div>
-                    <div class="info-row">Loại sân: Sân 11</div>
+                    <div id="displayTenSan" class="pitch-name">Đang tải...</div>
+
                     <div class="info-row">
-                        <p>Địa chỉ: Số 1 Đại Cồ Việt</p>
+                        <p><strong>Chủ sân: </strong><span id="displayChuSan"></span></p>
                     </div>
                     <div class="info-row">
-                        <p>Giá thuê: 300,000 đồng/ca</p>
+                        <p><strong>Số điện thoại: </strong><span id="displaySDT"></span></p>
                     </div>
                     <div class="info-row">
-                        <p>Khung giờ: 06:00 - 24:00</p>
+                        <p><strong>Loại sân: </strong><span id="displayLoaiSan"></span></p>
                     </div>
                     <div class="info-row">
-                        <p>Mô tả: Sân bóng cỏ nhân tạo tiêu chuẩn, có hệ thống chiếu sáng và thoát nước tốt.</p>
+                        <p><strong>Địa chỉ:</strong> <span id="displayDiaChi"></span></p>
+                    </div>
+
+                    <div class="info-row">
+                        <p><strong>Giá thuê:</strong> <span id="displayGia"></span> (đồng/ca)</p>
+                    </div>
+
+                    <div class="info-row">
+                        <p><strong>Khung giờ:</strong> 06:00 - 24:00</p>
+                    </div>
+                    <div class="info-row">
+                        <p style="text-align: left;"><strong>Mô tả:</strong> Sân bóng cỏ nhân tạo tiêu chuẩn, có hệ
+                            thống chiếu sáng và thoát nước tốt.</p>
                     </div>
                 </div>
             </main>

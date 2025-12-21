@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết sân A</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/main.js" defer></script>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="/index.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="/index.html">Trang chủ</a>
+            <a href="assets/guest/detail.html">Danh sách sân</a>
+            <a href="assets/guest/chinh-sach.html">Chính sách</a>
+            <a href="assets/guest/lien-he.html">Liên hệ</a>
+            <a href="#" onclick="checkAccess(event, '/assets/guest/danh-cho-chu-san.html')">Dành cho chủ sân</a>
+        </nav>
+
+        <div class="auth">
+            <a href="#" onclick="openModal()">Đăng nhập</a>
+            <a href="#" onclick="openRegisterModal()">Đăng ký</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <main class="pitch-container">
+                <div class="image-group">
+                    <img src="/images/sanA.png" alt="Sân A" class="pitch-image">
+                    <button class="book-now-btn" onclick="checkAccess(event, '/assets/chi-tiet-san/san-A.html.html')">Đặt sân ngay</button>
+                </div>
+
+                <div class="pitch-info">
+                    <div id="displayTenSan" class="pitch-name">Đang tải...</div>
+
+                    <div class="info-row">
+                        <p><strong>Chủ sân: </strong><span id="displayChuSan"></span></p>
+                    </div>
+                    <div class="info-row">
+                        <p><strong>Số điện thoại: </strong><span id="displaySDT"></span></p>
+                    </div>
+                    <div class="info-row">
+                        <p><strong>Loại sân: </strong><span id="displayLoaiSan"></span></p>
+                    </div>
+                    <div class="info-row">
+                        <p><strong>Địa chỉ:</strong> <span id="displayDiaChi"></span></p>
+                    </div>
+
+                    <div class="info-row">
+                        <p><strong>Giá thuê:</strong> <span id="displayGia"></span> (đồng/ca)</p>
+                    </div>
+
+                    <div class="info-row">
+                        <p><strong>Khung giờ:</strong> 06:00 - 24:00</p>
+                    </div>
+                    <div class="info-row">
+                        <p style="text-align: left;"><strong>Mô tả:</strong> Sân bóng cỏ nhân tạo tiêu chuẩn, có hệ
+                            thống chiếu sáng và thoát nước tốt.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <footer class="footer-info">
+        <div class="info-container">
+
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+
+        </div>
+    </footer>
+
+        <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="login-form-container">
+                <h2>Đăng nhập</h2>
+                <input type="text" id="loginUsername" placeholder="Tên người dùng">
+                <input type="password" id="loginPassword" placeholder="Mật khẩu">
+                <button type="submit">Đăng nhập</button>
+                <a class="forgo_button" href="#" onclick="openForgotPasswordModal()">Quên mật khẩu?</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <div class="register-form-container">
+                <h2>Đăng ký</h2>
+                <input type="text" id="registerFullName" placeholder="Họ và tên*">
+                <input type="email" id="registerEmail" placeholder="Email*">
+                <input type="password" id="registerPassword" placeholder="Nhập mật khẩu*">
+                <input type="password" id="registerConfirmPassword" placeholder="Nhập lại mật khẩu*">
+                <input type="text" id="registerUsername" placeholder="Tên người dùng*">
+                <input type="text" id="registerPhone" placeholder="Số điện thoại*">
+                <button type="submit">Đăng ký</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            <div class="forgot-password-container">
+                <h2>Quên mật khẩu</h2>
+                <p>Nhập email để nhận mã xác minh.</p>
+
+                <div class="input-with-button">
+                    <input type="email" id="forgotEmail" placeholder="Email đã đăng ký*">
+                    <button id="sendCodeBtn" onclick="sendVerificationCode()">Gửi mã</button>
+                </div>
+
+                <div id="verificationSection" style="display: none;">
+                    <input type="password" id="newPassword" placeholder="Mật khẩu mới*">
+                    <input type="text" id="verificationCode" placeholder="Mã xác minh*">
+                    <button class="submit-btn" onclick="verifyCode()">Xác nhận đổi mật khẩu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

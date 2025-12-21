@@ -492,19 +492,16 @@ a {
     background-color: #e0e0e0;
 }
 
-/* Input Chọn ngày */
-.date-input {
+.ca,
+.phuong {
     width: 100%;
     padding: 10px 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
-}
-
-.ca {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    
+    height: auto;
+    max-height: 6em;   
+    overflow-y: auto;
 }
 
 /* --- Style cho nội dung chi tiết sân bóng (Phần dưới bộ lọc) --- */
@@ -698,7 +695,7 @@ a {
     background-color: #f8d7da;
 }
 
-/* --- Style cho phần Phân trang (Pagination) --- */
+/* --- Style cho phần Phân trang --- */
 .pagination {
     display: flex;
     justify-content: center;
@@ -730,6 +727,29 @@ a {
 .pagination span {
     border: none;
     cursor: default;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+    grid-column: 1 / -1; /* Đảm bảo nằm giữa danh sách */
+}
+
+.page-btn {
+    padding: 8px 15px;
+    border: 1px solid #8c52ff;
+    background: white;
+    color: #8c52ff;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.page-btn.active, .page-btn:hover {
+    background: #8c52ff;
+    color: white;
 }
 
 /*-- Submenu --*/

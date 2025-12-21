@@ -80,30 +80,41 @@ async function handleLogin(username, password) {
     try {
         const data = await apiRequest(loginUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
         });
 
-        // Đăng nhập thành công
-        alert("Đăng nhập thành công! Chào mừng " + (data.user || username));
+        // 1. Lưu Token
         localStorage.setItem('userToken', data.token);
+        
+        // 2. LƯU THÔNG TIN USER (Quan trọng: Backend cần trả về object user kèm role)
+        // Giả sử backend trả về: { token: "...", user: { username: "...", role: "admin" } }
+        if (data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+        }
+
+        alert("Đăng nhập thành công! Chào mừng " + (data.user?.username || username));
+        
         closeModal();
-        // Chuyển hướng tới trang sau đăng nhập
-        window.location.href = '/assets/after-login/after-login.html';
+
+        // 3. Kiểm tra quyền và chuyển hướng
+        const user = data.user || {}; // Lấy trực tiếp từ data vừa nhận để chính xác tuyệt đối
+        if (user.role === 'admin') {
+            window.location.href = '/assets/admin/admin-dashboard.html';
+        } else if (user.role === 'khachhang'){
+            window.location.href = '/assets/after-login/after-login.html';
+        } else {
+            window.location.href = '/assets/owner/chu-san.html';
+        }
 
     } catch (error) {
-        alert(error.message);
+        // Nếu alert "Lỗi server" hiện ra ở đây, nghĩa là code bên trên catch được lỗi
+        alert("Lỗi đăng nhập: " + error.message);
     }
 }
 
 // 2. Xử lý Đăng ký (Đã có BE)
 async function handleRegister() {
-    const registerUrl = `${API_URL}/auth/register`;
     const HoTen = document.getElementById('registerFullName').value;
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
@@ -155,9 +166,9 @@ async function sendVerificationCode() {
     const sendVerificationUrl = `${API_URL}/auth/send-verification`;
     const email = document.getElementById('forgotEmail').value;
 
-    if (!email) { 
-        alert("Vui lòng nhập email."); 
-        return; 
+    if (!email) {
+        alert("Vui lòng nhập email.");
+        return;
     }
 
     try {
@@ -166,21 +177,21 @@ async function sendVerificationCode() {
         btn.disabled = true;
 
         await apiRequest(sendVerificationUrl, {
-            method: 'POST', 
-            body: JSON.stringify({ email }), 
+            method: 'POST',
+            body: JSON.stringify({ email }),
             headers: { 'Content-Type': 'application/json' },
         });
 
         alert("Mã xác minh đã được gửi đến email của bạn.");
-        
+
         // Hiện phần nhập mật khẩu mới và mã code
         const verificationSection = document.getElementById('verificationSection');
         if (verificationSection) verificationSection.style.display = 'block';
-        
+
         btn.innerText = "Gửi lại mã";
         btn.disabled = false;
-    } catch (error) { 
-        alert(error.message); 
+    } catch (error) {
+        alert(error.message);
         document.getElementById('sendCodeBtn').disabled = false;
     }
 }
@@ -192,9 +203,9 @@ async function verifyCode() {
     const newPassword = document.getElementById('newPassword').value;
 
     // Kiểm tra tính hợp lệ cơ bản
-    if (!email || !code || !newPassword) { 
-        alert("Vui lòng điền đầy đủ Email, Mật khẩu mới và Mã xác minh."); 
-        return; 
+    if (!email || !code || !newPassword) {
+        alert("Vui lòng điền đầy đủ Email, Mật khẩu mới và Mã xác minh.");
+        return;
     }
 
     if (newPassword.length < 6) {
@@ -206,10 +217,10 @@ async function verifyCode() {
         await apiRequest(verifyUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                email: email, 
-                otp: code, 
-                newPassword: newPassword 
+            body: JSON.stringify({
+                email: email,
+                otp: code,
+                newPassword: newPassword
             }),
         });
 
@@ -219,9 +230,9 @@ async function verifyCode() {
         document.getElementById('verificationCode').value = '';
         closeForgotPasswordModal();
         openModal(); // Mở lại modal đăng nhập
-        
-    } catch (error) { 
-        alert("Lỗi: " + error.message); 
+
+    } catch (error) {
+        alert("Lỗi: " + error.message);
     }
 }
 // Hàm đăng xuất 
@@ -312,29 +323,161 @@ window.addEventListener('click', (e) => {
 
 /* --Detail script-- */
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Xử lý các nút Loại lịch (tabs)
-    const buttons = document.querySelectorAll('.calendar-type-button');
+/* === LOGIC TÌM KIẾM, LỌC & PHÂN TRANG TỐI ƯU === */
+// **** === (Cần thêm dữ liệu về ca của BE) === **** //
 
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Xóa class 'active' khỏi tất cả các nút
-            buttons.forEach(btn => btn.classList.remove('active'));
-            // Thêm class 'active' vào nút vừa được click
-            button.classList.add('active');
+const StadiumApp = {
+    allData: [],
+    filteredData: [],
+    currentPage: 1,
+    itemsPerPage: 6,
 
-            const selectedType = button.getAttribute('data-type');
-            console.log(`Loại lịch đã chọn: ${selectedType}`);
+    init() {
+        this.fetchData();
+        this.bindEvents();
+    },
+
+    // 1. Lấy dữ liệu từ Backend
+    async fetchData() {
+        try {
+            const res = await fetch(`${API_URL}/fields`);
+            this.allData = await res.json();
+            this.filteredData = [...this.allData];
+            this.renderPage(1);
+        } catch (err) {
+            console.error("Lỗi:", err);
+            document.getElementById('stadiumList').innerHTML = "<p>Lỗi kết nối máy chủ.</p>";
+        }
+    },
+
+    bindEvents() {
+        // 1. Xử lý nút Tìm kiếm
+        document.getElementById('searchButton')?.addEventListener('click', () => this.handleFilter());
+
+        // 2. Xử lý nút Loại sân (Sân 5, 7, 11)
+        const typeButtons = document.querySelectorAll('.calendar-type-button');
+
+        typeButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const currentBtn = e.currentTarget;
+                const wasActive = currentBtn.classList.contains('active');
+
+                // Xóa class 'active' khỏi tất cả các nút trước
+                typeButtons.forEach(b => b.classList.remove('active'));
+
+                if (!wasActive) {
+                    currentBtn.classList.add('active');
+                }
+
+                this.handleFilter();
+            });
         });
-    });
+    },
 
-    const selectDate = document.getElementById('selectDate');
-    if (selectDate) {
-        selectDate.addEventListener('change', (e) => {
-            console.log('Ngày đã chọn:', e.target.value);
+    // 2. Logic Lọc chính xác
+    handleFilter() {
+        const selectedType = document.querySelector('.calendar-type-button.active')?.innerText.trim() || "";
+        const wardValue = document.getElementById('phuongSelect')?.value || "-- Chọn phường --";
+
+        const normalizedWard = wardValue.trim().toLowerCase();
+
+        this.filteredData = this.allData.filter(s => {
+            // Lọc theo Loại Sân
+            const matchesType = s.LoaiSan.includes(selectedType);
+
+            // Lọc theo Phường
+            const matchesWard = (wardValue === "-- Chọn phường --") ||
+                (s.Phuong.toLowerCase().trim() === normalizedWard);
+
+            // Chỉ lấy sân đang hoạt động
+            const isActive = s.TrangThai === 'hoatdong';
+
+            return matchesType && matchesWard && isActive;
         });
+
+        this.renderPage(1); // Luôn về trang 1 sau khi lọc
+
+    },
+
+    // 3. Hiển thị dữ liệu và đếm số lượng
+    renderPage(page) {
+        this.currentPage = page;
+        const listContainer = document.getElementById('stadiumList');
+        const countContainer = document.getElementById('stadiumCount');
+        if (!listContainer) return;
+
+        // Cập nhật tổng số lượng
+        if (countContainer) {
+            countContainer.innerText = `(${this.filteredData.length})`;
+        }
+
+        // Xử lý khi không có kết quả
+        if (this.filteredData.length === 0) {
+            listContainer.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                    <p style="font-size: 18px; color: #555;">Không có kết quả tìm kiếm phù hợp.</p>
+                </div>`;
+            document.getElementById('pagination').innerHTML = "";
+            return;
+        }
+
+        // Phân trang
+        const start = (page - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        const items = this.filteredData.slice(start, end);
+
+        if (token) {
+            listContainer.innerHTML = items.map(s => `
+            <a href="../chi-tiet-san/san-A.html?id=${s.MaSan}" class="stadium-card">
+                <img src="/images/sanA.png" alt="${s.TenSan}">
+                <div class="stadium-info">
+                    <h3>${s.TenSan}</h3>
+                    <p><strong>Loại:</strong> ${s.LoaiSan}</p>
+                    <p><strong>Địa chỉ:</strong> ${s.DiaChi}, ${s.Phuong}</p>
+                    <p><strong>Giá:</strong> ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(s.Gia)}</p>
+                </div>
+            </a>
+        `).join('');
+        } else {
+            listContainer.innerHTML = items.map(s => `
+            <a href="../chi-tiet-san/san-A-guest.html?id=${s.MaSan}" class="stadium-card">
+                <img src="/images/sanA.png" alt="${s.TenSan}">
+                <div class="stadium-info">
+                    <h3>${s.TenSan}</h3>
+                    <p><strong>Loại:</strong> ${s.LoaiSan}</p>
+                    <p><strong>Địa chỉ:</strong> ${s.DiaChi}, ${s.Phuong}</p>
+                    <p><strong>Giá:</strong> ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(s.Gia)}</p>
+                </div>
+            </a>
+        `).join('');
+        }
+        this.renderPagination();
+    },
+
+    // 4. Vẽ nút phân trang
+    renderPagination() {
+        const pages = Math.ceil(this.filteredData.length / this.itemsPerPage);
+        const container = document.getElementById('pagination');
+        if (!container || pages <= 1) {
+            if (container) container.innerHTML = "";
+            return;
+        }
+
+        container.innerHTML = Array.from({ length: pages }, (_, i) => i + 1)
+            .map(p => `<button class="page-btn ${p === this.currentPage ? 'active' : ''}" onclick="StadiumApp.goToPage(${p})">${p}</button>`)
+            .join('');
+    },
+
+    goToPage(p) {
+        this.renderPage(p);
+        document.getElementById('related-stadiums-section')?.scrollIntoView({ behavior: 'smooth' });
     }
-});
+};
+
+// Xuất hàm ra phạm vi toàn cục
+window.StadiumApp = StadiumApp;
+
+document.addEventListener('DOMContentLoaded', () => StadiumApp.init());
 
 /* Chi tiết sân cho chủ sân */
 
@@ -375,11 +518,11 @@ function savePitchInfo() {
 // Hàm lấy thông tin user từ Token và điền vào form (Chưa có BE)
 // 1. Hàm tự động lấy thông tin (Chỉ chạy nếu có Token và không ép đăng nhập)
 async function fetchUserInfo() {
-    const currentToken = localStorage.getItem('userToken'); 
+    const currentToken = localStorage.getItem('userToken');
     if (!currentToken || currentToken === 'demo-token') return; // Im lặng nếu không có token chuẩn
 
     try {
-        const res = await fetch(`${API_URL}/user-info`, {
+        const res = await fetch(`${API_URL}/users/`, {
             headers: { 'Authorization': 'Bearer ' + currentToken }
         });
 
@@ -451,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Khởi tạo hiển thị tên file
     initFileDisplay();
-    
+
     // Tải dữ liệu bảng nếu đang ở trang Admin
     if (document.getElementById('bookingTableBody')) fetchBookings();
     if (document.getElementById('user-management-table')) loadUserTable();
@@ -463,7 +606,7 @@ function initFileDisplay() {
     const fileNameDisplay = document.getElementById('file-name-display');
 
     if (fileInput && fileNameDisplay) {
-        fileInput.addEventListener('change', function() {
+        fileInput.addEventListener('change', function () {
             if (this.files && this.files.length > 0) {
                 fileNameDisplay.textContent = this.files[0].name;
                 fileNameDisplay.style.color = "#040308ff";
@@ -476,26 +619,7 @@ function initFileDisplay() {
 }
 // Đảm bảo hàm này được gọi
 document.addEventListener('DOMContentLoaded', initFileDisplay);
-document.addEventListener('DOMContentLoaded', () => {
 
-    const ownerForm = document.getElementById('ownerForm');
-    function isLoggedIn() {
-        return !!localStorage.getItem('userToken');
-    }
-
-    // Xử lý submit form
-    ownerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(ownerForm);
-
-        console.log("Dữ liệu đăng ký sân:", Object.fromEntries(formData.entries()));
-        alert("Đăng ký sân thành công!");
-
-        fetch(`${API_URL}/register-stadium`, { method: 'POST', body: formData })
-    });
-
-});
 
 document.addEventListener('DOMContentLoaded', () => {
     const ownerForm = document.getElementById('ownerForm');
@@ -516,7 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
             if (username && password) {
-                localStorage.setItem('userToken', 'demo-token'); // lưu token demo
+                localStorage.setItem('userToken', 'demo-token'); 
                 alert("Đăng nhập thành công!");
                 closeLoginModal();
             } else {
@@ -642,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Xử lý khi nhấn nút "Đặt sân" gửi về Backend
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const token = localStorage.getItem('userToken');
         const formData = {
             name: document.getElementById('name').value,
@@ -834,9 +958,9 @@ function checkAccess(event, targetUrl) {
     const token = localStorage.getItem("userToken");
 
     if (token) {
-        window.location.href = targetUrl; // Cho phép đi tiếp
+        window.location.href = targetUrl;
     } else {
-        alert("Bạn cần đăng nhập để truy cập tính năng dành cho chủ sân!");
+        alert("Bạn cần đăng nhập để thực hiện hành động này!");
         openModal(); // Mở modal đăng nhập cho khách
     }
 }
@@ -846,7 +970,7 @@ async function fetchBookings() {
     if (!tableBody) return;
 
     const status = document.getElementById('statusFilter')?.value || 'all';
-    
+
     try {
         const response = await apiRequest(`${API_URL}/lichdatsan/owner?status=${status}`, {
             method: 'GET'
@@ -886,7 +1010,7 @@ const toggleModal = (show) => {
 };
 
 // Gán hàm vào window để gọi từ HTML
-window.scrollToSchedule = () => { toggleModal(true); renderPitchSchedule(1); };
+window.scrollToSchedule = () => toggleModal(true);;
 window.closeScheduleModal = () => toggleModal(false);
 
 // Đóng modal khi click ra ngoài
@@ -901,20 +1025,21 @@ async function renderPitchSchedule(maSan) {
 
     let bookedSlots = [];
     try {
-        bookedSlots = await apiRequest(`${API_URL}/ca-thue-san/${maSan}`, {
+        bookedSlots = await apiRequest(`${API_URL}/slots/fields/${maSan}`, {
+            method: 'GET',
             headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
         });
     } catch (e) { console.warn("Lỗi tải lịch:", e.message); }
 
     const today = new Date();
-    
+
     tbody.innerHTML = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
-        
+
         const isoDate = date.toISOString().split('T')[0];
-        const displayDate = date.toLocaleDateString('vi-VN'); 
-        
+        const displayDate = date.toLocaleDateString('vi-VN');
+
         let cells = `<td style="font-weight:bold; background:#f4f4f4;">${i === 0 ? displayDate + ' (Hôm nay)' : displayDate}</td>`;
 
         for (let ca = 1; ca <= 12; ca++) {
@@ -948,3 +1073,40 @@ window.proceedToBooking = () => {
 
 /* === KHỞI TẠO === */
 document.addEventListener('DOMContentLoaded', () => renderPitchSchedule(1));
+
+async function loadPitchDetails() {
+    // 1. Lấy MaSan từ URL (ví dụ: ?id=1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const maSan = urlParams.get('id');
+
+    if (!maSan) return;
+
+    try {
+        // 2. Gọi API lấy thông tin 1 sân cụ thể
+        const response = await fetch(`${API_URL}/fields/${maSan}`);                       // **** Cần có thông tin chủ sân, số điện thoại từ BE**** //
+        const stadium = await response.json();
+
+        if (stadium) {
+            // 3. Đổ dữ liệu vào HTML
+            document.getElementById('displayTenSan').innerText = stadium.TenSan;
+            document.getElementById('displayChuSan').innerText = stadium.TenChuSan || "Chưa cập nhật";
+            document.getElementById('displaySDT').innerText = stadium.SoDienThoai || "0363 xxx xxx";
+            document.getElementById('displayLoaiSan').innerText = stadium.LoaiSan;
+            document.getElementById('displayDiaChi').innerText = `${stadium.DiaChi}, ${stadium.Phuong}`;
+
+            // Định dạng giá tiền
+            document.getElementById('displayGia').innerText = new Intl.NumberFormat('vi-VN').format(stadium.Gia);
+        }
+    } catch (err) {
+        console.error("Lỗi khi tải chi tiết sân:", err);
+        document.getElementById('displayTenSan').innerText = "Không tìm thấy thông tin sân";
+    }
+}
+
+// KHỞI TẠO: Kiểm tra nếu đang ở trang chi tiết thì mới chạy
+document.addEventListener('DOMContentLoaded', () => {
+    // Kiểm tra xem trang có các ID này không trước khi chạy
+    if (document.getElementById('displayTenSan')) {
+        loadPitchDetails();
+    }
+});

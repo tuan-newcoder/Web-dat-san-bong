@@ -11,7 +11,7 @@
 
 <body>
 
-        <!-- NAVBAR -->
+    <!-- NAVBAR -->
     <header class="navbar">
         <a href="chu-san.html" class="logo-link">
             <div class="logo">
@@ -58,95 +58,86 @@
 
             <div class="dropdown">
                 <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
-                    <img src="/images/user-icon.png" alt="User Icon" class="user-icon">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
                 </button>
                 <div id="userDropdown" class="dropdown-content">
                     <a href="profile.html">Hồ sơ</a>
                     <a href="notification.html">Thông báo</a>
                     <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
-                    <a href="/index.html" id="logoutLink">Đăng xuất</a>
+                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
                 </div>
             </div>
         </div>
     </header>
+
 
     <!-- MAIN CONTENT - Chi tiết sân bóng -->
     <main class="detail-container">
         <!-- BỘ LỌC TÌM KIẾM -->
         <div class="filter-container">
             <div class="filter-group">
-                <label>Loại lịch</label>
+                <label>Loại sân</label>
                 <div class="calendar-type-buttons">
-                    <button class="calendar-type-button active" data-type="san-trong">Sân 5</button>
+                    <button class="calendar-type-button" data-type="san-trong">Sân 5</button>
                     <button class="calendar-type-button" data-type="su-kien">Sân 7</button>
                     <button class="calendar-type-button" data-type="ghep-doi">Sân 11</button>
                 </div>
             </div>
 
             <div class="filter-group">
-                <label>Chọn ngày</label>
-                <input type="date" id="selectDate" class="date-input" value="2025-12-04">
+                <label>Chọn Phường</label>
+                <select id="phuongSelect" class="phuong">
+                    <option>-- Chọn phường --</option>
+                    <option>Bách Khoa</option>
+                    <option>Trung Hòa</option>
+                    <option>Kim Giang</option>
+                    <option>Phương Liệt</option>
+                    <option>Thanh Xuân</option>
+                    <option>Thanh Lương</option>
+                    <option>Trương Định</option>
+                    <option>Hoàng Văn Thụ</option>
+                    <option>Minh Khai</option>
+                    <option>Mai Động</option>
+                    <option>Tương Mai</option>
+                    <option>Yên Sở</option>
+                </select>
             </div>
 
             <div class="filter-group">
-                <label>Khung giờ</label>
-                <div class="time-range-group">
-                    <div class="time-input-wrapper">
-                        <span>Từ</span>
-                        <input type="time" value="07:30">
-                    </div>
-                    <div class="time-input-wrapper">
-                        <span>Đến</span>
-                        <input type="time" value="09:30">
-                    </div>
-                </div>
+                <label>Ca</label>
+                <select id="caSelect" class="ca">
+                    <option>-- Chọn ca --</option>
+                    <option>Ca 1 (06:00 - 07:30)</option>
+                    <option>Ca 2 (07:30 - 09:00)</option>
+                    <option>Ca 3 (09:00 - 10:30)</option>
+                    <option>Ca 4 (10:30 - 12:00)</option>
+                    <option>Ca 5 (12:00 - 13:30)</option>
+                    <option>Ca 6 (13:30 - 15:00)</option>
+                    <option>Ca 7 (15:00 - 16:30)</option>
+                    <option>Ca 8 (16:30 - 18:00)</option>
+                    <option>Ca 9 (18:00 - 19:30)</option>
+                    <option>Ca 10 (19:30 - 21:00)</option>
+                    <option>Ca 11 (21:00 - 22:30)</option>
+                    <option>Ca 12 (22:30 - 24:00)</option>
+                </select>
             </div>
-            <div class="booking-section">   
-                <button type="submit">Tìm kiếm</button>
+            <div class="booking-section">
+                <button type="button" id="searchButton" onclick="document.getElementById('related-stadiums-section').scrollIntoView({ behavior: 'smooth' });">Tìm kiếm</button>
             </div>
+
 
         </div>
         <!-- KẾT THÚC BỘ LỌC TÌM KIẾM -->
 
         <!-- PHẦN DANH SÁCH SÂN BÓNG -->
-        <section class="related-stadiums-section">
-            <h2>Danh sách sân</h2>
+        <section id="related-stadiums-section" class="related-stadiums-section">
+            <h2>Danh sách sân <span id="stadiumCount" style="font-size: 0.7em; color: #888;"></span></h2>
 
-            <div class="stadium-list-container">
-                <!-- Sân bóng A -->
-                <a href="../chi-tiet-san/san-A.html" class="stadium-card">
-                    <img src="/images/sanA.png" alt="Sân bóng A">
-                    <div class="stadium-info">
-                        <h3>Sân bóng A</h3>
-                        <p>Địa chỉ: Số 1 Đại Cồ Việt</p>
-                        <p>Điện thoại: 0363 636 363</p>
-                        <p>Trạng thái: Đang hoạt động</p>
-                    </div>
-                </a>
-
-                <!-- Sân bóng B -->
-                <a href="../chi-tiet-san/san-A.html" class="stadium-card">
-                    <img src="/images/sanB.png" alt="Sân bóng B">
-                    <div class="stadium-info">
-                        <h3>Sân bóng B</h3>
-                        <p>Địa chỉ: Đường Giải Phóng</p>
-                        <p>Điện thoại: 0912 345 678</p>
-                        <p>Trạng thái: Đang hoạt động</p>
-                    </div>
-                </a>
-
-                <!-- Sân bóng C -->
-                <a href="../chi-tiet-san/san-A.html" class="stadium-card">
-                    <img src="/images/sanC.png" alt="Sân bóng C">
-                    <div class="stadium-info">
-                        <h3>Sân bóng C</h3>
-                        <p>Địa chỉ: Phố Vọng</p>
-                        <p>Điện thoại: 0987 654 321</p>
-                        <p>Trạng thái: Bảo trì</p>
-                    </div>
-                </a>
+            <div class="stadium-list-container" id="stadiumList">
+                <p style="text-align: center; width: 100%;">Đang tải danh sách sân...</p>
             </div>
         </section>
+        <div id="pagination" class="pagination-container"></div>
     </main>
 
     <!-- FOOTER INFO SECTION -->
