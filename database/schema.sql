@@ -14,6 +14,8 @@ CREATE TABLE User (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE,
     sdt VARCHAR(15),
+    stk VARCHAR(25),
+    bank VARCHAR(50),
     quyen ENUM('admin', 'chusan', 'khachhang') DEFAULT 'khachhang'
 );
 
@@ -25,7 +27,9 @@ CREATE TABLE UpRole (
     MaNguoiDung INT,
     HoTen VARCHAR(100),
     Email VARCHAR(100),
-    SDT VARCHAR(15),
+    Sdt VARCHAR(15),
+	Stk VARCHAR(25),
+    Bank VARCHAR(50),
     AnhGiayPhep MEDIUMBLOB,
     TrangThai ENUM('dangxuly', 'chapnhan', 'tuchoi') DEFAULT 'dangxuly',
     FOREIGN KEY (MaNguoiDung) REFERENCES user(MaNguoiDung)
@@ -38,7 +42,6 @@ CREATE TABLE UpRole (
 CREATE TABLE SanBong (
     MaSan INT PRIMARY KEY AUTO_INCREMENT,
     MaNguoiDung INT,
-    QrChuSan MEDIUMBLOB,
     TenSan VARCHAR(100) NOT NULL,
     LoaiSan VARCHAR(50),
     DiaChi VARCHAR(255),
@@ -48,17 +51,6 @@ CREATE TABLE SanBong (
 	FOREIGN KEY (MaNguoiDung) REFERENCES User(MaNguoiDung)
 );
 
--- ============================
---  TABLE: CaThueSan
--- ============================
-CREATE TABLE CaThueSan (
-    MaCaThue INT PRIMARY KEY AUTO_INCREMENT,
-    MaSan INT NOT NULL,
-    Ca INT,
-    Ngay DATE,
-    TrangThai ENUM('dadat','controng') DEFAULT 'controng',
-    FOREIGN KEY (MaSan) REFERENCES SanBong(MaSan)
-);
 
 -- ============================
 --  TABLE: LichDatSan
@@ -66,12 +58,15 @@ CREATE TABLE CaThueSan (
 CREATE TABLE LichDatSan (
     MaDatSan INT PRIMARY KEY AUTO_INCREMENT,
     MaNguoiDung INT NOT NULL,
-    MaCaThue INT NOT NULL,
+    MaSan INT NOT NULL,
+    Ca INT,
+    Ngay DATE,
     TongTien DECIMAL(10,2) NOT NULL,
     TrangThai ENUM('chuaxacnhan','daxacnhan','dahuy') DEFAULT 'chuaxacnhan',
     FOREIGN KEY (MaNguoiDung) REFERENCES User(MaNguoiDung),
-    FOREIGN KEY (MaCaThue) REFERENCES CaThueSan(MaCaThue)
+    FOREIGN KEY (MaSan) REFERENCES SanBong(MaSan)
 );
+
 
 -- ============================
 --  TABLE: PASSWORD RESET
@@ -84,3 +79,4 @@ CREATE TABLE password_resets (
     expires_at TIMESTAMP NOT NULL, -- Thời điểm hết hạn
     INDEX (email)
 );
+
