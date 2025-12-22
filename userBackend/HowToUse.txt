@@ -79,11 +79,18 @@
             
         }
 
-    // Lấy thông tin đặt sân
+    // Lấy thông tin ca đã đặt của sân
     - Method: GET
-    - URL API: http://localhost:3000/api/bookings/fields/7
+    - URL API: http://localhost:3000/api/slots/fields/7
     - body json: 
         {
             
         }
-        
+
+    // Lấy thông tin cá nhân
+    - Method: GET
+    - URL API: http://localhost:3000/api/users/1
+    - body json: 
+        {
+            
+        }
