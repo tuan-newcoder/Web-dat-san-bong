@@ -128,12 +128,12 @@ exports.putFieldsDetails = async (req, res) => {
 }
 
 exports.createField = async (req, res) => {
-    const { TenSan, LoaiSan, DiaChi, Phuong, TrangThai } = req.body;
+    const { TenSan, LoaiSan, DiaChi, Phuong } = req.body;
 
     // 1. Validate dữ liệu đầu vào (giống hệt hàm PUT)
     if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
         return res.status(400).json({
-            message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Phường, Trạng thái'
+            message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Phường'
         });
     }
 
@@ -148,16 +148,11 @@ exports.createField = async (req, res) => {
          return res.status(400).json({ message: 'Phường không hợp lệ ' });
     }
 
-    const validTrangThai = ['hoatdong', 'baotri'];
-    if (!validTrangThai.includes(TrangThai)) {
-         return res.status(400).json({ message: 'Trạng thái không hợp lệ!' });
-    }
-
     try {
         // 2. Thực hiện câu lệnh INSERT
         // Lưu ý: Không cần truyền MaSan (id) vì trong DB thường để Auto Increment
         const [result] = await db.execute(
-            `INSERT INTO sanbong (TenSan, LoaiSan, DiaChi, Phuong, TrangThai) VALUES (?, ?, ?, ?, ?)`, 
+            `INSERT INTO sanbong (TenSan, LoaiSan, DiaChi, Phuong) VALUES (?, ?, ?, ?)`, 
             [TenSan, LoaiSan, DiaChi, Phuong, TrangThai]    
         );
 
@@ -169,8 +164,7 @@ exports.createField = async (req, res) => {
                 TenSan,
                 LoaiSan,
                 DiaChi,
-                Phuong,
-                TrangThai
+                Phuong
             }
         });
 
