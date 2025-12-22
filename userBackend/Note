@@ -1,1 +1,19 @@
 Hàm validPhuong
+
+Error: Unknown column 'isTrusted' in 'where clause'
+    at PromisePool.query (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at exports.login (D:\Software\Code\IT3040\Web-dat-san-bong\userBackend\controllers\authController.js:34:33)
+    at Layer.handleRequest (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\lib\layer.js:152:17)
+    at next (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\lib\route.js:117:3)
+    at handle (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\lib\layer.js:152:17)
+    at D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\index.js:295:15
+    at processParams (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\index.js:582:12)
+    at next (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\router\index.js:291:5) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT * FROM user WHERE username = `isTrusted` = true',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'isTrusted' in 'where clause'"
+}

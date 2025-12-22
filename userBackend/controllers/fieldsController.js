@@ -37,7 +37,7 @@ exports.getFieldSearch = async (req, res) => {
             join = true;
         }
 
-        sql += ` WHERE TrangThai = 'hoatdong'`;
+        sql += ` WHERE s.TrangThai = 'hoatdong'`;
 
         if (LoaiSan) {
             sql += ` AND LoaiSan = ? `;
@@ -50,7 +50,7 @@ exports.getFieldSearch = async (req, res) => {
         }
 
         if (CaThue) {
-            sql += `AND Ca = ?`;
+            sql += `AND Ca = ? AND c.TrangThai = 'controng' `;
             params.push(CaThue);
         }
 
@@ -84,9 +84,11 @@ exports.putFieldsDetails = async (req, res) => {
          return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận 5, 7, 11)' });
     }
 
-    /*
-    const validPhuong ---------------------------------------------------------------------------------------------------------
-    */
+    const validPhuong = ['Bách Khoa', 'Trung Hòa', 'Kim Giang', 'Phương Liệt', 'Thanh Xuân', 'Thanh Lương', 
+                        'Trương Định', 'Hoàng Văn Thụ', 'Minh Khai', 'Mai Động', 'Hoàng Văn Thụ', 'Tương Mai', 'Yên Sở']; 
+    if (!validPhuong.includes(String(Phuong))) {
+         return res.status(400).json({ message: 'Phường không hợp lệ ' });
+    }
 
     const validTrangThai = ['hoatdong', 'baotri']; // Ví dụ trạng thái
     if (!validTrangThai.includes(TrangThai)) {

@@ -5,7 +5,7 @@ const fieldController = require('../controllers/fieldsController');
 // Lấy danh sách sân (GET /api/fields)
 router.get('/', fieldController.getFields);
 
-// Thêm sân (POST /api/fields/:id)
+// Thêm sân (POST /api/fields/)
 router.post('/', fieldController.createField);
 
 // Tìm sân (GET /api/fields/search)
