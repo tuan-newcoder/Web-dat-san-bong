@@ -142,9 +142,11 @@ exports.createField = async (req, res) => {
          return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận Sân 5, Sân 7, Sân 11)' });
     }
 
-    /*
-    const validPhuong ---------------------------------------------------------------------------------------------------------
-    */
+    const validPhuong = ['Bách Khoa', 'Trung Hòa', 'Kim Giang', 'Phương Liệt', 'Thanh Xuân', 'Thanh Lương', 
+                        'Trương Định', 'Hoàng Văn Thụ', 'Minh Khai', 'Mai Động', 'Hoàng Văn Thụ', 'Tương Mai', 'Yên Sở']; 
+    if (!validPhuong.includes(String(Phuong))) {
+         return res.status(400).json({ message: 'Phường không hợp lệ ' });
+    }
 
     const validTrangThai = ['hoatdong', 'baotri'];
     if (!validTrangThai.includes(TrangThai)) {
@@ -222,3 +224,4 @@ exports.deleteField = async (req, res) => {
         res.status(500).json({ message: "Lỗi Server nội bộ" });
     }
 };
+

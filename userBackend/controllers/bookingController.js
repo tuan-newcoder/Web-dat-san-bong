@@ -1,132 +1,34 @@
 const db = require('../db');
 
-exports.createBooking = async (req, res) => {
-    const { maCaThue } = req.body; 
-    const maNguoiDung = req.user.id; 
-
-    if (!maCaThue) return res.status(400).json({ message: "Thiếu mã ca thuê!" });
-
-    const connection = await db.getConnection(); 
+exports.getBookedSlots = async (req, res) => {
+    const { id } = req.params;
 
     try {
-        await connection.beginTransaction();
-
-        const [shifts] = await connection.query(
-            "SELECT * FROM CaThueSan WHERE MaCaThue = ? AND TrangThai = 'controng' FOR UPDATE", 
-            [maCaThue]
-        );
-
-        if (shifts.length === 0) {
-            await connection.rollback();
-            return res.status(409).json({ message: "Ca này không tồn tại hoặc đã bị đặt!" });
-        }
-
-        const caThue = shifts[0];
-
-        const insertSql = `
-            INSERT INTO LichDatSan (MaNguoiDung, MaCaThue, TrangThai)
-            VALUES (?, ?, 'chuaxacnhan')
-        `;
-        const [result] = await connection.query(insertSql, [maNguoiDung, maCaThue]);
-        const maDatSan = result.insertId;
-
-        await connection.query("UPDATE CaThueSan SET TrangThai = 'dadat' WHERE MaCaThue = ?", [maCaThue]);
-        
-        const insertBillSql = `
-            INSERT INTO HoaDon (MaDatSan, TongTien, TrangThai)
-            VALUES (?, ?, 'chuathanhtoan')
-        `;
-        await connection.query(insertBillSql, [maDatSan, caThue.Gia]);
-
-        await connection.commit();
-        res.status(201).json({ message: "Đặt sân thành công!", maDatSan });
-
-    } catch (err) {
-        await connection.rollback();
-        console.error(err);
-        res.status(500).json({ message: "Lỗi đặt sân" });
-    } finally {
-        connection.release();
-    }
-};
-
-exports.getUserBookings = async (req, res) => {
-    const maNguoiDung = req.user.id; 
-    try {
+        // Truy vấn lấy danh sách các ca ĐÃ ĐẶT (TrangThai = 'dadat' hoặc tương tự)
+        // Lưu ý: Dùng DATE_FORMAT để frontend dễ xử lý chuỗi ngày
         const sql = `
             SELECT 
-                l.MaDatSan, l.TrangThai as TrangThaiDat,
-                c.Ngay, c.GioBD, c.GioKT, c.Gia,
-                s.TenSan, s.DiaChi,
-                h.MaHoaDon, h.TrangThai as TrangThaiThanhToan
-            FROM LichDatSan l
-            JOIN CaThueSan c ON l.MaCaThue = c.MaCaThue
-            JOIN SanBong s ON c.MaSan = s.MaSan
-            LEFT JOIN HoaDon h ON l.MaDatSan = h.MaDatSan
-            WHERE l.MaNguoiDung = ?
-            ORDER BY c.Ngay DESC
+                DATE_FORMAT(Ngay, '%Y-%m-%d') as Ngay, 
+                Ca 
+            FROM cathuesan
+            WHERE MaSan = ? 
+              AND Ngay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+              AND TrangThai = 'dadat' 
         `;
-        const [rows] = await db.query(sql, [maNguoiDung]);
-        res.json(rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Lỗi lấy lịch sử" });
-    }
-};
 
-exports.processPayment = async (req, res) => {
-    const { maHoaDon } = req.body;
-    
-    try {
-        const [result] = await db.query(
-            "UPDATE HoaDon SET TrangThai = 'dathanhtoan' WHERE MaHoaDon = ?", 
-            [maHoaDon]
-        );
-        
-        if (result.affectedRows === 0) return res.status(404).json({message: "Không tìm thấy hóa đơn"});
+        const [bookedSlots] = await db.query(sql, [id]);
 
-        const [bill] = await db.query("SELECT MaDatSan FROM HoaDon WHERE MaHoaDon = ?", [maHoaDon]);
-        if(bill.length > 0) {
-             await db.query("UPDATE LichDatSan SET TrangThai = 'daxacnhan' WHERE MaDatSan = ?", [bill[0].MaDatSan]);
-        }
-
-        res.json({ message: "Thanh toán thành công!" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Lỗi thanh toán" });
-    }
-};
-exports.getRevenueLast7Days = async (req, res) => {
-    try {
-
-        const query = `
-            SELECT 
-                DATE(booking_date) as date, 
-                SUM(price) as total_revenue
-            FROM 
-                bookings
-            WHERE 
-                booking_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-            GROUP BY 
-                DATE(booking_date)
-            ORDER BY 
-                date ASC;
-        `;
-        
-        // --- SỬ DỤNG KẾT NỐI DB THỰC TẾ ---
-        // `results` sẽ là một mảng các hàng từ CSDL
-        const [results] = await db.query(query); 
-
-        // Định dạng dữ liệu để gửi về cho frontend
-        const data = results.map(row => ({
-            date: row.date, // Đảm bảo trường này là định dạng YYYY-MM-DD
-            revenue: row.total_revenue
-        }));
-
-        res.status(200).json(data);
+        // Kết quả trả về sẽ dạng mảng:
+        // [{ Ngay: '2025-12-22', Ca: 1 }, { Ngay: '2025-12-22', Ca: 3 }, ...]
+        res.status(200).json({
+            message: "Lấy dữ liệu thành công",
+            data: bookedSlots
+        });
 
     } catch (error) {
-        console.error('Lỗi khi lấy doanh thu 7 ngày:', error);
-        res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        console.error(error);
+        res.status(500).json({ message: "Lỗi server" });
     }
 };
+
+

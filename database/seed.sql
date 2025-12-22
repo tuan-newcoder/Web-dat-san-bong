@@ -147,3 +147,42 @@ SET FOREIGN_KEY_CHECKS = 1;
 --  THÔNG BÁO HOÀN TẤT
 -- ============================
 SELECT 'Database generated successfully with sample data!' AS Status;
+
+
+/* dữ liệu giả để test chức năng lấy ca đã đặt
+INSERT INTO cathuesan (MaSan, Ca, Ngay, TrangThai) VALUES 
+-- Ngày hôm nay (Day 0)
+(3, 1, CURDATE(), 'dadat'),
+(3, 2, CURDATE(), 'dadat'),
+(1, 5, CURDATE(), 'dadat'),
+(7, 9, CURDATE(), 'dadat'),
+
+-- Ngày mai (Day 1)
+(3, 5, DATE_ADD(CURDATE(), INTERVAL 1 DAY), 'dadat'),
+(3, 6, DATE_ADD(CURDATE(), INTERVAL 1 DAY), 'dadat'),
+(2, 2, DATE_ADD(CURDATE(), INTERVAL 1 DAY), 'dadat'),
+(5, 8, DATE_ADD(CURDATE(), INTERVAL 1 DAY), 'dadat'),
+
+-- Ngày kia (Day 2)
+(3, 1, DATE_ADD(CURDATE(), INTERVAL 2 DAY), 'dadat'),
+(1, 3, DATE_ADD(CURDATE(), INTERVAL 2 DAY), 'dadat'),
+(7, 4, DATE_ADD(CURDATE(), INTERVAL 2 DAY), 'dadat'),
+
+-- Ngày thứ 3 (Day 3)
+(3, 10, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'dadat'),
+(2, 5, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'dadat'),
+(5, 6, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'dadat'),
+
+-- Ngày thứ 4 (Day 4)
+(1, 1, DATE_ADD(CURDATE(), INTERVAL 4 DAY), 'dadat'),
+(3, 2, DATE_ADD(CURDATE(), INTERVAL 4 DAY), 'dadat'),
+(3, 3, DATE_ADD(CURDATE(), INTERVAL 4 DAY), 'dadat'),
+
+-- Ngày thứ 5 (Day 5)
+(7, 7, DATE_ADD(CURDATE(), INTERVAL 5 DAY), 'dadat'),
+(5, 8, DATE_ADD(CURDATE(), INTERVAL 5 DAY), 'dadat'),
+
+-- Ngày thứ 6 (Day 6) - Tròn 1 tuần
+(3, 11, DATE_ADD(CURDATE(), INTERVAL 6 DAY), 'dadat'),
+(2, 12, DATE_ADD(CURDATE(), INTERVAL 6 DAY), 'dadat');
+*/

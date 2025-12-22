@@ -4,22 +4,8 @@ const router = express.Router();
 const bookingController = require('../controllers/bookingController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
-// --- CÁC ROUTE CẦN ĐĂNG NHẬP ---
+// Lấy danh sách ca (GET /api/bookings/fields/:id)
+router.get('/fields/:id', bookingController.getBookedSlots);
 
-// 1. Đặt sân (POST /api/bookings)
-// Body cần gửi: { "maCaThue": 1 }
-router.post('/', authenticateToken, bookingController.createBooking);
-
-// 2. Xem lịch sử đặt sân của chính mình (GET /api/bookings/history)
-// Token sẽ tự xác định là user nào
-router.get('/history', authenticateToken, bookingController.getUserBookings);
-
-// 3. Thanh toán hóa đơn (POST /api/bookings/payments)
-// Body cần gửi: { "maHoaDon": 5 }
-router.post('/payments', authenticateToken, bookingController.processPayment);
-
-// 4. Lấy dữ liệu doanh thu 7 ngày gần nhất (GET /api/bookings/revenue-last-7-days)
-// Cần admin quyền hoặc một middleware xác thực đặc biệt nếu cần
-router.get('/revenue-last-7-days', authenticateToken, bookingController.getRevenueLast7Days);
 
 module.exports = router;
