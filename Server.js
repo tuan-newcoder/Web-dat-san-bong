@@ -7,10 +7,11 @@ const cors = require('cors');
 const PORT = 3000; 
 
 // 2. Import Routes (Đảm bảo các file này nằm trong userBackend/routes/)
-const authRoutes = require('./routes/authRoutes');
-const fieldsRoutes = require('./routes/fieldsRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const usersRoutes = require('./routes/userRoutes');
+const authRoutes = require('./userBackend/routes/authRoutes');
+const fieldsRoutes = require('./userBackend/routes/fieldsRoutes');
+const bookingRoutes = require('./userBackend/routes/bookingRoutes');
+const usersRoutes = require('./userBackend/routes/userRoutes');
+const slotsRoutes = require('./userBackend/routes/slotsRoutes');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/fields', fieldsRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/slots', slotsRoutes);
 
 // ==========================================
 // QUAN TRỌNG: LỆNH NÀY GIỮ SERVER KHÔNG BỊ "CLEAN EXIT"
