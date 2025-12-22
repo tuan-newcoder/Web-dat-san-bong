@@ -92,7 +92,7 @@ async function handleLogin(username, password) {
         if (data.user) {
             localStorage.setItem('user', JSON.stringify(data.user));
         }
-
+        const UserID = data.user.id;
         alert("Đăng nhập thành công! Chào mừng " + (data.user?.username || username));
         
         closeModal();
@@ -102,7 +102,7 @@ async function handleLogin(username, password) {
         if (user.role === 'admin') {
             window.location.href = '/assets/admin/admin-dashboard.html';
         } else if (user.role === 'khachhang'){
-            window.location.href = '/assets/after-login/after-login.html';
+            window.location.href = `/assets/after-login/after-login.html?id=${UserID}`;
         } else {
             window.location.href = '/assets/owner/chu-san.html';
         }
@@ -120,14 +120,14 @@ async function handleRegister() {
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
     const username = document.getElementById('registerUsername').value;
-    const phone = document.getElementById('registerPhone').value;
+    const sdt = document.getElementById('registerPhone').value;
 
     if (password !== confirmPassword) {
         alert("Mật khẩu xác nhận không khớp!");
         return;
     }
 
-    if (!email || !password || !username || !phone) {
+    if (!HoTen || !email || !password || !username || !sdt) {
         alert("Vui lòng điền đầy đủ tất cả các trường bắt buộc.");
         return;
     }
@@ -138,7 +138,7 @@ async function handleRegister() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ HoTen, email, password, username, phone }),
+            body: JSON.stringify({ HoTen, email, password, username, sdt }),
         });
 
         alert("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
@@ -787,12 +787,12 @@ async function fillLoggedUserInfo() {
 
         if (userData) {
             const nameInput = document.getElementById('name');
-            const phoneInput = document.getElementById('phone');
+            const sdt = document.getElementById('phone');
 
             // Điền thông tin vào các ô input nếu chúng tồn tại
             // 'HoTen' và 'phone' là các trường giả định từ JSON của bạn
-            if (nameInput) nameInput.value = userData.HoTen || userData.fullName || "";
-            if (phoneInput) phoneInput.value = userData.sdt || userData.SoDienThoai || "";
+            if (nameInput) nameInput.value = userData.HoTen || "";
+            if (sdt) sdt.value = userData.sdt || "";
             
         }
     } catch (error) {
@@ -1048,13 +1048,15 @@ window.addEventListener('click', (e) => e.target.id === 'scheduleModal' && toggl
 /**
  * Render lịch đặt sân 7 ngày
  */
-async function renderPitchSchedule(maSan) {
+const urlParams = new URLSearchParams(window.location.search);
+const currentMaSan = urlParams.get('id');
+async function renderPitchSchedule(currentMaSanmaSan) {
     const tbody = document.getElementById('schedule-body');
     if (!tbody) return;
 
     let bookedSlots = [];
     try {
-        bookedSlots = await apiRequest(`${API_URL}/slots/fields/${maSan}`, {
+        bookedSlots = await apiRequest(`${API_URL}/slots/fields/${CurrentMaSan}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
         });
@@ -1154,131 +1156,133 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* === Script cho Profile === */
 
-async function loadUserProfile() {
-    // 1. Lấy thông tin user từ localStorage (đã lưu khi đăng nhập)
-    const userStr = localStorage.getItem('user');
-    if (!userStr) return;
+/* === QUẢN LÝ MODAL ĐỔI MẬT KHẨU === */
+window.openChangePasswordModal = () => {
+    const modal = document.getElementById("changePasswordModal");
+    if (modal) modal.style.display = "flex";
+};
 
-    const userLocal = JSON.parse(userStr);
-    const userId = userLocal.MaNguoiDung || userLocal.id; // Tùy vào key Backend của bạn
+window.closeChangePasswordModal = () => {
+    const modal = document.getElementById("changePasswordModal");
+    if (modal) {
+        modal.style.display = "none";
+        document.getElementById('changePasswordForm')?.reset();
+    }
+};
+
+/* === TẢI THÔNG TIN PROFILE === */
+async function loadUserProfile() {
+    // 1. Ưu tiên lấy ID từ URL (?id=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    let userId = urlParams.get('id');
+
+    // 2. Nếu URL không có ID (ví dụ click từ menu), lấy từ localStorage
+    if (!userId) {
+        const userLocal = JSON.parse(localStorage.getItem('user'));
+        userId = userLocal?.MaNguoiDung || userLocal?.id;
+    }
 
     if (!userId) {
-        console.error("Không tìm thấy ID người dùng.");
+        alert("Không xác định được người dùng. Vui lòng đăng nhập lại!");
+        window.location.href = "/index.html";
         return;
     }
 
     try {
-        // 2. Gọi API lấy chi tiết người dùng
-        // Sử dụng hàm apiRequest đã có để tự động đính kèm Token
-        const userData = await apiRequest(`${API_URL}/users/${userId}`,{
+        // 3. Gọi API lấy dữ liệu chi tiết
+        const userData = await apiRequest(`${API_URL}/users/${userId}`, {
             method: 'GET'
+            // apiRequest sẽ tự đính kèm Token nếu bạn đã cài đặt như các bước trước
         });
 
         if (userData) {
-            // 3. Đổ dữ liệu vào các ô input
-            const fields = {
-                'profileUsername': userData.username || userData.TenDangNhap,
-                'profileFullName': userData.HoTen || userData.fullname,
-                'profileEmail': userData.email,
-                'profilePhone': userData.phone || userData.SoDienThoai
-            };
-
-            for (const [id, value] of Object.entries(fields)) {
-                const el = document.getElementById(id);
-                if (el) el.value = value || "Chưa cập nhật";
-            }
+            // Đổ dữ liệu vào HTML (Sử dụng toán tử nullish để tránh hiện "undefined")
+            document.getElementById('profileUsername').value = userData.username ?? "Chưa cập nhật";
+            document.getElementById('profileFullName').value = userData.HoTen ?? "Chưa cập nhật";
+            document.getElementById('profileEmail').value = userData.email ?? "Chưa cập nhật";
+            document.getElementById('profilePhone').value = userData.sdt ?? "Chưa cập nhật";
+            
+            console.log("Dữ liệu Profile đã tải xong cho ID:", userId);
         }
     } catch (error) {
         console.error("Lỗi khi tải thông tin profile:", error.message);
+        alert("Không thể tải thông tin tài khoản.");
+    }
+}
+/* === LOGIC CHỈNH SỬA & LƯU THÔNG TIN === */
+async function handleEditSave() {
+    const mainBtn = document.getElementById('mainBtn');
+    const inputs = [
+        document.getElementById('profileUsername'),
+        document.getElementById('profileFullName'),
+        document.getElementById('profileEmail'),
+        document.getElementById('profilePhone')
+    ];
+
+    if (!mainBtn) return;
+
+    if (mainBtn.innerText === "Chỉnh sửa thông tin") {
+        // CHẾ ĐỘ CHỈNH SỬA
+        inputs.forEach(input => {
+            if (input) {
+                input.removeAttribute('readonly');
+                input.style.backgroundColor = "#fff";
+                input.style.border = "1px solid #2563eb";
+            }
+        });
+        mainBtn.innerText = "Lưu thông tin";
+        mainBtn.style.backgroundColor = "#16a34a"; // Đổi sang xanh lá
+    } else {
+        // CHẾ ĐỘ LƯU
+        const userStr = localStorage.getItem('user');
+        const userLocal = JSON.parse(userStr);
+        const userId = userLocal.MaNguoiDung || userLocal.id;
+
+        const updatedData = {
+            HoTen: document.getElementById('profileFullName').value,
+            email: document.getElementById('profileEmail').value,
+            phone: document.getElementById('profilePhone').value
+        };
+
+        try {
+            mainBtn.innerText = "Đang lưu...";
+            await apiRequest(`${API_URL}/users/${userId}`, {
+                method: 'PUT',
+                body: JSON.stringify(updatedData)
+            });
+
+            alert("Cập nhật thành công!");
+            
+            // Khóa lại các ô input
+            inputs.forEach(input => {
+                if (input) {
+                    input.setAttribute('readonly', true);
+                    input.style.backgroundColor = ""; 
+                    input.style.border = "";
+                }
+            });
+            mainBtn.innerText = "Chỉnh sửa thông tin";
+            mainBtn.style.backgroundColor = ""; // Về mặc định
+        } catch (error) {
+            alert("Lỗi: " + error.message);
+            mainBtn.innerText = "Lưu thông tin";
+        }
     }
 }
 
-/* === KHỞI TẠO === */
+/* === KHỞI TẠO KHI TRANG TẢI XONG === */
 document.addEventListener('DOMContentLoaded', () => {
-    // Kiểm tra nếu đang ở trang profile (dựa vào sự tồn tại của id profileUsername)
+    // 1. Nếu có ID profileUsername thì mới chạy hàm tải dữ liệu
     if (document.getElementById('profileUsername')) {
         loadUserProfile();
     }
-});
 
-// Thay đổi thông tin người dùng
-const mainBtn = document.getElementById('mainBtn');
-// Chỉ chọn các ô có thể sửa 
-const editableInputs = [
-    document.getElementById('profileUsername'),
-    document.getElementById('profileFullName'),
-    document.getElementById('profileEmail'),
-    document.getElementById('profilePhone')
-];
+    // 2. Gán sự kiện click cho nút Chỉnh sửa
+    document.getElementById('mainBtn')?.addEventListener('click', handleEditSave);
 
-if (mainBtn) {
-    mainBtn.addEventListener('click', async function () {
-        if (this.innerText === "Chỉnh sửa thông tin") {
-            // BẬT CHẾ ĐỘ CHỈNH SỬA
-            editableInputs.forEach(input => {
-                if (input) {
-                    input.removeAttribute('readonly');
-                    input.classList.add('editable');
-                }
-            });
-            this.innerText = "Lưu thông tin";
-            this.style.backgroundColor = "#16a34a"; // Màu xanh lá
-            if (editableInputs[0]) editableInputs[0].focus();
-        } else {
-            // THỰC HIỆN LƯU VỀ BACKEND
-            await saveAction();
-        }
+    // 3. Đóng modal khi click ra ngoài
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById("changePasswordModal");
+        if (e.target === modal) closeChangePasswordModal();
     });
-}
-
-async function saveAction() {
-    // 1. Lấy userId từ localStorage
-    const userStr = localStorage.getItem('user');
-    if (!userStr) return alert("Hết phiên làm việc, vui lòng đăng nhập lại!");
-    
-    const userLocal = JSON.parse(userStr);
-    const userId = userLocal.MaNguoiDung || userLocal.id;
-
-    // 2. Gom dữ liệu từ các ô input
-    const updatedData = {
-        username: document.getElementById('profileUsername').value,
-        HoTen: document.getElementById('profileFullName').value,
-        email: document.getElementById('profileEmail').value,
-        phone: document.getElementById('profilePhone').value
-    };
-
-    try {
-        // Hiển thị trạng thái đang xử lý
-        mainBtn.innerText = "Đang lưu...";
-        mainBtn.disabled = true;
-
-        // 3. Gọi API Cập nhật (Sử dụng hàm apiRequest đã có)
-        const response = await apiRequest(`${API_URL}/users/${userId}`, {
-            method: 'PUT', 
-            body: JSON.stringify(updatedData)
-        });
-
-        // 4. THÀNH CÔNG
-        alert("Cập nhật thông tin thành công!");
-
-        // Cập nhật lại localStorage nếu cần (để đồng bộ tên trên Navbar)
-        userLocal.HoTen = updatedData.HoTen; 
-        localStorage.setItem('user', JSON.stringify(userLocal));
-
-        // KHÓA LẠI CÁC Ô NHẬP
-        editableInputs.forEach(input => {
-            if (input) {
-                input.setAttribute('readonly', true);
-                input.classList.remove('editable');
-            }
-        });
-        mainBtn.innerText = "Chỉnh sửa thông tin";
-        mainBtn.style.backgroundColor = "#2563eb"; // Về màu xanh dương
-
-    } catch (error) {
-        alert("Lỗi khi lưu dữ liệu: " + error.message);
-        mainBtn.innerText = "Lưu thông tin";
-    } finally {
-        mainBtn.disabled = false;
-    }
-}
+});

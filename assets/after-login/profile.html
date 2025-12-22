@@ -4,15 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin tài khoản</title>
+    <title>Thông tin tài khoản - Đặt sân Bách Khoa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style.css"> 
 </head>
 
 <body>
-    <!-- Navbar -->
     <header class="navbar">
         <a href="after-login.html" class="logo-link">
             <div class="logo">
@@ -32,26 +31,24 @@
             <a href="danh-cho-chu-san.html">Dành cho chủ sân</a>
 
             <div class="dropdown">
-                <!-- Nút (icon) mở dropdown. Gán sự kiện click bằng addEventListener -->
                 <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
-                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
+                    <img src="/images/user-icon.png" alt="User Icon" class="user-icon">
                 </button>
 
                 <div id="userDropdown" class="dropdown-content">
                     <a href="profile.html">Hồ sơ</a>
                     <a href="lich-su-dat-san.html">Lịch sử đặt sân</a>
-                    <a href="../../index.html" id="logoutLink">Đăng xuất</a>
+                    <a href="/index.html" id="logoutLink">Đăng xuất</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
             <div class="profile-container">
                 <h3>Thông tin tài khoản</h3>
-
+                
                 <div class="form-group">
                     <label>Tên người dùng:</label>
                     <input type="text" id="profileUsername" readonly>
@@ -71,34 +68,29 @@
                     <label>Số điện thoại:</label>
                     <input type="text" id="profilePhone" readonly>
                 </div>
+
                 <div class="button-group">
                     <button class="btn-edit" id="mainBtn">Chỉnh sửa thông tin</button>
                     <button onclick="openChangePasswordModal()" class="btn-pass">Đổi mật khẩu</button>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- Footer -->
-    <section class="footer-info">
+    <footer class="footer-info">
         <div class="info-container">
             <div class="info-box">
                 <h3>Thông tin</h3>
                 <p>Công ty cổ phần Nhóm 15</p>
                 <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
-                <p>Mã số thuế: xxxxxxxxxx</p>
-                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
             </div>
-
             <div class="info-box">
                 <h3>Liên hệ</h3>
                 <p>📧 Email: contact@datsanbk.com</p>
                 <p>📞 Điện thoại: 0363 636 363</p>
-                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
             </div>
         </div>
-    </section>
+    </footer>
 
     <div id="changePasswordModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -108,15 +100,15 @@
                 <form id="changePasswordForm">
                     <div class="form-group">
                         <label for="currentPassword">Mật khẩu hiện tại</label>
-                        <input type="password" id="currentPassword" required placeholder="Nhập mật khẩu cũ">
+                        <input type="password" id="currentPassword" required>
                     </div>
                     <div class="form-group">
                         <label for="newPass">Mật khẩu mới</label>
-                        <input type="password" id="newPass" required placeholder="Tối thiểu 6 ký tự">
+                        <input type="password" id="newPass" required>
                     </div>
                     <div class="form-group">
                         <label for="confirmNewPass">Xác nhận mật khẩu mới</label>
-                        <input type="password" id="confirmNewPass" required placeholder="Nhập lại mật khẩu mới">
+                        <input type="password" id="confirmNewPass" required>
                     </div>
                     <button type="button" class="book-now-button" onclick="handleChangePassword()">
                         Hoàn tất
@@ -128,5 +120,4 @@
 
     <script src="/main.js"></script>
 </body>
-
 </html>
