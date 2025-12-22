@@ -86,7 +86,7 @@ exports.sendVerification = async (req, res) => {
         );
 
         const mailOptions = {
-            from: 'Tao',
+            from: 'WEB ĐẶT SÂN BÓNG',
             to: email,
             subject: 'Mã xác nhận đặt lại mật khẩu',
             html: `<h3>Mã xác nhận của bạn là: <b style="color:red; font-size: 20px;">${otp}</b></h3>

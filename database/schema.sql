@@ -47,7 +47,7 @@ CREATE TABLE SanBong (
     DiaChi VARCHAR(255),
     Phuong VARCHAR(255),
     Gia INT,
-    TrangThai ENUM('hoatdong', 'baotri') DEFAULT 'hoatdong',
+    TrangThai ENUM('hoatdong', 'baotri', 'ngunghoatdong') DEFAULT 'hoatdong',
 	FOREIGN KEY (MaNguoiDung) REFERENCES User(MaNguoiDung)
 );
 

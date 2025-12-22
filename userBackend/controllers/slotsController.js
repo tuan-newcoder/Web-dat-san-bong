@@ -9,12 +9,12 @@ exports.getBookedSlots = async (req, res) => {
         const sql = `
             SELECT 
                 DATE_FORMAT(Ngay, '%Y-%m-%d') as Ngay, 
-                Ca
+                Ca,
                 TrangThai
-            FROM cathuesan
+            FROM lichdatsan
             WHERE MaSan = ? 
               AND Ngay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
-              AND TrangThai = 'dadat' 
+              AND TrangThai IN ('daxacnhan', 'chuaxacnhan') 
         `;
 
         const [bookedSlots] = await db.query(sql, [id]);

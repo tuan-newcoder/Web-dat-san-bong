@@ -33,7 +33,7 @@ exports.getFieldSearch = async (req, res) => {
         let join = false;
 
         if (CaThue) {
-            sql += ` JOIN cathuesan c ON s.MaSan = c.Masan`
+            sql += ` JOIN lichdatsan l ON s.MaSan = l.Masan`
             join = true;
         }
 
@@ -50,7 +50,7 @@ exports.getFieldSearch = async (req, res) => {
         }
 
         if (CaThue) {
-            sql += `AND Ca = ? AND c.TrangThai = 'controng' `;
+            sql += `AND Ca = ? AND c.TrangThai NOT IN ('daxacnhan', 'chuaxacnhan') `;
             params.push(CaThue);
         }
 
@@ -79,6 +79,7 @@ exports.putFieldsDetails = async (req, res) => {
         });
     }
 
+    /* Check dữ liệu gửi về, có thể không dùng
     const validLoaiSan = ['Sân 5', 'Sân 7', 'Sân 11']; // Ví dụ danh sách loại sân
     if (!validLoaiSan.includes(String(LoaiSan))) {
          return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận 5, 7, 11)' });
@@ -94,6 +95,7 @@ exports.putFieldsDetails = async (req, res) => {
     if (!validTrangThai.includes(TrangThai)) {
          return res.status(400).json({ message: 'Trạng thái không hợp lệ!' });
     }
+    */
 
     try {
         const [result] = await db.execute(
@@ -130,8 +132,8 @@ exports.putFieldsDetails = async (req, res) => {
 exports.createField = async (req, res) => {
     const { TenSan, LoaiSan, DiaChi, Phuong } = req.body;
 
-    // 1. Validate dữ liệu đầu vào (giống hệt hàm PUT)
-    if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
+    /* CHECK Dữ liệu gửi về, có thể không dùng
+        if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
         return res.status(400).json({
             message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Phường'
         });
@@ -147,6 +149,7 @@ exports.createField = async (req, res) => {
     if (!validPhuong.includes(String(Phuong))) {
          return res.status(400).json({ message: 'Phường không hợp lệ ' });
     }
+    */
 
     try {
         // 2. Thực hiện câu lệnh INSERT
@@ -183,39 +186,28 @@ exports.createField = async (req, res) => {
 exports.deleteField = async (req, res) => {
     const { id } = req.params;
 
-    if (!id) {
-        return res.status(400).json({ message: "Vui lòng cung cấp ID sân cần xóa!" });
-    }
+    if (!id) return res.status(400).json({ message: "Thiếu ID sân!" });
 
     try {
-        const [result] = await db.execute(
-            `DELETE FROM sanbong WHERE MaSan = ?`, 
-            [id]
-        );
+        // --- THAY ĐỔI TỪ ĐÂY ---
+        // Thay vì xóa, ta chuyển trạng thái sang 'ngunghoatdong'
+        const sql = `UPDATE sanbong SET TrangThai = 'ngunghoatdong' WHERE MaSan = ?`;
+        
+        const [result] = await db.execute(sql, [id]);
 
-        // Kiểm tra xem có dòng nào bị xóa không
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Không tìm thấy sân để xóa!'});
+            return res.status(404).json({ message: 'Không tìm thấy sân!'});
         }
 
         res.status(200).json({
-            message: "Đã xóa sân bóng thành công!",
+            message: "Đã xóa sân thành công (Chuyển sang ngừng hoạt động)!",
             deletedId: id
         });
+        // --- KẾT THÚC THAY ĐỔI ---
 
     } catch (err) {
-        console.error("Lỗi Delete Field: ", err);
-
-        // *** QUAN TRỌNG: Bắt lỗi ràng buộc khóa ngoại ***
-        // Mã lỗi 1451 hoặc ER_ROW_IS_REFERENCED_2: Xảy ra khi sân này đã có lịch đặt (Bookings)
-        // Không thể xóa sân cứng (Hard Delete) vì sẽ làm mất dữ liệu lịch sử đặt sân.
-        if (err.code === 'ER_ROW_IS_REFERENCED_2' || err.code === 'ER_ROW_IS_REFERENCED') {
-             return res.status(409).json({ 
-                 message: "Không thể xóa sân này vì đã có lịch đặt sân liên quan. Hãy thử chuyển trạng thái sang 'Bảo trì' hoặc 'Ngừng hoạt động'." 
-             });
-        }
-
-        res.status(500).json({ message: "Lỗi Server nội bộ" });
+        console.error(err);
+        res.status(500).json({ message: "Lỗi Server" });
     }
 };
 

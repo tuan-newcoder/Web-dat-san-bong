@@ -1,4 +1,6 @@
-Hàm validPhuong
+1. Hàm validPhuong
+2. Check trùng lịch
+
 
 Error: Unknown column 'isTrusted' in 'where clause'
     at PromisePool.query (D:\Software\Code\IT3040\Web-dat-san-bong\node_modules\mysql2\lib\promise\pool.js:36:22)
