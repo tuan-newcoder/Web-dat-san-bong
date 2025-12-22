@@ -1,60 +1,68 @@
-require('dotenv').config(); // Load biến môi trường từ file .env
 const express = require('express');
 const cors = require('cors');
-const rootRouter = require('./routes/index'); // File gom routes (xem phần 2)
-const db = require('./config/database'); // Import kết nối DB để test
+const path = require('path');
+const { config } = require('./config/index'); // Import cấu hình từ file index.js
 
+// --- Import các Route ---
+// 1. Route của Huy (Owner & Admin)
+const fieldRoutes = require('./routes/fieldRoutes'); 
+const adminRoutes = require('./routes/adminRoutes'); 
+// const slotRoutes = require('./routes/slotRoutes');   // Quản lý ca thuê (Sẽ code)
+
+// 2. Route của Vũ (Auth & User) - Để sẵn đây chờ Vũ gửi code
+// const authRoutes = require('./routes/authRoutes'); 
+
+// --- Khởi tạo App ---
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// --- 1. MIDDLEWARE CƠ BẢN ---
+// --- Middleware (Cấu hình chung) ---
+app.use(cors()); // Cho phép Frontend gọi API (tránh lỗi CORS)
+app.use(express.json()); // Để server đọc được JSON từ body request
+app.use(express.urlencoded({ extended: true })); // Để đọc dữ liệu form
 
-// Cho phép Frontend (React/Vue...) gọi API mà không bị lỗi CORS
-// Ở môi trường Dev: cho phép tất cả (*). Production nên giới hạn domain cụ thể.
-app.use(cors());
+// --- Định tuyến (API Endpoint) ---
 
-// Parse dữ liệu JSON từ body request (quan trọng cho method POST/PUT)
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// 1. Endpoint cho Sân bóng (Phần của Huy)
+// Đường dẫn: http://localhost:3000/api/fields
+app.use('/api/fields', fieldRoutes);
 
-// --- 2. KIỂM TRA KẾT NỐI DATABASE ---
-// (Optional: Giúp bạn biết ngay khi server chạy là DB có ngon không)
-db.getConnection()
-    .then(connection => {
-        console.log('✅ Database connected successfully');
-        connection.release();
-    })
-    .catch(err => {
-        console.error('❌ Database connection failed:', err.message);
-    });
+// 2. Endpoint cho Admin (Phần của Huy - Uncomment khi có file route)
+app.use('/api/admin', adminRoutes);
 
-// --- 3. ĐỊNH TUYẾN (ROUTING) ---
-// Gom tất cả API vào prefix /api/v1
-// Ví dụ: http://localhost:3000/api/v1/owner/fields
-app.use('/api/v1', rootRouter);
+// 3. Endpoint cho Ca thuê/Slots (Phần của Huy - Uncomment khi có file route)
+// app.use('/api/slots', slotRoutes);
 
-// --- 4. XỬ LÝ LỖI (ERROR HANDLING) ---
+// 4. Endpoint cho Auth (Phần của Vũ - Uncomment khi ghép code)
+// app.use('/api/auth', authRoutes);
 
-// 4.1. Handle 404 (Route không tồn tại)
+
+// --- Route Mặc định (Check server sống hay chết) ---
+app.get('/', (req, res) => {
+    res.send('⚽ Server Quản Lý Sân Bóng đang chạy ngon lành! ⚽');
+});
+
+// --- Xử lý lỗi 404 (Không tìm thấy đường dẫn) ---
 app.use((req, res, next) => {
     res.status(404).json({
-        success: false,
-        message: `Route không tồn tại: ${req.originalUrl}`
+        message: 'Đường dẫn API này không tồn tại!',
+        path: req.originalUrl
     });
 });
 
-// 4.2. Handle 500 (Lỗi Server nội bộ)
-// Bất kỳ lỗi nào trong code (throw new Error) sẽ nhảy vào đây
+// --- Xử lý lỗi toàn cục (Global Error Handler) ---
 app.use((err, req, res, next) => {
-    console.error('❌ Server Error:', err.stack);
-    res.status(err.status || 500).json({
-        success: false,
-        message: err.message || 'Lỗi Server Nội Bộ (Internal Server Error)'
+    console.error('❌ Lỗi hệ thống:', err.stack);
+    res.status(500).json({
+        message: 'Đã xảy ra lỗi server nội bộ',
+        error: process.env.NODE_ENV === 'development' ? err.message : {}
     });
 });
 
-// --- 5. KHỞI CHẠY SERVER ---
+// --- Khởi chạy Server ---
+const PORT = config.port || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
-    console.log(`📡 API endpoint: http://localhost:${PORT}/api/v1`);
+    console.log(`=============================================`);
+    console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
+    console.log(`📡 Môi trường: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`=============================================`);
 });
