@@ -92,9 +92,9 @@ exports.getUserBookings = async (req, res) => {
 };
 
 exports.getPaymentInfo = async (req, res) => {
-    const { maDatSan } = req.query;
+    const { id } = req.params;
 
-    if (!maDatSan) {
+    if (!id) {
         return res.status(400).json({ message: "Vui lòng cung cấp mã đặt sân!" });
     }
 
@@ -113,7 +113,7 @@ exports.getPaymentInfo = async (req, res) => {
             WHERE l.MaDatSan = ?
         `;
 
-        const [rows] = await db.query(sql, [maDatSan]);
+        const [rows] = await db.query(sql, [id]);
 
         if (rows.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy thông tin đơn hàng hoặc chủ sân!" });

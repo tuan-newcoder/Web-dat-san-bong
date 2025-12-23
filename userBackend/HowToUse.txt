@@ -114,3 +114,11 @@
         {
           
         }
+
+    // Lấy thông tin thanh toán
+    - Method: GET
+    - URL API: http://localhost:3000/api/bookings/bank/1
+    - body json: 
+        {
+          
+        }
