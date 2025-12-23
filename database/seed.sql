@@ -40,19 +40,6 @@ INSERT INTO User (MaNguoiDung, HoTen, username, password, email, sdt, stk, bank,
 (15, 'User Muốn Làm Chủ', 'wannabe', '123456', 'wannabe@gmail.com', '0999999999', '123456789', 'TPBank', 'khachhang');
 
 -- ============================
---  2. INSERT UPROLE 
--- ============================
-INSERT INTO UpRole (MaNguoiDung, HoTen, Email, Sdt, Stk, Bank, AnhGiayPhep, TrangThai) VALUES
--- User 15 đang chờ duyệt, điền thông tin ngân hàng
-(15, 'User Muốn Làm Chủ', 'wannabe@gmail.com', '0999999999', '123456789', 'TPBank', NULL, 'dangxuly'),
-
--- User 14 bị từ chối
-(14, 'Đỗ Hùng Dũng', 'dunghung@gmail.com', '0987654329', '987654321', 'Vietinbank', NULL, 'tuchoi'),
-
--- User 2 đã được chấp nhận (Thông tin khớp với bảng User)
-(2, 'Nguyễn Văn A', 'nguyenvana@gmail.com', '0912345678', '190333444555', 'Techcombank', NULL, 'chapnhan');
-
--- ============================
 --  3. INSERT SANBONG
 -- ============================
 INSERT INTO SanBong (MaSan, MaNguoiDung, TenSan, LoaiSan, DiaChi, Phuong, Gia, TrangThai) VALUES
