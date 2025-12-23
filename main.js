@@ -64,40 +64,29 @@ window.verifyCode = verifyCode;
 async function apiRequest(url, options = {}) {
     try {
         const token = localStorage.getItem('userToken');
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers
-        };
+        const headers = { 'Content-Type': 'application/json', ...options.headers };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
         const response = await fetch(url, { ...options, headers });
+        
+        // Kiểm tra nếu response rỗng hoặc không phải JSON
+        const contentType = response.headers.get("content-type");
+        let data = (contentType && contentType.includes("application/json")) 
+            ? await response.json() 
+            : await response.text();
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
+            // Lấy message lỗi từ JSON hoặc dùng text thuần
+            const errMsg = (data && data.message) ? data.message : (typeof data === 'string' ? data : "Lỗi Server!");
+            throw new Error(errMsg);
         }
-        return await response.json();
+        return data;
     } catch (error) {
-        console.error('Lỗi API Request:', error.message);
+        console.error('Lỗi chi tiết tại apiRequest:', error.message);
         throw error;
     }
 }
-
-
 // 1. Xử lý Đăng nhập (Đã có BE)
-document.addEventListener('DOMContentLoaded', () => {
-    const loginFormButton = document.querySelector('#loginModal button[type="submit"]');
-
-    if (loginFormButton) {
-        loginFormButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-
-            handleLogin(username, password);
-        });
-    }
-});
-
 
 async function handleLogin(username, password) {
     try {
@@ -109,7 +98,6 @@ async function handleLogin(username, password) {
 
         // 2. Kiểm tra xem Backend trả về dữ liệu ở đâu? 
         // Nếu BE gửi { token: "...", data: { role: "admin", ... } }
-        // Thì userData sẽ là result.data
         const userData = result.data || result.user; 
 
         if (!userData) {
@@ -119,9 +107,9 @@ async function handleLogin(username, password) {
         // 3. Lưu Session (Token và Thông tin user)
         Auth.saveSession(result.token, userData);
 
-        // 4. Lấy 'role' an toàn (Sử dụng Optional Chaining ?. để không bị crash nếu role trống)
+        // 4. Lấy 'role' an toàn 
         const role = userData.role;
-        const UserID = userData.MaNguoiDung || userData.id;
+
 
         alert(`Đăng nhập thành công! Chào mừng ${userData.HoTen || username}`);
         closeModal();
@@ -143,6 +131,20 @@ async function handleLogin(username, password) {
         alert("Lỗi đăng nhập: " + error.message);
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loginFormButton = document.querySelector('#loginModal button[type="submit"]');
+
+    if (loginFormButton) {
+        loginFormButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            handleLogin(username, password);
+        });
+    }
+});
 
 // 2. Xử lý Đăng ký (Đã có BE)
 async function handleRegister() {
@@ -423,7 +425,7 @@ const StadiumApp = {
     allData: [],
     filteredData: [],
     currentPage: 1,
-    itemsPerPage: 6,
+    itemsPerPage: 4,
 
     init() {
         this.fetchData();
@@ -611,27 +613,27 @@ function savePitchInfo() {
 // Hàm lấy thông tin user từ Token và điền vào form (Chưa có BE)
 // 1. Hàm tự động lấy thông tin (Chỉ chạy nếu có Token và không ép đăng nhập)
 async function fetchUserInfo() {
-    const currentToken = localStorage.getItem('userToken');
-    if (!currentToken || currentToken === 'demo-token') return; // Im lặng nếu không có token chuẩn
+    const userId = Auth.getUserId(); // Lấy ID từ localStorage
+    if (!userId) return;
 
     try {
-        const res = await fetch(`${API_URL}/users/`, {
-            headers: { 'Authorization': 'Bearer ' + currentToken }
+        const response = await apiRequest(`${API_URL}/users/${userId}`, {
+            method: 'GET'
         });
 
-        if (res.ok) {
-            const data = await res.json();
+        // Backend trả về dữ liệu nằm trong trường .data
+        if (response && response.data) {
+            const userData = response.data;
             const nameField = document.getElementById('fullName');
             const emailField = document.getElementById('email');
             const phoneField = document.getElementById('phone');
 
-            if (nameField) nameField.value = data.fullName || '';
-            if (emailField) emailField.value = data.email || '';
-            if (phoneField) phoneField.value = data.phone || '';
-            console.log("Đã tự động điền thông tin người dùng.");
+            if (nameField) nameField.value = userData.HoTen || '';
+            if (emailField) emailField.value = userData.email || '';
+            if (phoneField) phoneField.value = userData.sdt || '';
         }
     } catch (err) {
-        console.warn("Lưu ý: Không thể tự động lấy thông tin người dùng.");
+        console.warn("Endpoint /users/" + userId + " không tồn tại hoặc lỗi.");
     }
 }
 
@@ -993,13 +995,13 @@ window.handleRoleChange = handleRoleChange;
 document.addEventListener('DOMContentLoaded', loadUserTable);
 
 /* Script check access */
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
 
-    const loginSubmitBtn = document.querySelector("#loginModal button[type='submit']");
-    if (loginSubmitBtn) {
-        loginSubmitBtn.addEventListener("click", handleLogin);
-    }
-});
+//     const loginSubmitBtn = document.querySelector("#loginModal button[type='submit']");
+//     if (loginSubmitBtn) {
+//         loginSubmitBtn.addEventListener("click", handleLogin);
+//     }
+// });
 
 // Hàm kiểm tra trạng thái đăng nhập
 function checkAccess(event, targetUrl) {
@@ -1051,54 +1053,64 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('bookingTableBody')) fetchBookings();
 });
 
-/* Script cho chi tiết sân */
+const urlParams = new URLSearchParams(window.location.search);
+const currentMaSan = urlParams.get('id');
 
-const toggleModal = (show) => {
-    const modal = document.getElementById('scheduleModal');
-    if (modal) modal.style.display = show ? 'flex' : 'none';
+// --- Quản lý Modal ---
+window.openScheduleModal = () => {
+    document.getElementById('scheduleModal').style.display = 'flex';
+    renderPitchSchedule(); 
 };
 
-// Gán hàm vào window để gọi từ HTML
-window.scrollToSchedule = () => toggleModal(true);;
-window.closeScheduleModal = () => toggleModal(false);
+window.closeScheduleModal = () => {
+    document.getElementById('scheduleModal').style.display = 'none';
+};
 
-// Đóng modal khi click ra ngoài
-window.addEventListener('click', (e) => e.target.id === 'scheduleModal' && toggleModal(false));
+window.closePaymentModal = () => {
+    document.getElementById('paymentModal').style.display = 'none';
+    renderPitchSchedule(); // Cập nhật lại lịch để thấy ca vừa đặt chuyển màu
+};
 
 /**
  * Render lịch đặt sân 7 ngày
  */
-const urlParams = new URLSearchParams(window.location.search);
-const currentMaSan = urlParams.get('id');
-async function renderPitchSchedule(currentMaSanmaSan) {
+async function renderPitchSchedule() {
     const tbody = document.getElementById('schedule-body');
-    if (!tbody) return;
+    if (!tbody || !currentMaSan) return;
 
     let bookedSlots = [];
     try {
-        bookedSlots = await apiRequest(`${API_URL}/slots/fields/${CurrentMaSan}`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
+        const response = await apiRequest(`${API_URL}/slots/fields/${currentMaSan}`, {
+            method: 'GET'
         });
-    } catch (e) { console.warn("Lỗi tải lịch:", e.message); }
+        bookedSlots = response.data || [];
+    } catch (e) { 
+        console.warn("Lỗi tải lịch từ Backend:", e.message); 
+    }
 
     const today = new Date();
-
     tbody.innerHTML = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
-
-        const isoDate = date.toISOString().split('T')[0];
+        const isoDate = date.toISOString().split('T')[0]; 
         const displayDate = date.toLocaleDateString('vi-VN');
 
         let cells = `<td style="font-weight:bold; background:#f4f4f4;">${i === 0 ? displayDate + ' (Hôm nay)' : displayDate}</td>`;
 
         for (let ca = 1; ca <= 12; ca++) {
-            const isBooked = bookedSlots.some(s => s.Ngay === isoDate && s.Ca == ca);
+            const slotData = bookedSlots.find(s => s.ngay === isoDate && s.ca == ca);
+            
+            // Logic: Daxacnhan hoặc chuaxacnhan thì hiện "Hết"
+            const isUnavailable = slotData && (slotData.TrangThai === 'daxacnhan' || slotData.TrangThai === 'chua xac nhan');
+
+            const statusClass = isUnavailable ? 'booked' : 'available';
+            const statusText = isUnavailable ? 'Hết' : '';
+
             cells += `
-                <td class="slot-cell ${isBooked ? 'daxacnhan' || 'chuaxacnhan' : 'dahuy'}" 
-                    data-date="${isoDate}" data-ca="${ca}" onclick="toggleSelectSlot(this)">
-                    ${isBooked ? 'Hết' : ''}
+                <td class="slot-cell ${statusClass}" 
+                    data-date="${isoDate}" data-ca="${ca}" 
+                    onclick="toggleSelectSlot(this)">
+                    ${statusText}
                 </td>`;
         }
         return `<tr>${cells}</tr>`;
@@ -1106,74 +1118,112 @@ async function renderPitchSchedule(currentMaSanmaSan) {
 }
 
 /**
- * Logic chọn/hủy ca
+ * Logic chọn ca (Duy nhất 1 ô)
  */
-window.toggleSelectSlot = (el) => el.classList.contains('dahuy') && el.classList.toggle('selected');
-
-/**
- * Chuyển hướng đặt sân
- */
-window.proceedToBooking = () => {
-    const selected = [...document.querySelectorAll('.slot-cell.selected')];
-    if (!selected.length) return alert("Vui lòng chọn ít nhất một ca!");
-
-    // Lấy maSan từ URL của trang chi tiết hiện tại
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentMaSan = urlParams.get('id'); 
-
-    if (!currentMaSan) return alert("Không tìm thấy mã sân!");
-
-    // Lưu thêm maSan vào từng đối tượng trong mảng
-    const data = selected.map(el => ({ 
-        maSan: currentMaSan, 
-        date: el.dataset.date, 
-        ca: el.dataset.ca 
-    }));
-
-    sessionStorage.setItem('pendingBooking', JSON.stringify(data));
-    window.location.href = `/assets/after-login/dat-san.html?id=${currentMaSan}`;
+window.toggleSelectSlot = (el) => {
+    if (el.classList.contains('booked')) return;
+    const previousSelected = document.querySelector('.slot-cell.selected');
+    if (previousSelected && previousSelected !== el) {
+        previousSelected.classList.remove('selected');
+    }
+    el.classList.toggle('selected');
 };
 
-/* === KHỞI TẠO === */
-document.addEventListener('DOMContentLoaded', () => renderPitchSchedule(1));
+/**
+ * BƯỚC QUAN TRỌNG: Đặt sân & Hiện thông tin chuyển khoản
+ */
+window.proceedToBooking = async () => {
+    const selected = document.querySelector('.slot-cell.selected');
+    if (!selected) return alert("Vui lòng chọn 1 ca còn trống trên lịch!");
 
-async function loadPitchDetails() {
-    // 1. Lấy MaSan từ URL (ví dụ: ?id=1)
-    const urlParams = new URLSearchParams(window.location.search);
-    const maSan = urlParams.get('id');
+    // 1. Lấy thông tin user (Dùng hàm Auth.getUserId() đã viết ở bước trước)
+    const userId = Auth.getUserId();
 
-    if (!maSan) return;
+    if (!userId) {
+        alert("Vui lòng đăng nhập để đặt sân!");
+        if (typeof openModal === 'function') openModal();
+        return;
+    }
+
+    // 2. Chuẩn bị dữ liệu gửi lên Backend (Khớp với cấu trúc JSON bạn yêu cầu)
+    const bookingData = {
+        maNguoiDung: userId,
+        maSan: parseInt(currentMaSan),
+        ngay: selected.dataset.date, 
+        ca: parseInt(selected.dataset.ca) 
+    };
 
     try {
-        // 2. Gọi API lấy thông tin 1 sân cụ thể
-        const response = await fetch(`${API_URL}/fields/${maSan}`);                       // **** Cần có thông tin chủ sân, số điện thoại từ BE**** //
-        const stadium = await response.json();
+        // Tắt modal lịch trước khi hiện modal thanh toán
+        closeScheduleModal();
 
+        // BƯỚC 1: POST /bookings (Theo sơ đồ)
+        const bookingResponse = await apiRequest(`${API_URL}/bookings`, {
+            method: 'POST',
+            body: JSON.stringify(bookingData)
+        });
+
+        // BƯỚC 2: GET /lichdatsan/bank
+        const bankInfo = await apiRequest(`${API_URL}/lichdatsan/bank?maSan=${currentMaSan}`, {
+            method: 'GET'
+        });
+
+        // BƯỚC 3: Hiển thị Modal Thanh toán và đổ dữ liệu
+        if (bankInfo && bankInfo.data) {
+            const data = bankInfo.data;
+            document.getElementById('bankName').innerText = data.tenNganHang || "N/A";
+            document.getElementById('bankSTK').innerText = data.stk || "N/A";
+            document.getElementById('bankOwner').innerText = data.tenChuTK || "N/A";
+            
+            // Nội dung chuyển khoản: DS + ID đơn hàng vừa tạo
+            const bookingId = bookingResponse.data?.id || bookingResponse.id || "";
+            document.getElementById('paymentContent').innerText = `DS${bookingId}`;
+            
+            // Reset hiển thị Modal về bước 1
+            document.getElementById('paymentStep1').style.display = 'block';
+            document.getElementById('paymentStep2').style.display = 'none';
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+    } catch (error) {
+        alert("Lỗi khi đặt sân: " + error.message);
+        // Nếu lỗi, mở lại lịch để user chọn lại
+        openScheduleModal();
+    }
+};
+
+/**
+ * Load thông tin chi tiết sân
+ */
+async function loadPitchDetails() {
+    if (!currentMaSan) return;
+    try {
+        const stadium = await apiRequest(`${API_URL}/fields/${currentMaSan}`);
         if (stadium) {
-            // 3. Đổ dữ liệu vào HTML
             document.getElementById('displayTenSan').innerText = stadium.TenSan;
-            document.getElementById('displayChuSan').innerText = stadium.TenChuSan || "Chưa cập nhật";
-            document.getElementById('displaySDT').innerText = stadium.SoDienThoai || "0363 xxx xxx";
+            document.getElementById('displayChuSan').innerText = stadium.TenChuSan || "N/A";
+            document.getElementById('displaySDT').innerText = stadium.SoDienThoai || "N/A";
             document.getElementById('displayLoaiSan').innerText = stadium.LoaiSan;
             document.getElementById('displayDiaChi').innerText = `${stadium.DiaChi}, ${stadium.Phuong}`;
-
-            // Định dạng giá tiền
             document.getElementById('displayGia').innerText = new Intl.NumberFormat('vi-VN').format(stadium.Gia);
         }
     } catch (err) {
         console.error("Lỗi khi tải chi tiết sân:", err);
-        document.getElementById('displayTenSan').innerText = "Không tìm thấy thông tin sân";
     }
 }
 
-// KHỞI TẠO: Kiểm tra nếu đang ở trang chi tiết thì mới chạy
+/* === KHỞI TẠO === */
 document.addEventListener('DOMContentLoaded', () => {
-    // Kiểm tra xem trang có các ID này không trước khi chạy
-    if (document.getElementById('displayTenSan')) {
-        loadPitchDetails();
+    if (document.getElementById('displayTenSan')) loadPitchDetails();
+
+    // Lắng nghe nút "Tôi đã thanh toán"
+    const confirmBtn = document.getElementById('confirmPaidBtn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            document.getElementById('paymentStep1').style.display = 'none';
+            document.getElementById('paymentStep2').style.display = 'block';
+        });
     }
 });
-
 /* === Script cho Profile === */
 
 /* === QUẢN LÝ MODAL ĐỔI MẬT KHẨU === */

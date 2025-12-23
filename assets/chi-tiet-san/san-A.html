@@ -52,7 +52,7 @@
             <main class="pitch-container">
                 <div class="image-group">
                     <img src="/images/sanA.png" alt="Sân A" class="pitch-image">
-                    <button class="book-now-btn" onclick="scrollToSchedule()">Đặt sân ngay</button>
+                    <button class="book-now-btn" onclick="openScheduleModal()">Đặt sân ngay</button>
                 </div>
 
                 <div class="pitch-info">
@@ -90,7 +90,6 @@
     <div id="scheduleModal" class="modal" style="display: none;">
         <section id="booking-schedule" class="modal-content" style="max-width: 95%; width: 1100px; padding: 30px;">
             <span class="close" onclick="closeScheduleModal()">&times;</span>
-
             <h3 style="text-align: center; margin-bottom: 20px; font-size: 28px;">Lịch đặt sân</h3>
 
             <div class="table-responsive" style="overflow-x: auto; max-height: 400px;">
@@ -121,18 +120,55 @@
 
             <div style="margin-top: 20px; text-align: center;">
                 <div style="margin-bottom: 15px;">
-                    <span style="display:inline-block; width:15px; height:15px; background:#ff4d4d;"></span> Đã đặt
-                    &nbsp;
                     <span
-                        style="display:inline-block; width:15px; height:15px; background:#fff; border:1px solid #ccc;"></span>
+                        style="display:inline-block; width:15px; height:15px; background:#ff4d4d; border-radius: 2px;"></span>
+                    Đã đặt &nbsp;
+                    <span
+                        style="display:inline-block; width:15px; height:15px; background:#fff; border:1px solid #ccc; border-radius: 2px;"></span>
                     Còn trống &nbsp;
-                    <span style="display:inline-block; width:15px; height:15px; background:#28a745;"></span> Đang chọn
+                    <span
+                        style="display:inline-block; width:15px; height:15px; background:#28a745; border-radius: 2px;"></span>
+                    Đang chọn
                 </div>
                 <button class="book-now-button" onclick="proceedToBooking()"
-                    style="background-color: #28a745; padding: 10px 40px;">Xác nhận chọn ca</button>
+                    style="background-color: #28a745; padding: 10px 40px; font-weight: bold;">XÁC NHẬN CHỌN CA</button>
             </div>
         </section>
     </div>
+
+    <div id="paymentModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; border-radius: 12px; padding: 25px;">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+
+            <div id="paymentStep1">
+                <h2 style="text-align:center; color: #2563eb; margin-bottom: 15px;">Thông tin thanh toán</h2>
+                <div style="background: #f8fafc; padding: 20px; border-radius: 10px; line-height: 1.8;">
+                    <p><strong>Ngân hàng:</strong> <span id="bankName">...</span></p>
+                    <p><strong>Số tài khoản:</strong> <span id="bankSTK"
+                            style="color: #ef4444; font-size: 1.2em; font-weight: bold;">...</span></p>
+                    <p><strong>Chủ tài khoản:</strong> <span id="bankOwner">...</span></p>
+                    <p><strong>Nội dung CK:</strong> <span id="paymentContent"
+                            style="color: #2563eb; font-weight: bold; background: #dbeafe; padding: 2px 6px; border-radius: 4px;"></span>
+                    </p>
+                </div>
+                <p style="font-size: 0.85em; color: #64748b; margin-top: 10px; font-style: italic;">* Vui lòng chuyển
+                    khoản đúng nội dung để hệ thống tự động xác nhận.</p>
+                <button id="confirmPaidBtn" class="book-now-button"
+                    style="width: 100%; margin-top: 20px; background: #2563eb;">
+                    Tôi đã thanh toán
+                </button>
+            </div>
+
+            <div id="paymentStep2" style="display: none; text-align: center;">
+                <div style="font-size: 60px; color: #16a34a; margin-bottom: 10px;">✔</div>
+                <h2 style="color: #16a34a;">Cảm ơn bạn!</h2>
+                <p>Yêu cầu đặt sân đã được ghi nhận. <br>Vui lòng đợi chủ sân xác nhận trong giây lát.</p>
+                <button onclick="closePaymentModal()" class="book-now-button"
+                    style="background: #64748b; margin-top: 20px;">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer-info">
         <div class="info-container">
 
