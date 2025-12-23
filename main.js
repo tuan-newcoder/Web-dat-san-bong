@@ -1163,21 +1163,17 @@ window.proceedToBooking = async () => {
             body: JSON.stringify(bookingData)
         });
 
-        // BƯỚC 2: GET /lichdatsan/bank
-        const bankInfo = await apiRequest(`${API_URL}/lichdatsan/bank?maSan=${currentMaSan}`, {
+        const currentMaSan1 = parseInt(currentMaSan);
+        const bankInfo = await apiRequest(`${API_URL}/bookings/bank/${currentMaSan1}`, {
             method: 'GET'
         });
 
         // BƯỚC 3: Hiển thị Modal Thanh toán và đổ dữ liệu
         if (bankInfo && bankInfo.data) {
             const data = bankInfo.data;
-            document.getElementById('bankName').innerText = data.tenNganHang || "N/A";
-            document.getElementById('bankSTK').innerText = data.stk || "N/A";
-            document.getElementById('bankOwner').innerText = data.tenChuTK || "N/A";
-            
-            // Nội dung chuyển khoản: DS + ID đơn hàng vừa tạo
-            const bookingId = bookingResponse.data?.id || bookingResponse.id || "";
-            document.getElementById('paymentContent').innerText = `DS${bookingId}`;
+            document.getElementById('bankName').innerText = data.nganHang || "N/A";
+            document.getElementById('bankSTK').innerText = data.soTaiKhoan || "N/A";
+            document.getElementById('bankOwner').innerText = data.chuTaiKhoan || "N/A";
             
             // Reset hiển thị Modal về bước 1
             document.getElementById('paymentStep1').style.display = 'block';
