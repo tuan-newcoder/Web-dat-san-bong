@@ -133,3 +133,43 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
+exports.putNewPassword = async (req, res) => {
+    // 1. Lấy ID từ Token (Middleware đã gán vào req.user)
+    // Lưu ý: Lúc login bạn sign token là { id: user.MaNguoiDung ... } nên ở đây gọi .id
+    const id = req.user.id; 
+
+    // 2. Chỉ nhận password cũ và mới (KHÔNG cần email)
+    const { password, newPassword } = req.body; 
+
+    if (!password || !newPassword) {
+        return res.status(400).json({message: "Vui lòng nhập mật khẩu cũ và mật khẩu mới"});
+    }
+
+    try {
+        // 3. Tìm user trong DB bằng ID (Chắc chắn chính xác)
+        const [rows] = await db.query('SELECT * FROM user WHERE MaNguoiDung = ?', [id]);
+        
+        if (rows.length === 0) return res.status(404).json({message: "Tài khoản không tồn tại!"});
+        
+        const user = rows[0];
+
+        // 4. Kiểm tra mật khẩu cũ (Bắt buộc)
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({message: "Mật khẩu cũ không chính xác!"});
+        }
+
+        // 5. Hash mật khẩu mới
+        const hashNewPassword = await bcrypt.hash(newPassword, SALT_ROUNDS); 
+
+        // 6. Cập nhật vào DB
+        await db.execute(`UPDATE user SET password = ? WHERE MaNguoiDung = ?`, [hashNewPassword, id]);
+        
+        res.status(200).json({message: "Đổi mật khẩu thành công!"});
+
+    } catch (err) {
+        console.error("Lỗi đổi pass:", err);
+        res.status(500).json({message: "Lỗi Server!"});
+    }
+}
+
