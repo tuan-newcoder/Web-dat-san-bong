@@ -2,6 +2,32 @@
 const API_URL = 'http://localhost:3000/api';
 const token = localStorage.getItem('userToken');
 
+/* Cấu hình localStorage */
+
+const Auth = {
+    saveSession(token, userData) {
+        localStorage.setItem('userToken', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+    },
+
+    getUserId() {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        // Trả về MaNguoiDung hoặc id tùy theo BE của bạn
+        return user.MaNguoiDung || user.id; 
+    },
+
+    getUserData() {
+        return JSON.parse(localStorage.getItem('user') || '{}');
+    },
+
+    // Xóa sạch khi đăng xuất
+    clearSession() {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('user');
+        sessionStorage.clear(); 
+    }
+};
+
 /* === Quản lý Modal Boxes === */
 var loginModal = document.getElementById("loginModal");
 var registerModal = document.getElementById("registerModal");
@@ -35,22 +61,21 @@ window.verifyCode = verifyCode;
 
 /* === KẾT NỐI BACKEND (API Integration) === */
 
-async function apiRequest(url, options) {
+async function apiRequest(url, options = {}) {
     try {
-        const response = await fetch(url, options);
+        const token = localStorage.getItem('userToken');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
+        const response = await fetch(url, { ...options, headers });
         if (!response.ok) {
-            let errorData = { message: 'Lỗi máy chủ không xác định.' };
-            try {
-                errorData = await response.json();
-            } catch (e) {
-                errorData.message = `Lỗi HTTP: ${response.status} ${response.statusText}`;
-            }
-            throw new Error(errorData.message);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Lỗi HTTP: ${response.status}`);
         }
-
         return await response.json();
-
     } catch (error) {
         console.error('Lỗi API Request:', error.message);
         throw error;
@@ -75,40 +100,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 async function handleLogin(username, password) {
-    const loginUrl = `${API_URL}/auth/login`;
-
     try {
-        const data = await apiRequest(loginUrl, {
+        // 1. Gọi API và nhận kết quả (đặt tên biến là 'result' để tránh nhầm lẫn)
+        const result = await apiRequest(`${API_URL}/auth/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
 
-        // 1. Lưu Token
-        localStorage.setItem('userToken', data.token);
-        
-        // 2. LƯU THÔNG TIN USER (Quan trọng: Backend cần trả về object user kèm role)
-        // Giả sử backend trả về: { token: "...", user: { username: "...", role: "admin" } }
-        if (data.user) {
-            localStorage.setItem('user', JSON.stringify(data.user));
+        // 2. Kiểm tra xem Backend trả về dữ liệu ở đâu? 
+        // Nếu BE gửi { token: "...", data: { role: "admin", ... } }
+        // Thì userData sẽ là result.data
+        const userData = result.data || result.user; 
+
+        if (!userData) {
+            throw new Error("Không tìm thấy thông tin người dùng trong phản hồi từ Server.");
         }
-        const UserID = data.user.id;
-        alert("Đăng nhập thành công! Chào mừng " + (data.user?.username || username));
-        
+
+        // 3. Lưu Session (Token và Thông tin user)
+        Auth.saveSession(result.token, userData);
+
+        // 4. Lấy 'role' an toàn (Sử dụng Optional Chaining ?. để không bị crash nếu role trống)
+        const role = userData.role;
+        const UserID = userData.MaNguoiDung || userData.id;
+
+        alert(`Đăng nhập thành công! Chào mừng ${userData.HoTen || username}`);
         closeModal();
 
-        // 3. Kiểm tra quyền và chuyển hướng
-        const user = data.user || {}; // Lấy trực tiếp từ data vừa nhận để chính xác tuyệt đối
-        if (user.role === 'admin') {
+        // 5. Chuyển hướng dựa trên role
+        if (role === 'admin') {
             window.location.href = '/assets/admin/admin-dashboard.html';
-        } else if (user.role === 'khachhang'){
-            window.location.href = `/assets/after-login/after-login.html?id=${UserID}`;
-        } else {
+        } else if (role === 'khachhang') {
+            window.location.href = '/assets/after-login/after-login.html';
+        } else if (role === 'chusan') {
             window.location.href = '/assets/owner/chu-san.html';
+        } else {
+            console.warn("Role không hợp lệ:", role);
+            window.location.href = '/index.html';
         }
 
-    } catch (error) {
-        // Nếu alert "Lỗi server" hiện ra ở đây, nghĩa là code bên trên catch được lỗi
+    } catch (error) { 
+        console.error("Login Error Details:", error);
         alert("Lỗi đăng nhập: " + error.message);
     }
 }
@@ -254,39 +285,42 @@ window.closeChangePasswordModal = () => {
  * Xử lý gọi API Đổi mật khẩu
  */
 async function handleChangePassword() {
+    // 1. Lấy giá trị từ các ô input
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPass').value;
     const confirmPassword = document.getElementById('confirmNewPass').value;
 
-    // 1. Kiểm tra tính hợp lệ cơ bản
+    // 2. Kiểm tra tính hợp lệ cơ bản
     if (!currentPassword || !newPassword || !confirmPassword) {
         return alert("Vui lòng điền đầy đủ tất cả các ô.");
     }
 
-    if (currentPassword !== confirmPassword) {
-        alert("Mật khẩu xác nhận không khớp!");
-        return;
+    if (newPassword !== confirmPassword) {
+        return alert("Mật khẩu mới và mật khẩu xác nhận không khớp!");
+    }
+
+    if (currentPassword === newPassword) {
+        return alert("Mật khẩu mới không được trùng với mật khẩu hiện tại.");
     }
 
     try {
         const token = localStorage.getItem('userToken');
-        if (!token) throw new Error("Bạn cần đăng nhập để thực hiện thao tác này.");
+        if (!token) throw new Error("Phiên làm việc hết hạn, vui lòng đăng nhập lại.");
 
-        // 2. Gọi API gửi lên Backend
+        // 3. Gọi API gửi lên Backend
         await apiRequest(`${API_URL}/auth/change-password`, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` 
-            },
+            method: 'PUT', 
             body: JSON.stringify({
-                password: currentPassword,
+                password: currentPassword, 
                 newPassword: newPassword
             }),
         });
 
-        // 3. Xử lý thành công
+        // 4. Xử lý thành công
         alert("Đổi mật khẩu thành công!");
+        
+        // Reset form để xóa mật khẩu đã gõ
+        document.getElementById('changePasswordForm').reset();
         closeChangePasswordModal();
 
     } catch (error) {
@@ -295,11 +329,12 @@ async function handleChangePassword() {
 }
 // Hàm đăng xuất 
 function handleLogout() {
-    alert("Đăng xuất thành công!");
-    localStorage.removeItem('userToken');
-    window.location.href = "/index.html";
+    if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+        Auth.clearSession(); // Xóa sạch token và user ID
+        alert("Đăng xuất thành công!");
+        window.location.href = "/index.html";
+    }
 }
-
 // Toggle dropdown cha
 function toggleDropdown(event) {
     event.preventDefault();
@@ -959,7 +994,6 @@ document.addEventListener('DOMContentLoaded', loadUserTable);
 
 /* Script check access */
 document.addEventListener("DOMContentLoaded", function () {
-    checkLoginStatus();
 
     const loginSubmitBtn = document.querySelector("#loginModal button[type='submit']");
     if (loginSubmitBtn) {
@@ -968,20 +1002,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Hàm kiểm tra trạng thái đăng nhập
-function checkLoginStatus() {
-    const token = localStorage.getItem("userToken");
-    const authSection = document.querySelector(".auth");
-
-    if (token && authSection) {
-        // Nếu đã có token, thay đổi nút Đăng nhập/Đăng ký thành thông tin User
-        authSection.innerHTML = `
-            <div class="user-profile">
-                <span>Chào, User!</span>
-                <a href="#" onclick="handleLogout()" style="margin-left: 15px; color: #ff4d4d;">Đăng xuất</a>
-            </div>
-        `;
-    }
-}
 function checkAccess(event, targetUrl) {
     event.preventDefault(); // Chặn chuyển hướng ngay lập tức
     const token = localStorage.getItem("userToken");
@@ -1076,7 +1096,7 @@ async function renderPitchSchedule(currentMaSanmaSan) {
         for (let ca = 1; ca <= 12; ca++) {
             const isBooked = bookedSlots.some(s => s.Ngay === isoDate && s.Ca == ca);
             cells += `
-                <td class="slot-cell ${isBooked ? 'booked' : 'available'}" 
+                <td class="slot-cell ${isBooked ? 'daxacnhan' || 'chuaxacnhan' : 'dahuy'}" 
                     data-date="${isoDate}" data-ca="${ca}" onclick="toggleSelectSlot(this)">
                     ${isBooked ? 'Hết' : ''}
                 </td>`;
@@ -1088,7 +1108,7 @@ async function renderPitchSchedule(currentMaSanmaSan) {
 /**
  * Logic chọn/hủy ca
  */
-window.toggleSelectSlot = (el) => !el.classList.contains('booked') && el.classList.toggle('selected');
+window.toggleSelectSlot = (el) => el.classList.contains('dahuy') && el.classList.toggle('selected');
 
 /**
  * Chuyển hướng đặt sân
@@ -1172,48 +1192,39 @@ window.closeChangePasswordModal = () => {
 
 /* === TẢI THÔNG TIN PROFILE === */
 async function loadUserProfile() {
-    // 1. Ưu tiên lấy ID từ URL (?id=...)
-    const urlParams = new URLSearchParams(window.location.search);
-    let userId = urlParams.get('id');
-
-    // 2. Nếu URL không có ID (ví dụ click từ menu), lấy từ localStorage
-    if (!userId) {
-        const userLocal = JSON.parse(localStorage.getItem('user'));
-        userId = userLocal?.MaNguoiDung || userLocal?.id;
-    }
+    // Lấy ID từ bộ nhớ LocalStorage thông qua hàm tiện ích Auth
+    const userId = Auth.getUserId();
 
     if (!userId) {
-        alert("Không xác định được người dùng. Vui lòng đăng nhập lại!");
-        window.location.href = "/index.html";
+        console.error("Không tìm thấy ID người dùng. Vui lòng đăng nhập lại.");
         return;
     }
 
     try {
-        // 3. Gọi API lấy dữ liệu chi tiết
-        const userData = await apiRequest(`${API_URL}/users/${userId}`, {
-            method: 'GET'
-            // apiRequest sẽ tự đính kèm Token nếu bạn đã cài đặt như các bước trước
-        });
+        // 1. Gọi API lấy thông tin
+        const response = await apiRequest(`${API_URL}/users/${userId}`, { method: 'GET' });
 
-        if (userData) {
-            // Đổ dữ liệu vào HTML (Sử dụng toán tử nullish để tránh hiện "undefined")
-            document.getElementById('profileUsername').value = userData.username ?? "Chưa cập nhật";
-            document.getElementById('profileFullName').value = userData.HoTen ?? "Chưa cập nhật";
-            document.getElementById('profileEmail').value = userData.email ?? "Chưa cập nhật";
-            document.getElementById('profilePhone').value = userData.sdt ?? "Chưa cập nhật";
+        // 2. Kiểm tra dữ liệu (Backend bọc trong lớp .data)
+        if (response && response.data) {
+            const userData = response.data;
+
+            // 3. Đổ dữ liệu vào các ID tương ứng trong HTML của bạn
+            document.getElementById('profileUsername').value = userData.username || "";
+            document.getElementById('profileFullName').value = userData.HoTen || "";
+            document.getElementById('profileEmail').value = userData.email || "";
+            document.getElementById('profilePhone').value = userData.sdt || userData.phone || "";
             
-            console.log("Dữ liệu Profile đã tải xong cho ID:", userId);
+            console.log("Tải hồ sơ thành công cho ID:", userId);
         }
     } catch (error) {
-        console.error("Lỗi khi tải thông tin profile:", error.message);
-        alert("Không thể tải thông tin tài khoản.");
+        console.error("Lỗi khi tải Profile:", error.message);
     }
 }
-/* === LOGIC CHỈNH SỬA & LƯU THÔNG TIN === */
+
+/* === CHỈNH SỬA & LƯU THÔNG TIN === */
 async function handleEditSave() {
     const mainBtn = document.getElementById('mainBtn');
     const inputs = [
-        document.getElementById('profileUsername'),
         document.getElementById('profileFullName'),
         document.getElementById('profileEmail'),
         document.getElementById('profilePhone')
@@ -1222,7 +1233,7 @@ async function handleEditSave() {
     if (!mainBtn) return;
 
     if (mainBtn.innerText === "Chỉnh sửa thông tin") {
-        // CHẾ ĐỘ CHỈNH SỬA
+        // --- CHẾ ĐỘ CHỈNH SỬA ---
         inputs.forEach(input => {
             if (input) {
                 input.removeAttribute('readonly');
@@ -1231,58 +1242,52 @@ async function handleEditSave() {
             }
         });
         mainBtn.innerText = "Lưu thông tin";
-        mainBtn.style.backgroundColor = "#16a34a"; // Đổi sang xanh lá
+        mainBtn.style.backgroundColor = "#16a34a"; // Đổi sang màu xanh lá
     } else {
-        // CHẾ ĐỘ LƯU
-        const userStr = localStorage.getItem('user');
-        const userLocal = JSON.parse(userStr);
-        const userId = userLocal.MaNguoiDung || userLocal.id;
+        // --- CHẾ ĐỘ LƯU DỮ LIỆU ---
+        const userId = Auth.getUserId();
+        const userLocal = Auth.getUserData();
 
         const updatedData = {
             HoTen: document.getElementById('profileFullName').value,
             email: document.getElementById('profileEmail').value,
-            phone: document.getElementById('profilePhone').value
+            sdt: document.getElementById('profilePhone').value // Gửi 'sdt' khớp với BE
         };
 
         try {
             mainBtn.innerText = "Đang lưu...";
+            mainBtn.disabled = true;
+
             await apiRequest(`${API_URL}/users/${userId}`, {
                 method: 'PUT',
                 body: JSON.stringify(updatedData)
             });
 
-            alert("Cập nhật thành công!");
-            
+            alert("Cập nhật thông tin thành công!");
+
+            // Cập nhật lại LocalStorage để đồng bộ tên trên Navbar ngay lập tức
+            const newUser = { ...userLocal, ...updatedData };
+            localStorage.setItem('user', JSON.stringify(newUser));
+
             // Khóa lại các ô input
-            inputs.forEach(input => {
-                if (input) {
-                    input.setAttribute('readonly', true);
-                    input.style.backgroundColor = ""; 
-                    input.style.border = "";
-                }
-            });
-            mainBtn.innerText = "Chỉnh sửa thông tin";
-            mainBtn.style.backgroundColor = ""; // Về mặc định
+            location.reload(); 
         } catch (error) {
-            alert("Lỗi: " + error.message);
+            alert("Lỗi khi lưu: " + error.message);
             mainBtn.innerText = "Lưu thông tin";
+            mainBtn.disabled = false;
         }
     }
 }
 
-/* === KHỞI TẠO KHI TRANG TẢI XONG === */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Nếu có ID profileUsername thì mới chạy hàm tải dữ liệu
+
     if (document.getElementById('profileUsername')) {
         loadUserProfile();
     }
 
-    // 2. Gán sự kiện click cho nút Chỉnh sửa
-    document.getElementById('mainBtn')?.addEventListener('click', handleEditSave);
-
-    // 3. Đóng modal khi click ra ngoài
-    window.addEventListener('click', (e) => {
-        const modal = document.getElementById("changePasswordModal");
-        if (e.target === modal) closeChangePasswordModal();
-    });
+    // 2. Gán sự kiện click cho nút Chỉnh sửa/Lưu
+    const mainBtn = document.getElementById('mainBtn');
+    if (mainBtn) {
+        mainBtn.addEventListener('click', handleEditSave);
+    }
 });
