@@ -83,26 +83,27 @@
 
         <div class="pitch-info">
 
-            <div class="pitch-name">Sân A</div>
+            <div class="pitch-name">
+                <input type="text" id="name" value="Sân A"></div>
 
+            <div class="info-row">
+                <label>Loại sân:</label>
+                <input type="text" id="type" value="Sân 5">
+            </div>
+            
             <div class="info-row">
                 <label>Địa chỉ:</label>
                 <input type="text" id="address" value="Số 1 Đại Cồ Việt, Hà Nội">
             </div>
 
             <div class="info-row">
+                <label>Phường:</label>
+                <input type="text" id="ward" value="Hai Bà Trưng">
+            </div>
+
+            <div class="info-row">
                 <label>Giá thuê:</label>
                 <input type="number" id="price" value="300000"> VNĐ / giờ
-            </div>
-
-            <div class="info-row">
-                <label>Khung giờ:</label>
-                <input type="text" id="timeRange" value="06:00 - 22:00">
-            </div>
-
-            <div class="info-row">
-                <label>Doanh thu:</label>
-                <span id="revenue" class="revenue">0 VNĐ</span>
             </div>
 
             <div class="actions">
@@ -133,6 +134,30 @@
         </div>
     </section>
 
-</body>
+    <script>
+    function savePitchInfo() {
+    // 1. Lấy dữ liệu từ các input
+    const pitchData = {
+        name: document.getElementById('name').value,
+        type: document.getElementById('type').value,
+        address: document.getElementById('address').value,
+        ward: document.getElementById('ward').value,
+        price: document.getElementById('price').value
+    };
 
+    // 2. Kiểm tra dữ liệu cơ bản (Validation)
+    if (!pitchData.name || !pitchData.price || !pitchData.type || !pitchData.address || !pitchData.ward) {
+        alert("Vui lòng không để trống thông tin!");
+        return;
+    }
+
+    // 3. Giả lập gửi dữ liệu lên Server (Dùng Console log để kiểm tra)
+    console.log("Đang lưu dữ liệu:", pitchData);
+
+    // 4. Hiển thị thông báo thành công
+    alert("🎉 Chúc mừng! Thông tin sân đã được cập nhật thành công.");
+}
+</script>
+
+</body>
 </html>
