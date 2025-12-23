@@ -25,38 +25,36 @@ exports.getFieldDetails = async (req, res) => {
 };
 
 exports.getFieldSearch = async (req, res) => {
-    const { LoaiSan, CaThue, DiaChi } = req.query;
+    // 1. Lấy dữ liệu từ query (GET) hoặc body (POST)
+    // Thường tìm kiếm thì nên dùng req.query, nhưng req.body vẫn được nếu dùng POST
+    const { Ca, Ngay } = req.body; 
 
     try {
-        let sql = `SELECT DISTINCT s.* FROM sanbong s `;
         let params = [];
-        let join = false;
+        
+        // Câu lệnh SQL gốc: Lấy tất cả sân đang hoạt động
+        let sql = `SELECT s.* FROM sanbong s WHERE s.TrangThai = 'hoatdong'`;
 
-        if (CaThue) {
-            sql += ` JOIN lichdatsan l ON s.MaSan = l.Masan`
-            join = true;
+        // Nếu khách chọn Ngày và Ca, ta cần loại bỏ những sân ĐÃ CÓ người đặt
+        if (Ngay && Ca) {
+            sql += ` 
+                AND NOT EXISTS (
+                    SELECT 1 FROM lichdatsan l 
+                    WHERE l.MaSan = s.MaSan 
+                    AND l.Ngay = ? 
+                    AND l.Ca = ? 
+                    AND l.TrangThai IN ('daxacnhan', 'chuaxacnhan')
+                )
+            `;
+            // Push tham số vào theo đúng thứ tự dấu ?
+            params.push(Ngay);
+            params.push(Ca);
         }
 
-        sql += ` WHERE s.TrangThai = 'hoatdong'`;
-
-        if (LoaiSan) {
-            sql += ` AND LoaiSan = ? `;
-            params.push(LoaiSan);
-        }
-
-        if (DiaChi) {
-            sql += ` AND s.DiaChi LIKE ? `;
-            params.push(`%${DiaChi}%`);
-        }
-
-        if (CaThue) {
-            sql += `AND l.Ca = ? AND l.TrangThai NOT IN ('daxacnhan', 'chuaxacnhan') `;
-            params.push(CaThue);
-        }
-
+        // Thực thi query
         const [result] = await db.query(sql, params);
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Tìm kiếm thành công",
             count: result.length,
             data: result
@@ -64,7 +62,9 @@ exports.getFieldSearch = async (req, res) => {
 
     } catch (err) {
         console.error("Lỗi tìm kiếm sân:", err);
-        return res.status(500).json({message: "Lỗi server khi tìm kiếm sân"})
+        return res.status(500).json({
+            message: "Lỗi server khi tìm kiếm sân"
+        });
     }
 };
 
