@@ -1,10 +1,10 @@
 const db = require('../db');
 
 exports.createBooking = async (req, res) => {
-    const { maNguoiDung, maSan, ngay, ca, tongTien } = req.body;
+    const { maNguoiDung, maSan, ngay, ca } = req.body;
 
     // 1. Validate dữ liệu
-    if (!maNguoiDung || !maSan || !ngay || !ca || !tongTien) {
+    if (!maNguoiDung || !maSan || !ngay || !ca ) {
         return res.status(400).json({ message: "Thiếu thông tin đặt sân!" });
     }
 
@@ -32,17 +32,17 @@ exports.createBooking = async (req, res) => {
         // 3. TẠO ĐƠN ĐẶT MỚI (Insert thẳng vào lichdatsan)
         const insertSql = `
             INSERT INTO lichdatsan (MaNguoiDung, MaSan, Ca, Ngay, TongTien, TrangThai) 
-            VALUES (?, ?, ?, ?, ?, 'chuaxacnhan')
+            VALUES (?, ?, ?, ?, 0, 'chuaxacnhan')
         `;
 
-        const [result] = await connection.query(insertSql, [maNguoiDung, maSan, ca, ngay, tongTien]);
+        const [result] = await connection.query(insertSql, [maNguoiDung, maSan, ca, ngay]);
 
         await connection.commit();
 
         res.status(201).json({
             message: "Đặt sân thành công!",
             bookingId: result.insertId,
-            data: { maNguoiDung, maSan, ngay, ca, TrangThai: 'chuaxacnhan' }
+            data: { maNguoiDung, maSan, ngay, ca, status: 'chuaxacnhan' }
         });
 
     } catch (err) {
