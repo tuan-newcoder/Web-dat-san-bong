@@ -78,59 +78,26 @@
                     <tr>
                         <th>Mã Đơn</th>
                         <th>Tên Sân</th>
-                        <th>Ngày/Giờ</th>
+                        <th>Ngày</th>
+                        <th>Ca</th>
                         <th>Tổng Tiền</th>
                         <th>Trạng Thái</th>
                         <th>Hành Động</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="status-completed">
-                        <td data-label="Mã Đơn">#BSB-20251216-001</td>
-                        <td data-label="Tên Sân">Sân A</td>
-                        <td data-label="Ngày/Giờ">16/12/2025 | 19:00 - 20:30</td>
-                        <td data-label="Tổng Tiền">500.000 VNĐ</td>
-                        <td data-label="Trạng Thái">
-                            <span class="status-badge completed">Đã hoàn thành</span>
-                        </td>
-                        <td data-label="Hành Động">
-                            <button class="action-btn view-detail">Xem chi tiết</button>
-                        </td>
-                    </tr>
-                    
-                    <tr class="status-upcoming">
-                        <td data-label="Mã Đơn">#BSB-20251220-002</td>
-                        <td data-label="Tên Sân">Sân C</td>
-                        <td data-label="Ngày/Giờ">20/12/2025 | 20:30 - 22:00</td>
-                        <td data-label="Tổng Tiền">650.000 VNĐ</td>
-                        <td data-label="Trạng Thái">
-                            <span class="status-badge upcoming">Sắp tới</span>
-                        </td>
-                        <td data-label="Hành Động">
-                            <button class="action-btn cancel-booking">Hủy sân</button>
-                        </td>
-                    </tr>
-
-                    <tr class="status-cancelled">
-                        <td data-label="Mã Đơn">#BSB-20251201-003</td>
-                        <td data-label="Tên Sân">Sân B</td>
-                        <td data-label="Ngày/Giờ">01/12/2025 | 18:00 - 19:30</td>
-                        <td data-label="Tổng Tiền">450.000 VNĐ</td>
-                        <td data-label="Trạng Thái">
-                            <span class="status-badge cancelled">Đã hủy</span>
-                        </td>
-                        <td data-label="Hành Động">
-                            <button class="action-btn rebook">Đặt lại</button>
-                        </td>
+                <tbody id="bookingHistoryBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Đang tải lịch sử đặt sân...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <div id="pagination" class="pagination-container"></div>
 
         <a href="chu-san.html" class="back-home-btn">← Quay lại trang chủ</a>
     </div>
 
-    <section class="footer-info">
+    <section class="footer-info" style="display: flex;">
         <div class="info-container">
             <div class="info-box">
                 <h3>Thông tin</h3>
@@ -150,4 +117,5 @@
     </section>
 
 </body>
+
 </html>
