@@ -50,7 +50,7 @@ exports.getFieldSearch = async (req, res) => {
         }
 
         if (CaThue) {
-            sql += `AND Ca = ? AND c.TrangThai NOT IN ('daxacnhan', 'chuaxacnhan') `;
+            sql += `AND l.Ca = ? AND l.TrangThai NOT IN ('daxacnhan', 'chuaxacnhan') `;
             params.push(CaThue);
         }
 

@@ -58,6 +58,19 @@
             "TrangThai": "hoatdong"
             
         }
+
+    // Lọc sân
+    - Method: GET
+    - URL API: http://localhost:3000/api/fields/search
+    - body json: 
+        {
+            
+            "TenSan": "Sân Bóng BK - Sân A (Mới)",
+            "LoaiSan": "Sân 5",
+            "DiaChi": "Số 1 Đại Cồ Việt, Hai Bà Trưng",
+            "TrangThai": "hoatdong"
+            
+        }        
     
     // Thêm sân mới
     - Method: POST

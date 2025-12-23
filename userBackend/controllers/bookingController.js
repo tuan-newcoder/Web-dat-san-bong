@@ -42,7 +42,7 @@ exports.createBooking = async (req, res) => {
         res.status(201).json({
             message: "Đặt sân thành công!",
             bookingId: result.insertId,
-            data: { maNguoiDung, maSan, ngay, ca, status: 'chuaxacnhan' }
+            data: { maNguoiDung, maSan, ngay, ca, TrangThai: 'chuaxacnhan' }
         });
 
     } catch (err) {
