@@ -1053,6 +1053,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('bookingTableBody')) fetchBookings();
 });
 
+/* Script for chi tiet san */
+
 const urlParams = new URLSearchParams(window.location.search);
 const currentMaSan = urlParams.get('id');
 
@@ -1080,28 +1082,39 @@ async function renderPitchSchedule() {
 
     let bookedSlots = [];
     try {
-        const response = await apiRequest(`${API_URL}/slots/fields/${currentMaSan}`, {
-            method: 'GET'
-        });
+        const response = await apiRequest(`${API_URL}/slots/fields/${currentMaSan}`);
         bookedSlots = response.data || [];
     } catch (e) { 
-        console.warn("Lỗi tải lịch từ Backend:", e.message); 
+        console.warn("Lỗi tải lịch:", e.message); 
     }
 
     const today = new Date();
     tbody.innerHTML = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
-        const isoDate = date.toISOString().split('T')[0]; 
-        const displayDate = date.toLocaleDateString('vi-VN');
 
+        // --- CÁCH ĐỊNH DẠNG YYYY-MM-DD CHUẨN GIỜ ĐỊA PHƯƠNG ---
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
+        const day = String(date.getDate()).padStart(2, '0');
+        const isoDate = `${year}-${month}-${day}`; 
+        // ------------------------------------------------------
+
+        const displayDate = date.toLocaleDateString('vi-VN');
         let cells = `<td style="font-weight:bold; background:#f4f4f4;">${i === 0 ? displayDate + ' (Hôm nay)' : displayDate}</td>`;
 
         for (let ca = 1; ca <= 12; ca++) {
-            const slotData = bookedSlots.find(s => s.ngay === isoDate && s.ca == ca);
+            // So khớp dữ liệu: Ép kiểu ca về số để tránh lỗi so sánh string/number
+            const slotData = bookedSlots.find(s => s.Ngay === isoDate && Number(s.Ca) === ca);
             
-            // Logic: Daxacnhan hoặc chuaxacnhan thì hiện "Hết"
-            const isUnavailable = slotData && (slotData.TrangThai === 'daxacnhan' || slotData.TrangThai === 'chua xac nhan');
+            let isUnavailable = false;
+            if (slotData && slotData.TrangThai) {
+                // Chuẩn hóa chuỗi TrangThai để so sánh (xóa khoảng trắng, viết thường)
+                const status = slotData.TrangThai.toLowerCase().trim();
+                if (status === 'daxacnhan' || status === 'chuaxacnhan') {
+                    isUnavailable = true;
+                }
+            }
 
             const statusClass = isUnavailable ? 'booked' : 'available';
             const statusText = isUnavailable ? 'Hết' : '';
