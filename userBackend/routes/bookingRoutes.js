@@ -13,4 +13,7 @@ router.get('/users/:id', bookingController.getUserBookings);
 // API 3: Lấy thông tin thanh toán (GET /api/bookings/bank/:id)
 router.get('/bank/:id', bookingController.getPaymentInfo);
 
+//API 4: Thay đổi trạng thái trong lịch đặt sân (PUT /api/bookings/:id)
+router.put('/:id', bookingController.putBookingStatus);
+
 module.exports = router;

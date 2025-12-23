@@ -139,3 +139,38 @@ exports.getPaymentInfo = async (req, res) => {
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
+
+exports.putBookingStatus = async (req, res) => {
+    const { id } = req.params;
+    
+    const { TrangThai } = req.body;
+
+    if ( !TrangThai )
+        return res.status(400).json({message: "Gửi sai biến FE ơi!"});
+
+    const validStatus = ['daxacnhan', 'chuaxacnhan', 'dahuy'];
+        if (!validStatus.includes(TrangThai)) {
+            return res.status(400).json({ message: "Trạng thái không hợp lệ!" });
+        }
+
+    try {
+        const sql = `UPDATE lichdatsan SET TrangThai = ? WHERE MaDatSan = ?`;
+
+        const [result] = await db.query(sql, [TrangThai, id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ 
+                message: "Không tìm thấy đơn đặt sân hoặc trạng thái không thay đổi!" 
+            });
+        }
+
+        res.status(200).json({
+            message: "Cập nhật trạng thái thành công!",
+            id,
+            TrangThai
+        });
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({message: "Lỗi Server!"});
+    }
+}
