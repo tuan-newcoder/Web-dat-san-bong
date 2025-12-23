@@ -824,9 +824,19 @@ a {
 
 /* Tên sân */
 .pitch-name {
-    font-size: 28px;
+    display: flex;
+    align-items: center;
+    font-size: 25px;
     font-weight: bold;
     margin-bottom: 25px;
+}
+
+.pitch-name input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 25px;
 }
 
 /* Các dòng thông tin */
