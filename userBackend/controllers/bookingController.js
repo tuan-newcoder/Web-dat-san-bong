@@ -32,10 +32,12 @@ exports.createBooking = async (req, res) => {
         // 3. TẠO ĐƠN ĐẶT MỚI (Insert thẳng vào lichdatsan)
         const insertSql = `
             INSERT INTO lichdatsan (MaNguoiDung, MaSan, Ca, Ngay, TongTien, TrangThai) 
-            VALUES (?, ?, ?, ?, 0, 'chuaxacnhan')
+            SELECT ?, ?, ?, ?, Gia, 'chuaxacnhan'
+            FROM sanbong
+            WHERE MaSan = ?
         `;
-
-        const [result] = await connection.query(insertSql, [maNguoiDung, maSan, ca, ngay]);
+        
+        const [result] = await connection.query(insertSql, [maNguoiDung, maSan, ca, ngay, maSan]);
 
         await connection.commit();
 
@@ -124,9 +126,7 @@ exports.getPaymentInfo = async (req, res) => {
         const paymentData = {
             nganHang: data.NganHang,
             soTaiKhoan: data.SoTaiKhoan, 
-            chuTaiKhoan: data.ChuTaiKhoan,
-            soTien: data.TongTien,
-            noiDungChuyenKhoan: `THANHTOAN DAT SAN ${data.MaDatSan}`
+            chuTaiKhoan: data.ChuTaiKhoan
         };
 
         res.status(200).json({
