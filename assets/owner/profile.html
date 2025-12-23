@@ -72,29 +72,29 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section class="hero">
+<section class="hero">
         <div class="hero-content">
             <div class="profile-container">
                 <h3>Thông tin tài khoản</h3>
-
+                
                 <div class="form-group">
                     <label>Tên người dùng:</label>
-                    <input type="text" value="nguyenvan_a" readonly>
+                    <input type="text" id="profileUsername" readonly>
                 </div>
 
                 <div class="form-group">
                     <label>Họ và tên:</label>
-                    <input type="text" value="Nguyễn Văn A" readonly>
+                    <input type="text" id="profileFullName" readonly>
                 </div>
 
                 <div class="form-group">
                     <label>Email:</label>
-                    <input type="email" value="anv@example.com" readonly>
+                    <input type="email" id="profileEmail" readonly>
                 </div>
 
                 <div class="form-group">
                     <label>Số điện thoại:</label>
-                    <input type="text" value="0901234567" readonly>
+                    <input type="text" id="profilePhone" readonly>
                 </div>
 
                 <div class="button-group">
@@ -102,29 +102,23 @@
                     <button onclick="openChangePasswordModal()" class="btn-pass">Đổi mật khẩu</button>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- Footer -->
-    <section class="footer-info">
+    <footer class="footer-info">
         <div class="info-container">
             <div class="info-box">
                 <h3>Thông tin</h3>
                 <p>Công ty cổ phần Nhóm 15</p>
                 <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
-                <p>Mã số thuế: xxxxxxxxxx</p>
-                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
             </div>
-
             <div class="info-box">
                 <h3>Liên hệ</h3>
                 <p>📧 Email: contact@datsanbk.com</p>
                 <p>📞 Điện thoại: 0363 636 363</p>
-                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
             </div>
         </div>
-    </section>
+    </footer>
 
     <div id="changePasswordModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -134,15 +128,15 @@
                 <form id="changePasswordForm">
                     <div class="form-group">
                         <label for="currentPassword">Mật khẩu hiện tại</label>
-                        <input type="password" id="currentPassword" required placeholder="Nhập mật khẩu cũ">
+                        <input type="password" id="currentPassword" required>
                     </div>
                     <div class="form-group">
                         <label for="newPass">Mật khẩu mới</label>
-                        <input type="password" id="newPass" required placeholder="Tối thiểu 6 ký tự">
+                        <input type="password" id="newPass" required>
                     </div>
                     <div class="form-group">
                         <label for="confirmNewPass">Xác nhận mật khẩu mới</label>
-                        <input type="password" id="confirmNewPass" required placeholder="Nhập lại mật khẩu mới">
+                        <input type="password" id="confirmNewPass" required>
                     </div>
                     <button type="button" class="book-now-button" onclick="handleChangePassword()">
                         Hoàn tất
@@ -152,41 +146,7 @@
         </div>
     </div>
 
-    <script>
-        const mainBtn = document.getElementById('mainBtn');
-        const inputs = document.querySelectorAll('input');
-
-        mainBtn.addEventListener('click', function () {
-            // Kiểm tra xem đang ở trạng thái "Chỉnh sửa" hay "Lưu"
-            if (this.innerText === "Chỉnh sửa thông tin") {
-                // BẬT CHẾ ĐỘ CHỈNH SỬA
-                inputs.forEach(input => {
-                    input.removeAttribute('readonly'); // Bỏ thuộc tính chỉ đọc
-                    input.classList.add('editable');  // Thêm class để đổi màu nền trắng
-                });
-                this.innerText = "Lưu thông tin";
-                this.style.backgroundColor = "#16a34a"; // Đổi sang màu xanh lá
-                inputs[0].focus(); // Tự động đặt con trỏ vào ô đầu tiên
-            } else {
-                // THỰC HIỆN LƯU
-                saveAction();
-            }
-        });
-
-        function saveAction() {
-            // Giả lập gửi dữ liệu
-            alert("Đang lưu dữ liệu... Thành công!");
-
-            // TẮT CHẾ ĐỘ CHỈNH SỬA (Khóa lại)
-            inputs.forEach(input => {
-                input.setAttribute('readonly', true);
-                input.classList.remove('editable');
-            });
-            mainBtn.innerText = "Chỉnh sửa thông tin";
-            mainBtn.style.backgroundColor = "#2563eb"; // Về màu xanh dương
-        }
-    </script>
-
+    <script src="/main.js"></script>
 </body>
 
 </html>

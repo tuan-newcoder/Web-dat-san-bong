@@ -470,28 +470,31 @@ const StadiumApp = {
     },
 
     // 2. Logic Lọc chính xác
-    handleFilter() {
-        const selectedType = document.querySelector('.calendar-type-button.active')?.innerText.trim() || "";
-        const wardValue = document.getElementById('phuongSelect')?.value || "-- Chọn phường --";
+handleFilter() {
+        // 1. Lấy Loại sân đang chọn (ví dụ: "Sân 5", "Sân 7")
+        const activeBtn = document.querySelector('.calendar-type-button.active');
+        const selectedType = activeBtn ? activeBtn.innerText.trim() : "";
 
+        // 2. Lấy giá trị Phường (Khớp với HTML là "-- Tất cả --")
+        const wardSelect = document.getElementById('phuongSelect');
+        const wardValue = wardSelect ? wardSelect.value : "-- Tất cả --";
         const normalizedWard = wardValue.trim().toLowerCase();
 
         this.filteredData = this.allData.filter(s => {
-            // Lọc theo Loại Sân
-            const matchesType = s.LoaiSan.includes(selectedType);
+            // Lọc theo Loại Sân: Nếu không chọn nút nào thì mặc định lấy tất cả
+            const matchesType = !selectedType || s.LoaiSan.trim() === selectedType;
 
-            // Lọc theo Phường
-            const matchesWard = (wardValue === "-- Chọn phường --") ||
-                (s.Phuong.toLowerCase().trim() === normalizedWard);
+            // Lọc theo Phường: Khớp với giá trị mặc định "-- Tất cả --" trong HTML
+            const matchesWard = (wardValue === "-- Tất cả --") || 
+                                (s.Phuong.toLowerCase().trim() === normalizedWard);
 
-            // Chỉ lấy sân đang hoạt động
-            const isActive = s.TrangThai === 'hoatdong';
+            // Chỉ lấy sân có trạng thái hoạt động
+            const isActive = s.TrangThai === 'hoatdong' || s.TrangThai === 'baotri';
 
             return matchesType && matchesWard && isActive;
         });
 
-        this.renderPage(1); // Luôn về trang 1 sau khi lọc
-
+        this.renderPage(1); // Luôn quay về trang 1 sau khi lọc
     },
 
     // 3. Hiển thị dữ liệu và đếm số lượng
@@ -1348,5 +1351,126 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainBtn = document.getElementById('mainBtn');
     if (mainBtn) {
         mainBtn.addEventListener('click', handleEditSave);
+    }
+});
+
+/* Script cho lịch sử đặt sân */
+
+const statusConfig = {
+    "chuaxacnhan": { text: "Chờ xác nhận", class: "upcoming" },
+    "daxacnhan": { text: "Đã xác nhận", class: "completed" },
+    "dahuy": { text: "Đã hủy", class: "cancelled" }
+};
+
+const HistoryApp = {
+    allData: [],
+    currentPage: 1,
+    itemsPerPage: 10,
+
+    init() {
+        this.fetchHistory();
+    },
+
+    async fetchHistory() {
+        const userId = Auth.getUserId();
+        if (!userId) return;
+
+        try {
+            const response = await apiRequest(`${API_URL}/bookings/users/${userId}`, {
+                method: 'GET'
+            });
+            this.allData = response.data || [];
+            this.renderPage(1);
+        } catch (error) {
+            console.error("Lỗi:", error.message);
+        }
+    },
+
+    renderPage(page) {
+        this.currentPage = page;
+        const tbody = document.getElementById('bookingHistoryBody');
+        if (!tbody) return;
+
+        // Phân trang: Lấy 10 phần tử cho trang hiện tại
+        const start = (page - 1) * this.itemsPerPage;
+        const items = this.allData.slice(start, start + this.itemsPerPage);
+
+        if (items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Không có lịch sử đặt sân.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = items.map(item => {
+            const formattedDate = new Date(item.Ngay).toLocaleDateString('vi-VN');
+            const formattedPrice = new Intl.NumberFormat('vi-VN').format(item.Gia) + " VNĐ";
+            const status = statusConfig[item.TrangThai] || { text: item.TrangThai, class: "" };
+
+            return `
+                <tr class="status-${status.class}">
+                    <td data-label="Mã Đơn" style="width:15%">#${item.MaDatSan}</td>
+                    <td data-label="Tên Sân" style="width:36%">
+                        <strong>${item.TenSan}</strong><br>
+                        <small style="color: #666;">${item.DiaChi}</small>
+                    </td>
+                    <td data-label="Ngày" style="width:10%">${formattedDate}</td>
+                    <td data-label="Ca" style="width:7%">Ca ${item.Ca}</td>
+                    <td data-label="Tổng Tiền" style="width:15%"><strong>${formattedPrice}</strong></td>
+                    <td data-label="Trạng Thái">
+                        <span class="status-badge ${status.class}">${status.text}</span>
+                    </td>
+                    <td data-label="Hành Động">
+                        ${item.TrangThai === 'chuaxacnhan' 
+                            ? `<button class="cancel-btn" onclick="HistoryApp.cancelBooking(${item.MaDatSan})">Hủy</button>` 
+                            : ''
+                        }
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        this.renderPagination();
+    },
+
+    renderPagination() {
+        const pages = Math.ceil(this.allData.length / this.itemsPerPage);
+        const container = document.getElementById('pagination');
+        if (!container || pages <= 1) {
+            if (container) container.innerHTML = "";
+            return;
+        }
+
+        container.innerHTML = Array.from({ length: pages }, (_, i) => i + 1)
+            .map(p => `
+                <button class="page-btn ${p === this.currentPage ? 'active' : ''}" 
+                        onclick="HistoryApp.renderPage(${p})">${p}</button>
+            `).join('');
+    },
+
+    /**
+     * Hàm hủy sân sử dụng PUT 
+     */
+    async cancelBooking(id) {
+        if (!confirm("Bạn có chắc chắn muốn hủy yêu cầu đặt sân này?")) return;
+
+        try {
+            // Sử dụng PUT để đổi trạng thái về dahuy
+            await apiRequest(`${API_URL}/bookings/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ TrangThai: 'dahuy' })
+            });
+
+            alert("Đã hủy đặt sân thành công.");
+            this.fetchHistory(); 
+        } catch (error) {
+            alert("Lỗi khi hủy: " + error.message);
+        }
+    }
+};
+
+// Khởi tạo
+window.HistoryApp = HistoryApp;
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('bookingHistoryBody')) {
+        HistoryApp.init();
     }
 });
