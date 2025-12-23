@@ -116,8 +116,7 @@
             "maNguoiDung": 1,
             "maSan": 1,
             "ngay": "2025-12-25",
-            "ca": 3,
-            "tongTien": 300000
+            "ca": 3
         }
 
     // Lấy lịch sử đặt sân của user
