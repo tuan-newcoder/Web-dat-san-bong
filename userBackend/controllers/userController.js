@@ -57,7 +57,7 @@ exports.getUserById = async (req, res) => {
 
     try {
         const sql = `
-            SELECT MaNguoiDung, username, HoTen, email, sdt, quyen 
+            SELECT MaNguoiDung, username, HoTen, email, sdt, quyen, stk, bank 
             FROM user 
             WHERE MaNguoiDung = ?
         `;
