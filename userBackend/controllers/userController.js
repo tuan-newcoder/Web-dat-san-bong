@@ -2,10 +2,10 @@ const db = require('../db');
 
 exports.putUserProfile = async (req, res) => {
     const { id } = req.params;
-    // Đổi tên biến nhận vào từ body
+    // Nhận tất cả thông tin từ body, bao gồm bank và stk
     const { HoTen, email, sdt, bank, stk } = req.body;
 
-    // 1. Validate cơ bản
+    // 1. Validate các trường bắt buộc (Họ tên, Email, SĐT)
     if (!HoTen || !email || !sdt) {
         return res.status(400).json({
             message: "Vui lòng điền đầy đủ thông tin: Họ tên, Email và SĐT"
@@ -13,53 +13,28 @@ exports.putUserProfile = async (req, res) => {
     }
 
     try {
-        // 2. Check Role user hiện tại
-        const [users] = await db.query(`SELECT quyen FROM User WHERE MaNguoiDung = ?`, [id]);
+        const [users] = await db.query(`SELECT MaNguoiDung FROM User WHERE MaNguoiDung = ?`, [id]);
 
         if (users.length === 0) {
             return res.status(404).json({ message: "Không tìm thấy người dùng!" });
         }
 
-        const currentUser = users[0];
-        const isOwner = currentUser.quyen === 'chusan'; 
+        const sql = `UPDATE User SET HoTen = ?, email = ?, sdt = ?, bank = ?, stk = ? WHERE MaNguoiDung = ?`;
+        
+        const params = [HoTen, email, sdt, bank || null, stk || null, id];
 
-        // 3. Validate riêng cho Owner
-        if (isOwner) {
-            if (!bank || !stk) {
-                return res.status(400).json({
-                    message: "Chủ sân vui lòng điền đầy đủ Tên ngân hàng và Số tài khoản!"
-                });
-            }
-        }
-
-        // 4. Chuẩn bị câu SQL động
-        let sql = `UPDATE User SET HoTen = ?, email = ?, sdt = ?`;
-        let params = [HoTen, email, sdt];
-
-        // Nếu là Owner thì update thêm bank và stk
-        if (isOwner) {
-            // Giả định tên cột trong DB cũng là 'bank' và 'stk'
-            sql += `, bank = ?, stk = ?`; 
-            params.push(bank, stk);
-        }
-
-        sql += ` WHERE MaNguoiDung = ?`;
-        params.push(id);
-
-        // 5. Thực thi
         await db.execute(sql, params);
-
-        // Chuẩn bị data trả về
-        let updatedInfo = { id, HoTen, email, sdt };
-        if (isOwner) {
-            updatedInfo.bank = bank;
-            updatedInfo.stk = stk;
-        }
 
         res.status(200).json({
             message: "Cập nhật thông tin thành công!",
-            role: currentUser.VaiTro,
-            updatedInfo: updatedInfo
+            updatedInfo: { 
+                id, 
+                HoTen, 
+                email, 
+                sdt, 
+                bank, 
+                stk 
+            }
         });
 
     } catch (err) {
@@ -82,7 +57,7 @@ exports.getUserById = async (req, res) => {
 
     try {
         const sql = `
-            SELECT MaNguoiDung, username, HoTen, email, sdt, quyen 
+            SELECT MaNguoiDung, username, HoTen, email, sdt, quyen, stk, bank 
             FROM user 
             WHERE MaNguoiDung = ?
         `;

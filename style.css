@@ -379,7 +379,7 @@ a {
 /* Bố cục container chính giữa trang */
 .profile-container {
     max-width: 500px;
-    margin: 150px auto;
+    margin: 70px auto;
     padding: 20px;
     background-color: #fefefe;
     border-radius: 10px;
@@ -496,7 +496,8 @@ a {
 }
 
 .ca,
-.phuong {
+.phuong,
+.date-input {
     width: 100%;
     padding: 10px 15px;
     border: 1px solid #ccc;
@@ -1883,4 +1884,118 @@ button {
 
 .cancel-btn:hover {
     background-color: #dc2626;
+}
+
+/* --- TRANG ĐĂNG KÝ CHỦ SÂN --- */
+
+/* 1. Phần nền và khung bao ngoài */
+.hero-owner {
+    position: relative;
+    min-height: 100vh;
+    background: url('/images/background.jpg') no-repeat center center/cover; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-overlay {
+    width: 100%;
+    height: 200%;
+    background: rgba(0, 0, 0, 0.4); 
+    padding: 220px 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* 2. Container chính */
+.contact-container {
+    max-width: 1000px; 
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    gap: 60px; 
+    padding: 0 20px;
+    flex-wrap: wrap;
+}
+
+/* 3. Khối Card chứa Form */
+.contact-card {
+    background: #fff;
+    padding: 36px;      
+    border-radius: 12px;
+    width: 300px;      
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.contact-card h2 {
+    color: #044b7f;
+    margin-bottom: 15px;
+    font-size: 13px;   
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 8px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 10px;
+    color: #444;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.input-group input, 
+.input-group textarea {
+    width: 100%;
+    padding: 6px 12px; 
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fcfcfc;
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Dòng chú ý màu đỏ */
+.form-notice {
+    font-size: 10px;    
+    color: #d9534f;
+    margin: 10px 0;
+    line-height: 1.4;
+    text-align: justify;
+}
+
+/* Nút bấm Gửi */
+.btn-gradient {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(to right, #2ecc71, #044b7f);
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 5. Khối chữ thông tin bên phải */
+.contact-text-info {
+    color: #fff;
+    font-size: 22px;    
+    font-weight: 500;
+    line-height: 1.6;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+}
+
+.contact-text-info span {
+    font-weight: 400;
 }

@@ -36,12 +36,12 @@
 
                 <div id="ownerDropdown" class="dropdown-content">
                     <div class="has-submenu">
-                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
+                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý
+                            sân</a>
                         <div id="managePitchesDropdown" class="submenu-content">
                             <a href="quan-ly-san.html">Danh sách sân</a>
                             <a href="danh-sach-don-dat.html">Danh sách đơn đặt</a>
                             <a href="dang-ky-san.html">Đăng ký sân</a>
-                            <a href="thu-hoi-san.html">Thu hồi sân</a>
                         </div>
                     </div>
 
@@ -75,76 +75,17 @@
 
         <!-- PHẦN DANH SÁCH SÂN BÓNG ĐỂ QUẢN LÝ -->
         <section class="manage-stadiums-section">
-            
+
             <div class="manage-header">
                 <h2>Quản lý sân</h2>
             </div>
 
-            <div class="manage-list">
-                <!-- Hàng 1 -->
-                <a href="chi-tiet-san-chu-san.html" class="manage-card-link" data-stadium-id="A">
-                    <img src="../../images/sanA.png" alt="Sân bóng A">
-                    <div class="manage-info">
-                        <h3>Sân bóng A</h3>
-                        <p class="status active">Trạng thái: Đang hoạt động</p>
-                    </div>
-                </a>
-
-                <a href="chi-tiet-san-chu-san.html?id=B" class="manage-card-link" data-stadium-id="B">
-                    <img src="../../images/sanB.png" alt="Sân bóng B">
-                    <div class="manage-info">
-                        <h3>Sân bóng B</h3>
-                        <p class="status active">Trạng thái: Đang hoạt động</p>
-                    </div>
-                </a>
-
-                <a href="chi-tiet-san-chu-san.html?id=C" class="manage-card-link" data-stadium-id="C">
-                    <img src="../../images/sanC.png" alt="Sân bóng C">
-                    <div class="manage-info">
-                        <h3>Sân bóng C</h3>
-                        <p class="status inactive">Trạng thái: Bảo trì</p>
-                    </div>
-                </a>
-
-                <!-- Hàng 2 -->
-                 <a href="chi-tiet-san-chu-san.html?id=D" class="manage-card-link" data-stadium-id="D">
-                    <img src="../../images/sanA.png" alt="Sân bóng D">
-                    <div class="manage-info">
-                        <h3>Sân bóng D</h3>
-                        <p class="status active">Trạng thái: Đang hoạt động</p>
-                    </div>
-                </a>
-
-                <a href="chi-tiet-san-chu-san.html?id=E" class="manage-card-link" data-stadium-id="E">
-                    <img src="../../images/sanB.png" alt="Sân bóng E">
-                    <div class="manage-info">
-                        <h3>Sân bóng E</h3>
-                        <p class="status active">Trạng thái: Đang hoạt động</p>
-                    </div>
-                </a>
-
-                <a href="chi-tiet-san-chu-san.html?id=F" class="manage-card-link" data-stadium-id="F">
-                    <img src="../../images/sanC.png" alt="Sân bóng F">
-                    <div class="manage-info">
-                        <h3>Sân bóng F</h3>
-                        <p class="status inactive">Trạng thái: Bảo trì</p>
-                    </div>
-                </a>
+            <div class="manage-list" id="ownerStadiumList">
+                <p style="text-align: center; width: 100%;">Đang tải danh sách sân của bạn...</p>
             </div>
-        </section>
 
-        <!-- PHẦN PHÂN TRANG -->
-        <div class="pagination">
-            <a href="#">&laquo; Trước</a>
-            <a href="#" class="page-link active">1</a>
-            <a href="#" class="page-link">2</a>
-            <a href="#" class="page-link">3</a>
-            <a href="#" class="page-link">4</a>
-            <a href="#" class="page-link">5</a>
-            <span>...</span>
-            <a href="#" class="page-link">99</a>
-            <a href="#">Sau &raquo;</a>
-        </div>
+            <div class="pagination" id="ownerPagination"></div>
+        </section>
 
     </main>
 

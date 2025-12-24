@@ -49,35 +49,44 @@
         </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <!-- FORM ĐĂNG KÝ CHỦ SÂN -->
-            <div class="form-container">
-                <h2 style="margin-top: 10px">Đăng ký Chủ Sân</h2>
-                <form id="ownerForm">
-                    <div class="form-group">
-                        <label for="fullName">Họ và tên:<span style="color: red;">*</span></label>
-                        <input type="text" id="fullName" name="fullName" required>
+<section class="hero-owner">
+    <div class="hero-overlay">
+        <div class="contact-container">
+            <div class="contact-card">
+                <h2>Liên hệ với chúng tôi</h2>
+                <form id="symbolicOwnerForm">
+                    <div class="input-group">
+                        <input type="text" placeholder="Tên:" readonly>
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email:<span style="color: red;">*</span></label>
-                        <input type="email" id="email" name="email" required>
+                    <div class="input-group">
+                        <input type="tel" placeholder="Số điện thoại:" readonly>
                     </div>
-                    <div class="form-group">
-                        <label for="phone">Số điện thoại:<span style="color: red;">*</span></label>
-                        <input type="tel" id="phone" name="phone" required>
+                    <div class="input-group">
+                        <input type="email" placeholder="Email:" readonly>
                     </div>
-                    <div class="form-group">
-                        <label for="businessCert">Ảnh chứng nhận Kinh doanh:<span style="color: red;">*</span></label>
-                        <input type="file" id="businessCert" name="businessCert" accept="image/*" required>
+                    <div class="input-group">
+                        <input type="text" placeholder="Tên Sân:" readonly>
+                    </div>
+                    <div class="input-group">
+                        <textarea rows="2" placeholder="Thông tin bổ sung..." readonly></textarea>
+                    </div>
+                    
+                    <p class="form-notice">
+                        <i>* Chú ý: Vui lòng gửi yêu cầu chi tiết qua email (đính kèm ảnh giấy chứng nhận kinh doanh) để được xét duyệt chính thức.</i>
+                    </p>
 
-                        <div id="file-name-display"></div>
-                    </div>
-                    <button type="submit">Gửi đăng ký</button>
+                    <button type="button" class="btn-gradient">Gửi</button>
                 </form>
             </div>
+
+            <div class="contact-text-info">
+                <p>Website: <span>https://datsanbk.com</span></p>
+                <p>Email: <span>contact@datsanbk.com</span></p>
+                <p>Hotline: <span>0363.636.363</span></p>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <footer class="footer-info">
         <div class="info-container">
