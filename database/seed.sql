@@ -10,7 +10,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE password_resets;
 TRUNCATE TABLE LichDatSan;
 TRUNCATE TABLE SanBong;
-TRUNCATE TABLE UpRole;
 TRUNCATE TABLE User;
 
 -- ============================

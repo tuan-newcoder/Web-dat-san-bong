@@ -45,7 +45,23 @@ const requireAdmin = (req, res, next) => {
     }
 };
 
-// 3. Middleware phân quyền linh hoạt (Advanced)
+//-----------------NEW--------------------------------------------------------------------
+// 3.Middleware riêng cho Chủ Sân (Owner)
+const requireOwner = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({ message: "Yêu cầu đăng nhập!" });
+    }
+
+    // Cho phép nếu là 'chusan'
+    if (req.user.role === 'chusan') {
+        next();
+    } else {
+        return res.status(403).json({ message: "Chức năng chỉ dành cho Chủ sân!" });
+    }
+};
+//-----------------------------------------------------------------------------------------
+
+// 4. Middleware phân quyền linh hoạt (Advanced)
 // Dùng khi bạn muốn cho phép nhiều role cùng truy cập (ví dụ: cả 'admin' và 'staff')
 const authorize = (allowedRoles = []) => {
     return (req, res, next) => {
@@ -64,5 +80,6 @@ const authorize = (allowedRoles = []) => {
 module.exports = {
     authenticateToken,
     requireAdmin,
+    requireOwner,
     authorize
 };

@@ -13,6 +13,11 @@ const bookingRoutes = require('./userBackend/routes/bookingRoutes');
 const usersRoutes = require('./userBackend/routes/userRoutes');
 const slotsRoutes = require('./userBackend/routes/slotsRoutes');
 
+// --- NEW: Import Routes của Huy (Admin & Owner) ---------------
+const adminRoutes = require('./userBackend/routes/adminRoutes');
+const ownerRoutes = require('./userBackend/routes/ownerRoutes');
+// --------------------------------------------------------------
+
 const app = express();
 
 // Middleware
@@ -26,6 +31,14 @@ app.use('/api/fields', fieldsRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/slots', slotsRoutes);
+
+// --- NEW: Kết nối Route của Huy --------
+// Admin sẽ quản lý user: /api/admin/...
+app.use('/api/admin', adminRoutes); 
+// Owner sẽ quản lý sân: /api/owner/...
+app.use('/api/owner', ownerRoutes);
+//----------------------------------------
+
 
 // ==========================================
 // QUAN TRỌNG: LỆNH NÀY GIỮ SERVER KHÔNG BỊ "CLEAN EXIT"
