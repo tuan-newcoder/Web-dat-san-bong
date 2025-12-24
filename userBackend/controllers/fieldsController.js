@@ -27,7 +27,7 @@ exports.getFieldDetails = async (req, res) => {
 exports.getFieldSearch = async (req, res) => {
     // 1. Lấy dữ liệu từ query (GET) hoặc body (POST)
     // Thường tìm kiếm thì nên dùng req.query, nhưng req.body vẫn được nếu dùng POST
-    const { Ca, Ngay } = req.body; 
+    const { Ca, Ngay } = req.query; 
 
     try {
         let params = [];
