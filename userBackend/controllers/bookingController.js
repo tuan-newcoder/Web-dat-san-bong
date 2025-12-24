@@ -230,7 +230,7 @@ exports.createBookingAndGetPayment = async (req, res) => {
                 soTaiKhoan: sanInfo.SoTaiKhoan,
                 chuTaiKhoan: sanInfo.ChuTaiKhoan,
                 tongTien: sanInfo.Gia,
-                noiDungChuyenKhoan: `DATSAN ${result.insertId}` // Gợi ý nội dung CK
+                noiDungChuyenKhoan: `DAT SAN ${result.insertId}` 
             }
         };
 
