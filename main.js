@@ -862,7 +862,7 @@ window.proceedToBooking = async () => {
     const selected = document.querySelector('.slot-cell.selected');
     if (!selected) return alert("Vui lòng chọn 1 ca còn trống trên lịch!");
 
-    // 1. Lấy thông tin user 
+    // 1. Lấy thông tin user
     const userId = Auth.getUserId();
 
     if (!userId) {
@@ -871,7 +871,7 @@ window.proceedToBooking = async () => {
         return;
     }
 
-    // 2. Chuẩn bị dữ liệu gửi lên Backend 
+    // 2. Chuẩn bị dữ liệu gửi lên Backend
     const bookingData = {
         maNguoiDung: userId,
         maSan: parseInt(currentMaSan),
@@ -880,34 +880,45 @@ window.proceedToBooking = async () => {
     };
 
     try {
-        // Tắt modal lịch trước khi hiện modal thanh toán
-        closeScheduleModal();
-
-        const bookingResponse = await apiRequest(`${API_URL}/bookings`, {
+        // Gọi API đặt sân - API này bây giờ trả về toàn bộ PaymentInfo
+        const response = await apiRequest(`${API_URL}/bookings`, {
             method: 'POST',
             body: JSON.stringify(bookingData)
         });
 
-        const currentMaSan1 = parseInt(currentMaSan);
-        const bankInfo = await apiRequest(`${API_URL}/bookings/bank/${currentMaSan1}`, {
-            method: 'GET'
-        });
-
-        // BƯỚC 3: Hiển thị Modal Thanh toán và đổ dữ liệu
-        if (bankInfo && bankInfo.data) {
-            const data = bankInfo.data;
-            document.getElementById('bankName').innerText = data.nganHang || "N/A";
-            document.getElementById('bankSTK').innerText = data.soTaiKhoan || "N/A";
-            document.getElementById('bankOwner').innerText = data.chuTaiKhoan || "N/A";
+        // BƯỚC 3: Xử lý phản hồi và hiển thị Modal Thanh toán
+        // Cấu trúc mới: response.paymentInfo
+        if (response && response.paymentInfo) {
+            const pay = response.paymentInfo;
             
-            // Reset hiển thị Modal về bước 1
+            // Tắt modal lịch
+            closeScheduleModal();
+
+            // Đổ dữ liệu ngân hàng vào Modal
+            document.getElementById('bankName').innerText = pay.nganHang || "N/A";
+            document.getElementById('bankSTK').innerText = pay.soTaiKhoan || "N/A";
+            document.getElementById('bankOwner').innerText = pay.chuTaiKhoan || "N/A";
+            
+            // Cập nhật thêm các trường mới có trong JSON (nếu HTML của bạn có ID tương ứng)
+            const amountEl = document.getElementById('bankAmount');
+            if (amountEl) {
+                amountEl.innerText = new Intl.NumberFormat('vi-VN').format(pay.tongTien) + " VNĐ";
+            }
+
+            const noteEl = document.getElementById('bankTransferNote');
+            if (noteEl) {
+                noteEl.innerText = pay.noiDungChuyenKhoan;
+            }
+
+            // Reset hiển thị Modal về bước 1 (Thông tin chuyển khoản)
             document.getElementById('paymentStep1').style.display = 'block';
             document.getElementById('paymentStep2').style.display = 'none';
             document.getElementById('paymentModal').style.display = 'flex';
+
+            console.log(response.message); // 
         }
     } catch (error) {
         alert("Lỗi khi đặt sân: " + error.message);
-        openScheduleModal();
     }
 };
 
