@@ -16,7 +16,14 @@ exports.getFieldDetails = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [rows] = await db.query('SELECT * FROM sanbong WHERE MaSan = ?', [id]);
+        const [rows] = await db.query(`
+            SELECT 
+                s.*,
+                u.HoTen AS TenChuSan,
+                u.sdt AS SoDienThoai  
+            FROM sanbong s 
+            JOIN user u ON u.MaNguoiDung = s.MaNguoiDung
+            WHERE MaSan = ?`, [id]);
         if (rows.length === 0) return res.status(404).json({message: "Không tìm thấy sân!"});
         res.status(200).json(rows[0]);
     } catch (err) {
