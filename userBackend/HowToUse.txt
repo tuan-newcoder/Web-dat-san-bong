@@ -134,3 +134,13 @@
         {
           
         }
+
+    // Lấy thông tin người dùng
+    - Method: GET
+    - URL API: http://localhost:3000/api/admin/users
+    - body json: 
+        {
+          
+        }
+    *dùng tài khoản có quyen = admin đăng nhập bằng api login => copy token => vào Auth => chọn Bearer paste token vào => chạy api
+    
