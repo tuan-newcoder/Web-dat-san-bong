@@ -1327,6 +1327,7 @@ a {
 
 /* Các dòng trong bảng */
 .booking-history-table tbody td {
+    width: 100%;
     padding: 15px;
     border-bottom: 1px solid #eee;
     color: #444;
@@ -1853,4 +1854,33 @@ button {
 
 .btn-password:hover {
     background-color: #e5e7eb;
+}
+
+/* Style phụ cho lịch sử đặt sân */
+.table-responsive {
+    max-height: 380px; /* Chiều cao tương đương khoảng 5-6 hàng */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.booking-history-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8fafc;
+}
+
+.cancel-btn {
+    background-color: #ef4444;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #dc2626;
 }

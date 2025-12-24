@@ -20,23 +20,6 @@ CREATE TABLE User (
 );
 
 -- ============================
---  TABLE: UpRole
--- ============================
-CREATE TABLE UpRole (
-    MaUpRole INT AUTO_INCREMENT PRIMARY KEY,
-    MaNguoiDung INT,
-    HoTen VARCHAR(100),
-    Email VARCHAR(100),
-    Sdt VARCHAR(15),
-	Stk VARCHAR(25),
-    Bank VARCHAR(50),
-    AnhGiayPhep MEDIUMBLOB,
-    TrangThai ENUM('dangxuly', 'chapnhan', 'tuchoi') DEFAULT 'dangxuly',
-    FOREIGN KEY (MaNguoiDung) REFERENCES user(MaNguoiDung)
-);
-
-
--- ============================
 --  TABLE: SanBong
 -- ============================
 CREATE TABLE SanBong (
