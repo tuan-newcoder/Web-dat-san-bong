@@ -78,11 +78,11 @@ exports.getFieldSearch = async (req, res) => {
 exports.putFieldsDetails = async (req, res) => {
     const { id } = req.params;
 
-    const { TenSan, LoaiSan, DiaChi, Phuong, TrangThai } = req.body;
+    const { TenSan, LoaiSan, DiaChi, Phuong, TrangThai, Gia } = req.body;
 
-    if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
+    if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai || !Gia) {
         return res.status(400).json({
-            message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Trạng thái'
+            message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Trạng thái, Phường, Giá'
         });
     }
 
@@ -106,8 +106,8 @@ exports.putFieldsDetails = async (req, res) => {
 
     try {
         const [result] = await db.execute(
-            `UPDATE sanbong SET TenSan = ?, LoaiSan = ?, DiaChi = ?, Phuong = ?, TrangThai = ? WHERE MaSan = ?`, 
-            [TenSan, LoaiSan, DiaChi, Phuong, TrangThai, id]    
+            `UPDATE sanbong SET TenSan = ?, LoaiSan = ?, DiaChi = ?, Phuong = ?, TrangThai = ?, Gia =? WHERE MaSan = ?`, 
+            [TenSan, LoaiSan, DiaChi, Phuong, TrangThai, Gia, id]    
         );
 
         if (result.affectedRows === 0) {
@@ -122,7 +122,8 @@ exports.putFieldsDetails = async (req, res) => {
                 LoaiSan,
                 DiaChi,
                 Phuong,
-                TrangThai
+                TrangThai,
+                Gia
             }
         })
     } catch (err) {
@@ -135,86 +136,4 @@ exports.putFieldsDetails = async (req, res) => {
         res.status(500).json({ message: "Lỗi Server nội bộ" });
     }
 }
-
-exports.createField = async (req, res) => {
-    const { TenSan, LoaiSan, DiaChi, Phuong } = req.body;
-
-    /* CHECK Dữ liệu gửi về, có thể không dùng
-        if (!TenSan || !LoaiSan || !DiaChi || !Phuong || !TrangThai) {
-        return res.status(400).json({
-            message: 'Vui lòng nhập đầy đủ thông tin: Tên sân, Loại sân, Địa chỉ, Phường'
-        });
-    }
-
-    const validLoaiSan = ['Sân 5', 'Sân 7', 'Sân 11'];
-    if (!validLoaiSan.includes(String(LoaiSan))) {
-         return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận Sân 5, Sân 7, Sân 11)' });
-    }
-
-    const validPhuong = ['Bách Khoa', 'Trung Hòa', 'Kim Giang', 'Phương Liệt', 'Thanh Xuân', 'Thanh Lương', 
-                        'Trương Định', 'Hoàng Văn Thụ', 'Minh Khai', 'Mai Động', 'Hoàng Văn Thụ', 'Tương Mai', 'Yên Sở']; 
-    if (!validPhuong.includes(String(Phuong))) {
-         return res.status(400).json({ message: 'Phường không hợp lệ ' });
-    }
-    */
-
-    try {
-        // 2. Thực hiện câu lệnh INSERT
-        // Lưu ý: Không cần truyền MaSan (id) vì trong DB thường để Auto Increment
-        const [result] = await db.execute(
-            `INSERT INTO sanbong (TenSan, LoaiSan, DiaChi, Phuong) VALUES (?, ?, ?, ?)`, 
-            [TenSan, LoaiSan, DiaChi, Phuong, TrangThai]    
-        );
-
-        // 3. Trả về kết quả thành công
-        res.status(201).json({ // 201 Created
-            message: "Thêm sân bóng thành công!",
-            newField: {
-                id: result.insertId, // Lấy ID vừa được database tự sinh ra
-                TenSan,
-                LoaiSan,
-                DiaChi,
-                Phuong
-            }
-        });
-
-    } catch (err) {
-        console.error("Lỗi Create Field: ", err);
-
-        // Bắt lỗi trùng tên (nếu cột TenSan có ràng buộc UNIQUE)
-        if (err.code === 'ER_DUP_ENTRY') {
-             return res.status(409).json({ message: "Tên sân này đã tồn tại!" });
-        }
-
-        res.status(500).json({ message: "Lỗi Server nội bộ" });
-    }
-};
-
-exports.deleteField = async (req, res) => {
-    const { id } = req.params;
-
-    if (!id) return res.status(400).json({ message: "Thiếu ID sân!" });
-
-    try {
-        // --- THAY ĐỔI TỪ ĐÂY ---
-        // Thay vì xóa, ta chuyển trạng thái sang 'ngunghoatdong'
-        const sql = `UPDATE sanbong SET TrangThai = 'ngunghoatdong' WHERE MaSan = ?`;
-        
-        const [result] = await db.execute(sql, [id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Không tìm thấy sân!'});
-        }
-
-        res.status(200).json({
-            message: "Đã xóa sân thành công (Chuyển sang ngừng hoạt động)!",
-            deletedId: id
-        });
-        // --- KẾT THÚC THAY ĐỔI ---
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Lỗi Server" });
-    }
-};
 

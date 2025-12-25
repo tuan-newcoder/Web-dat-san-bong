@@ -1,6 +1,6 @@
 const db = require('../db');
 
-// GET /api/admin/users
+// GET  /api/admin/users                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 exports.getAllUsers = async (req, res) => {
     try {
         const sql = `SELECT MaNguoiDung, HoTen, username, email, sdt, quyen, bank, stk FROM User`;
@@ -27,6 +27,7 @@ exports.updateUserRole = async (req, res) => {
 
         res.status(200).json({ message: `Đã cập nhật User ${userId} lên quyền Chủ sân` });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: "Lỗi Server" });
     }
 };

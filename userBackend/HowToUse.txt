@@ -55,7 +55,8 @@
             "TenSan": "Sân Bóng BK - Sân A (Mới)",
             "LoaiSan": "Sân 5",
             "DiaChi": "Số 1 Đại Cồ Việt, Hai Bà Trưng",
-            "TrangThai": "hoatdong"
+            "TrangThai": "hoatdong",
+            "Phuong": "Bách Khoa"
             
         }
 
@@ -143,4 +144,23 @@
           
         }
     *dùng tài khoản có quyen = admin đăng nhập bằng api login => copy token => vào Auth => chọn Bearer paste token vào => chạy api
-    
+
+    // Tạo sân
+    - Method: POST
+    - URL API: http://localhost:3000/api/owner/fields
+    - body json: 
+        {
+            "TenSan": "Sân Lỗi",
+            "LoaiSan": "Sân 5",
+            "DiaChi": "Hà Nội",
+            "Phuong": "Minh Khai",
+            "Gia": "500000" 
+        }
+
+    // Lấy danh sách sân của mình
+    - Method: GET
+    - URL API: http://localhost:3000/api/owner/fields
+    - body json: 
+        {
+            
+        }

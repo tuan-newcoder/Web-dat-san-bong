@@ -12,6 +12,7 @@ exports.createField = async (req, res) => {
         await db.query(sql, [ownerId, TenSan, LoaiSan, DiaChi, Phuong, Gia]);
         res.status(201).json({ message: "Tạo sân thành công" });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -27,7 +28,8 @@ exports.getMyFields = async (req, res) => {
     }
 };
 
-// 3. Xem chi tiết 1 sân
+
+// 3. Xem chi tiết 1 sân (Dùng bản của fieldsController )
 exports.getFieldDetail = async (req, res) => {
     try {
         const sql = `SELECT * FROM SanBong WHERE MaSan = ? AND MaNguoiDung = ?`;
@@ -39,7 +41,8 @@ exports.getFieldDetail = async (req, res) => {
     }
 };
 
-// 4. Cập nhật sân
+
+// 4. Cập nhật sân (Hàm thiếu, dùng bản fieldsController)
 exports.updateField = async (req, res) => {
     const { TenSan, LoaiSan, DiaChi, Phuong, TrangThai, Gia } = req.body;
     try {
@@ -51,7 +54,7 @@ exports.updateField = async (req, res) => {
     }
 };
 
-// 5. Xóa sân (Chuyển trạng thái sang ngunghoatdong hoặc xóa hẳn tùy logic, ở đây tôi dùng DELETE theo bảng mô tả)
+// 5. Xóa sân (Chuyển trạng thái sang ngunghoatdong hoặc xóa hẳn tùy logic, ở đây tôi dùng DELETE theo bảng mô tả) (chưa dùng)
 exports.deleteField = async (req, res) => {
     try {
         // Kiểm tra xem có lịch đặt chưa xong không trước khi xóa (Optional)
