@@ -223,7 +223,7 @@ exports.updateBookingStatus = async (req, res) => {
 
     // 1. Validate dữ liệu đầu vào (Quan trọng)
     // Chỉ cho phép các trạng thái cụ thể
-    const allowedStatuses = ['daxacnhan', 'dahuy', 'choxacnhan']; 
+    const allowedStatuses = ['daxacnhan', 'dahuy', 'chuaxacnhan']; 
     if (!allowedStatuses.includes(TrangThai)) {
         return res.status(400).json({ 
             message: "Trạng thái không hợp lệ. Chỉ chấp nhận: " + allowedStatuses.join(', ') 
