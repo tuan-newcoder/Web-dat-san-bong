@@ -984,8 +984,6 @@ window.changePage = (page) => {
     document.getElementById('bookingTableBody').scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-// --- Các hàm giữ nguyên từ code cũ ---
-
 function getStatusClass(status) {
     switch (status) {
         case 'chuaxacnhan': return 'status-pending';
@@ -1723,6 +1721,8 @@ async function checkBank(event, targetUrl) {
 
 /* Script cho doanh thu ngày */
 
+let myChart = null; // Biến toàn cục để quản lý biểu đồ
+
 async function fetch7DaysRevenue() {
     const tableBody = document.getElementById('revenueTableBody');
     const totalEl = document.getElementById('total7DaysRevenue');
@@ -1732,46 +1732,217 @@ async function fetch7DaysRevenue() {
     if (!userId) return;
 
     try {
-        // 1. Lấy dữ liệu từ API
-        // Giả sử API nhận query maNguoiDung để lọc theo chủ sân
-        const response = await apiRequest(`${API_URL}/owner/bookings/day?maNguoiDung=${userId}`, {
+        const response = await apiRequest(`${API_URL}/owner/fields/day?maNguoiDung=${userId}`, {
             method: 'GET'
         });
 
         const data = response.data || response;
+
+        // 1. Chuẩn bị dữ liệu cho biểu đồ
+        // Lấy danh sách ngày (rút gọn chỉ lấy ngày/tháng) và doanh thu tương ứng
+        const labels = data.map(item => new Date(item.Ngay).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }));
+        const revenueData = data.map(item => parseFloat(item.TongTien || 0));
+
+        // 2. Gọi hàm vẽ biểu đồ
+        renderRevenueChart(labels, revenueData);
+
+        // 3. Đổ dữ liệu vào bảng và tính tổng
         let totalSum = 0;
-
-        // 2. Xử lý dữ liệu hiển thị
-        if (!data || data.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Không có dữ liệu doanh thu.</td></tr>`;
-            return;
-        }
-
         tableBody.innerHTML = data.map(item => {
-            const revenue = parseFloat(item.TongDoanhThu || 0);
+            const revenue = parseFloat(item.TongTien || 0);
             totalSum += revenue;
-
             return `
                 <tr>
                     <td>${new Date(item.Ngay).toLocaleDateString('vi-VN')}</td>
-                    <td style="text-align:center;">${item.SoDonThanhCong || 0}</td>
+                    <td style="text-align:left;">${item.SoDonThanhCong || 0}</td>
                     <td style="font-weight:bold;">${new Intl.NumberFormat('vi-VN').format(revenue)} VNĐ</td>
                 </tr>
             `;
         }).join('');
 
-        // 3. Cập nhật tổng tiền
         totalEl.innerText = new Intl.NumberFormat('vi-VN').format(totalSum) + " VNĐ";
 
     } catch (error) {
-        console.error("Lỗi tải doanh thu:", error.message);
+        console.error("Lỗi:", error.message);
         tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">Lỗi: ${error.message}</td></tr>`;
     }
 }
 
-// Khởi chạy khi vào đúng trang doanh thu
+/**
+ * Hàm vẽ biểu đồ Line Chart theo phong cách chuyên nghiệp
+ */
+function renderRevenueChart(labels, revenueData) {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+    // Nếu biểu đồ đã tồn tại thì xóa đi để vẽ mới tránh lỗi đè dữ liệu
+    if (myChart) {
+        myChart.destroy();
+    }
+
+    // Tạo hiệu ứng Gradient cho vùng đổ màu phía dưới đường
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(65, 118, 255, 0.3)'); 
+    gradient.addColorStop(1, 'rgba(65, 118, 255, 0)');  
+
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: revenueData,
+                borderColor: '#4176FF',    
+                backgroundColor: gradient,  
+                borderWidth: 3,
+                fill: true,               
+                tension: 0.4,              
+                pointBackgroundColor: '#fff', 
+                pointBorderColor: '#4176FF', 
+                pointBorderWidth: 2,
+                pointRadius: 6,             
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false } // Ẩn chú thích để giống ảnh mẫu
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f0f0f0' },
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                        }
+                    }
+                },
+                x: {
+                    grid: { display: false } // Ẩn lưới dọc cho sạch giao diện
+                }
+            }
+        }
+    });
+}
+
+// Khởi tạo
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('revenueTableBody')) {
         fetch7DaysRevenue();
+    }
+});
+
+/* Script cho doanh thu tháng */
+let monthlyChart = null;
+
+async function fetchMonthlyRevenue() {
+    const tableBody = document.getElementById('monthlyRevenueBody');
+    const totalEl = document.getElementById('total6MonthsRevenue');
+    if (!tableBody) return;
+
+    const userId = Auth.getUserId();
+    if (!userId) return;
+
+    try {
+        const response = await apiRequest(`${API_URL}/owner/fields/month?maNguoiDung=${userId}`, {
+            method: 'GET'
+        });
+
+        const data = response.data || response;
+
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Không có dữ liệu doanh thu 6 tháng qua.</td></tr>`;
+            return;
+        }
+
+        // 1. Chuẩn bị dữ liệu cho biểu đồ
+        // Sử dụng trực tiếp giá trị mm/yyyy từ Backend (ví dụ: "12/2023")
+        const labels = data.map(item => `Tháng ${item.Thang}`); 
+        const revenueValues = data.map(item => parseFloat(item.TongTien || 0));
+
+        // Vẽ biểu đồ
+        renderMonthlyChart(labels, revenueValues);
+
+        // 2. Đổ dữ liệu vào bảng
+        let grandTotal = 0;
+        tableBody.innerHTML = data.map(item => {
+            const revenue = parseFloat(item.TongTien || 0);
+            grandTotal += revenue;
+
+            return `
+                <tr>
+                    <td><strong>${item.ThangHienThi}</strong></td> 
+                    <td style="text-align:left;">${item.SoDonThanhCong || 0}</td>
+                    <td style="font-weight:bold;">
+                        ${new Intl.NumberFormat('vi-VN').format(revenue)} VNĐ
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        totalEl.innerText = new Intl.NumberFormat('vi-VN').format(grandTotal) + " VNĐ";
+
+    } catch (error) {
+        console.error("Lỗi tải doanh thu tháng:", error.message);
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">Lỗi: ${error.message}</td></tr>`;
+    }
+}
+
+/**
+ * Hàm vẽ biểu đồ (Giữ nguyên logic cấu hình, chỉ thay đổi dữ liệu đầu vào)
+ */
+function renderMonthlyChart(labels, revenueData) {
+    const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
+    
+    if (monthlyChart) {
+        monthlyChart.destroy();
+    }
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
+    gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+
+    monthlyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu tháng',
+                data: revenueData,
+                borderColor: '#2563eb',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#2563eb',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 9
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: (value) => new Intl.NumberFormat('vi-VN').format(value) + 'đ'
+                    }
+                }
+            }
+        }
+    });
+}
+// Tự động chạy khi load trang
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('monthlyRevenueBody')) {
+        fetchMonthlyRevenue();
     }
 });

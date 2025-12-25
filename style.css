@@ -1377,21 +1377,21 @@ a {
     display: inline-block;
 }
 
-.status-badge.completed.daxacnhan {
+.status-badge.completed {
     background-color: #e6ffe6;
     /* Xanh lá nhạt */
     color: #388e3c;
     /* Xanh lá đậm */
 }
 
-.status-badge.upcoming.chuaxacnhan {
+.status-badge.upcoming {
     background-color: #fff8e1;
     /* Vàng nhạt */
     color: #fbc02d;
     /* Vàng đậm */
 }
 
-.status-badge.cancelled.dahuy {
+.status-badge.cancelled {
     background-color: #ffebee;
     /* Đỏ nhạt */
     color: #d32f2f;
