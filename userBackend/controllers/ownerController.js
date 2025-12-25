@@ -269,13 +269,15 @@ exports.updateBookingStatus = async (req, res) => {
 
 exports.getRevenueByDay = async (req, res) => {
     try {
-        const maSan = req.query.maSan; // Lấy tham số lọc theo sân (nếu có)
-        const userId = req.user.id;    // Lấy ID chủ sân từ token xác thực
+        const maSan = req.query.maSan; 
+        const userId = req.user.id;
 
-        // --- BƯỚC 1: Query Database (Chỉ lấy những ngày có dữ liệu) ---
-        // DATE_FORMAT '%Y-%m-%d' để đầu ra giống format mặc định của Moment
+        // --- BƯỚC 1: Query Database ---
         let sql = `
-            SELECT DATE_FORMAT(l.Ngay, '%Y-%m-%d') as NgayStr, SUM(l.TongTien) as TongTien, COUNT(l.MaDatSan) as SoDonThanhCong
+            SELECT 
+                DATE_FORMAT(l.Ngay, '%Y-%m-%d') as NgayStr, 
+                SUM(l.TongTien) as TongTien, 
+                COUNT(l.MaDatSan) as SoDonThanhCong
             FROM LichDatSan l
             JOIN SanBong s ON l.MaSan = s.MaSan
             WHERE s.MaNguoiDung = ? 
@@ -285,7 +287,6 @@ exports.getRevenueByDay = async (req, res) => {
         
         const params = [userId];
 
-        // Nếu user chọn lọc theo một sân cụ thể
         if (maSan) {
             sql += ` AND s.MaSan = ?`;
             params.push(maSan);
@@ -295,25 +296,23 @@ exports.getRevenueByDay = async (req, res) => {
 
         const [rows] = await db.query(sql, params);
 
-        // --- BƯỚC 2: Xử lý Logic "Zero-filling" (Lấp đầy ngày trống) bằng Moment ---
-        
+        // --- BƯỚC 2: Xử lý Zero-filling ---
         const fullStats = [];
         
-        // Vòng lặp 7 lần (Từ 6 ngày trước -> Hôm nay)
         for (let i = 6; i >= 0; i--) {
-            // Dùng moment lấy ngày quá khứ
             const dayObj = moment().subtract(i, 'days');
-            
-            // Format thành chuỗi 'YYYY-MM-DD' (Ví dụ: '2025-12-25') để so sánh với SQL
             const dateKey = dayObj.format('YYYY-MM-DD');
 
-            // Tìm xem ngày này có trong kết quả SQL trả về không
             const found = rows.find(row => row.NgayStr === dateKey);
 
             fullStats.push({
-                Ngay: dateKey,                         // Dữ liệu gốc để vẽ biểu đồ
-                TongTien: found ? Number(found.TongTien) : 0, // Nếu tìm thấy thì lấy tiền, không thì = 0
-                SoDonThanhCong: SoDonThanhCong
+                Ngay: dateKey,
+                NgayHienThi: dayObj.format('DD/MM'), // Thêm cái này để Frontend hiển thị cho đẹp
+                
+                // SỬA LỖI Ở ĐÂY:
+                // Nếu tìm thấy thì ép kiểu Number, nếu không thì gán bằng 0
+                TongTien: found ? Number(found.TongTien) : 0,
+                SoDonThanhCong: found ? Number(found.SoDonThanhCong) : 0 
             });
         }
 
@@ -334,35 +333,29 @@ exports.getRevenueByMonth = async (req, res) => {
         const maSan = req.query.maSan;
         const userId = req.user.id;
 
-        // 1. Tính toán ngày bắt đầu lấy dữ liệu bằng JS cho chuẩn
-        // Lấy 5 tháng trước + tháng hiện tại = 6 tháng
-        // .startOf('month') để đảm bảo lấy từ ngày mùng 1 (VD: 01/07/2025)
+        // 1. Tính toán ngày bắt đầu (6 tháng gần nhất)
         const startDate = moment().subtract(5, 'months').startOf('month').format('YYYY-MM-DD');
 
         // 2. Query Database
+        // CHÚ Ý: Viết câu SQL cơ bản đầy đủ cột trước
         let sql = `
-            SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, SUM(l.TongTien) as TongTien, COUNT(l.MaDatSan) as SoDonThanhCong
+            SELECT 
+                DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, 
+                SUM(l.TongTien) as TongTien, 
+                COUNT(l.MaDatSan) as SoDonThanhCong
             FROM LichDatSan l
             JOIN SanBong s ON l.MaSan = s.MaSan
             WHERE s.MaNguoiDung = ? 
             AND l.TrangThai = 'daxacnhan' 
             AND l.Ngay >= ? 
         `;
-        // Truyền startDate đã tính ở trên vào dấu ? cuối cùng
+        
         const params = [userId, startDate];
 
+        // Nếu có maSan, ta chỉ nối thêm chuỗi (+=) thay vì viết lại từ đầu
+        // Cách này an toàn hơn, tránh việc quên cột này cột kia
         if (maSan) {
-            // Chèn điều kiện MaSan vào trước GROUP BY
-            // Lưu ý: Sửa lại string sql một chút để chèn đúng chỗ
-            sql = `
-                SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, SUM(l.TongTien) as TongTien
-                FROM LichDatSan l
-                JOIN SanBong s ON l.MaSan = s.MaSan
-                WHERE s.MaNguoiDung = ? 
-                AND l.TrangThai = 'daxacnhan' 
-                AND l.Ngay >= ? 
-                AND s.MaSan = ?
-            `;
+            sql += ` AND s.MaSan = ?`;
             params.push(maSan);
         }
 
@@ -370,32 +363,34 @@ exports.getRevenueByMonth = async (req, res) => {
 
         const [rows] = await db.query(sql, params);
 
-        // 3. LOGIC QUAN TRỌNG: Lấp đầy tháng trống
-        // Nếu bạn bỏ qua bước này hoặc return 'rows' thì nó chỉ ra các tháng có tiền thôi
+        // 3. LOGIC Lấp đầy tháng trống (Zero-filling)
         const fullStats = [];
 
         for (let i = 5; i >= 0; i--) {
             const monthObj = moment().subtract(i, 'months');
-            const monthKey = monthObj.format('YYYY-MM'); // Format để so sánh (VD: 2025-12)
+            const monthKey = monthObj.format('YYYY-MM'); // VD: 2025-12
 
-            // Tìm xem tháng này có trong kết quả SQL không
+            // Tìm trong kết quả SQL
             const found = rows.find(row => row.ThangStr === monthKey);
 
             fullStats.push({
                 Thang: monthKey,
                 ThangHienThi: monthObj.format('MM/YYYY'), // VD: 12/2025
+                
+                // SỬA LỖI Ở ĐÂY: Lấy giá trị từ 'found'
                 TongTien: found ? Number(found.TongTien) : 0,
-                SoDonThanhCong: SoDonThanhCong
+                SoDonThanhCong: found ? Number(found.SoDonThanhCong) : 0
             });
         }
 
-        // 4. CHÚ Ý: Phải trả về 'fullStats' (mảng 6 phần tử), KHÔNG trả về 'rows'
+        // 4. Trả về kết quả
         res.status(200).json({ 
+            message: "Lấy thống kê tháng thành công",
             data: fullStats 
         });
 
     } catch (err) {
-        console.error("Lỗi:", err);
-        res.status(500).json({ message: "Lỗi Server" });
+        console.error("Lỗi API getRevenueByMonth:", err);
+        res.status(500).json({ message: "Lỗi Server nội bộ" });
     }
 };
