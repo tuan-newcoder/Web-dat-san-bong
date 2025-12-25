@@ -329,28 +329,71 @@ exports.getRevenueByDay = async (req, res) => {
 };
 // 10. Doanh thu theo tháng (6 tháng gần nhất)
 exports.getRevenueByMonth = async (req, res) => {
-    const maSan = req.query.maSan;
-    let sql = `
-        SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as Thang, SUM(l.TongTien) as TongTien
-        FROM LichDatSan l
-        JOIN SanBong s ON l.MaSan = s.MaSan
-        WHERE s.MaNguoiDung = ? AND l.TrangThai = 'daxacnhan'
-        AND l.Ngay >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-    `;
-    
-    const params = [req.user.id];
-
-    if (maSan) {
-        sql += ` AND s.MaSan = ?`;
-        params.push(maSan);
-    }
-
-    sql += ` GROUP BY Thang ORDER BY Thang ASC`;
-
     try {
-        const [stats] = await db.query(sql, params);
-        res.status(200).json({ data: stats });
+        const maSan = req.query.maSan;
+        const userId = req.user.id;
+
+        // 1. Tính toán ngày bắt đầu lấy dữ liệu bằng JS cho chuẩn
+        // Lấy 5 tháng trước + tháng hiện tại = 6 tháng
+        // .startOf('month') để đảm bảo lấy từ ngày mùng 1 (VD: 01/07/2025)
+        const startDate = moment().subtract(5, 'months').startOf('month').format('YYYY-MM-DD');
+
+        // 2. Query Database
+        let sql = `
+            SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, SUM(l.TongTien) as TongTien
+            FROM LichDatSan l
+            JOIN SanBong s ON l.MaSan = s.MaSan
+            WHERE s.MaNguoiDung = ? 
+            AND l.TrangThai = 'daxacnhan' 
+            AND l.Ngay >= ? 
+        `;
+        // Truyền startDate đã tính ở trên vào dấu ? cuối cùng
+        const params = [userId, startDate];
+
+        if (maSan) {
+            // Chèn điều kiện MaSan vào trước GROUP BY
+            // Lưu ý: Sửa lại string sql một chút để chèn đúng chỗ
+            sql = `
+                SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, SUM(l.TongTien) as TongTien
+                FROM LichDatSan l
+                JOIN SanBong s ON l.MaSan = s.MaSan
+                WHERE s.MaNguoiDung = ? 
+                AND l.TrangThai = 'daxacnhan' 
+                AND l.Ngay >= ? 
+                AND s.MaSan = ?
+            `;
+            params.push(maSan);
+        }
+
+        sql += ` GROUP BY ThangStr ORDER BY ThangStr ASC`;
+
+        const [rows] = await db.query(sql, params);
+
+        // 3. LOGIC QUAN TRỌNG: Lấp đầy tháng trống
+        // Nếu bạn bỏ qua bước này hoặc return 'rows' thì nó chỉ ra các tháng có tiền thôi
+        const fullStats = [];
+
+        for (let i = 5; i >= 0; i--) {
+            const monthObj = moment().subtract(i, 'months');
+            const monthKey = monthObj.format('YYYY-MM'); // Format để so sánh (VD: 2025-12)
+
+            // Tìm xem tháng này có trong kết quả SQL không
+            const found = rows.find(row => row.ThangStr === monthKey);
+
+            fullStats.push({
+                Thang: monthKey,
+                ThangHienThi: monthObj.format('MM/YYYY'), // VD: 12/2025
+                TongTien: found ? Number(found.TongTien) : 0
+            });
+        }
+
+        // 4. CHÚ Ý: Phải trả về 'fullStats' (mảng 6 phần tử), KHÔNG trả về 'rows'
+        res.status(200).json({ 
+            data: fullStats 
+        });
+
     } catch (err) {
+        console.error("Lỗi:", err);
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
