@@ -517,27 +517,48 @@ const StadiumApp = {
     },
 
     // 3. Hiển thị
-    renderPage(page) {
-        this.currentPage = page;
-        const listContainer = document.getElementById('stadiumList');
-        const countContainer = document.getElementById('stadiumCount');
-        if (!listContainer) return;
+renderPage(page) {
+    this.currentPage = page;
+    const listContainer = document.getElementById('stadiumList');
+    const countContainer = document.getElementById('stadiumCount');
+    if (!listContainer) return;
 
-        if (countContainer) countContainer.innerText = `(${this.filteredData.length})`;
+    if (countContainer) countContainer.innerText = `(${this.filteredData.length})`;
 
-        if (this.filteredData.length === 0) {
-            listContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                <p style="font-size: 18px; color: #555;">Không có sân nào trống vào thời gian này hoặc không khớp bộ lọc.</p>
-            </div>`;
-            if (document.getElementById('pagination')) document.getElementById('pagination').innerHTML = "";
-            return;
+    if (this.filteredData.length === 0) {
+        listContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+            <p style="font-size: 18px; color: #555;">Không có kết quả phù hợp.</p>
+        </div>`;
+        if (document.getElementById('pagination')) document.getElementById('pagination').innerHTML = "";
+        return;
+    }
+
+    // 1. Lấy thông tin người dùng hiện tại
+    const user = Auth.getUserData(); //
+    const role = user.role; //
+    const token = localStorage.getItem('userToken'); //
+
+    const start = (page - 1) * this.itemsPerPage;
+    const items = this.filteredData.slice(start, start + this.itemsPerPage);
+
+    // 2. Render danh sách sân
+    listContainer.innerHTML = items.map(s => {
+        let detailUrl = '';
+
+        // Kiểm tra xem có token (đã đăng nhập) hay không
+        if (token) {
+            if (role === 'chusan') {
+                detailUrl = '../chi-tiet-san/san-A-owner.html'; 
+            } else {
+                detailUrl = '../chi-tiet-san/san-A.html';
+            }
+        } else {
+            // Nếu chưa đăng nhập 
+            detailUrl = '../chi-tiet-san/san-A-guest.html'; 
         }
 
-        const start = (page - 1) * this.itemsPerPage;
-        const items = this.filteredData.slice(start, start + this.itemsPerPage);
-
-        listContainer.innerHTML = items.map(s => `
-            <a href="${token ? '../chi-tiet-san/san-A.html' : '../chi-tiet-san/san-A-guest.html'}?id=${s.MaSan}" class="stadium-card">
+        return `
+            <a href="${detailUrl}?id=${s.MaSan}" class="stadium-card">
                 <img src="/images/sanA.png" alt="${s.TenSan}">
                 <div class="stadium-info">
                     <h3>${s.TenSan}</h3>
@@ -546,10 +567,11 @@ const StadiumApp = {
                     <p><strong>Giá:</strong> ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(s.Gia)}</p>
                 </div>
             </a>
-        `).join('');
-        this.renderPagination();
-    },
+        `;
+    }).join('');
 
+    this.renderPagination();
+},
     // 4. Vẽ nút phân trang
     renderPagination() {
         const pages = Math.ceil(this.filteredData.length / this.itemsPerPage);
@@ -652,6 +674,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* Script cho quản lý người dùng */
+
+async function handleRoleChange(selectElement, userId) {
+    const newRole = selectElement.value;
+    const oldRole = selectElement.getAttribute('data-old-role');
+
+    // 1. THÔNG BÁO XÁC NHẬN (Đây là phần bạn đang thiếu)
+    const isConfirmed = confirm(`Xác nhận thay đổi quyền của người dùng #${userId} từ '${oldRole}' thành '${newRole}'?`);
+
+    if (!isConfirmed) {
+        selectElement.value = oldRole; // Trả lại giá trị cũ nếu nhấn Hủy
+        return;
+    }
+
+    try {
+        // 2. Gọi API PUT
+        await apiRequest(`${API_URL}/admin/users/${userId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ quyen: newRole })
+        });
+
+        alert("Cập nhật quyền thành công!");
+        selectElement.setAttribute('data-old-role', newRole); // Cập nhật trạng thái cũ thành mới
+
+    } catch (error) {
+        alert("Lỗi cập nhật: " + error.message);
+        selectElement.value = oldRole; // Trả lại giá trị cũ nếu lỗi API
+    }
+}
+
+// Gán vào window để HTML gọi được
+window.handleRoleChange = handleRoleChange;
 
 const UserAdminApp = {
     allUsers: [],      // Lưu trữ toàn bộ dữ liệu từ API
@@ -832,7 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('bookingTableBody')) fetchBookings();
 });
 
-/* Script for chi tiet san */
+/* Script for chi tiết sân */
 
 const urlParams = new URLSearchParams(window.location.search);
 const currentMaSan = urlParams.get('id');
@@ -1446,7 +1499,7 @@ async function savePitchInfo() {
         DiaChi: document.getElementById('address').value,
         Phuong: document.getElementById('ward').value,
         Gia: priceVal,
-        TrangThai: document.getElementById('status').value // Gửi hoatdong, baotri hoặc ngunghoatdong
+        TrangThai: document.getElementById('status').value 
     };
 
     if (!updatedData.TenSan) return alert("Vui lòng nhập tên sân!");
@@ -1493,7 +1546,7 @@ async function checkBank(event, targetUrl) {
 
     const userId = Auth.getUserId();
     if (!userId) {
-        alert("Vui lòng đăng nhập để thực hiện hành động này!");
+        alert("Vui lòng thêm ngân hàng và số tài khoản để thực hiện hành động này!");
         if (typeof openModal === 'function') openModal();
         return;
     }

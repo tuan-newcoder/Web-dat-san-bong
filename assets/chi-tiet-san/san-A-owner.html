@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết sân A</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/main.js" defer></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="../owner/chu-san.html" class="logo-link">
+            <div class="logo">
+                <span class="icon"></span>
+                <span>Đặt sân Bách Khoa</span>
+            </div>
+        </a>
+
+        <nav>
+            <a href="../owner/chu-san.html">Trang chủ</a>
+            <a href="../owner/detail-login.html">Danh sách sân</a>
+            <a href="../owner/chinh-sach-login.html">Chính sách</a>
+            <a href="../owner/lien-he-login.html">Liên hệ</a>
+        </nav>
+
+        <!-- PHẦN USER PROFILE & DROPDOWN -->
+        <div class="user-profile-container">
+            <div class="dropdown">
+                <button id="ownerDropdownButton" class="dropbtn" data-target="ownerDropdown" type="button">
+                    <span>Dành cho chủ sân</span>
+                </button>
+
+                <div id="ownerDropdown" class="dropdown-content">
+                    <!-- Thay thế liên kết Quản lý sân bằng một DIV/Button để mở dropdown con -->
+                    <div class="has-submenu">
+                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý
+                            sân</a>
+                        <div id="managePitchesDropdown" class="submenu-content">
+                            <a href="../owner/quan-ly-san.html">Danh sách sân</a>
+                            <a href="../owner/danh-sach-don-dat.html">Danh sách đơn đặt</a>
+                            <a href="../owner/dang-ky-san.html">Đăng ký sân</a>
+                        </div>
+                    </div>
+
+                    <!-- Thay thế liên kết Tổng doanh thu bằng một DIV/Button để mở dropdown con -->
+                    <div class="has-submenu">
+                        <a href="#" id="revenueBtn" data-target="revenueDropdown">Tổng doanh thu</a>
+                        <div id="revenueDropdown" class="submenu-content">
+                            <a href="../owner/doanh-thu-ngay.html">Theo ngày</a>
+                            <a href="../owner/doanh-thu-thang.html">Theo tháng</a>
+                            <a href="../owner/doanh-thu-toan-bo.html">Toàn bộ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dropdown User Profile giữ nguyên như cũ -->
+            <div class="dropdown">
+                <button id="dropdownButton" class="dropbtn" data-target="userDropdown">
+                    <img src="../../images/user-icon.png" alt="User Icon" class="user-icon">
+                </button>
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="../owner/profile.html">Hồ sơ</a>
+                    <a href="../owner/lich-su-dat-san.html">Lịch sử đặt sân</a>
+                    <a href="/index.html" id="logoutLink">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <main class="pitch-container">
+                <div class="image-group">
+                    <img src="/images/sanA.png" alt="Sân A" class="pitch-image">
+                    <button class="book-now-btn" onclick="openScheduleModal()">Đặt sân ngay</button>
+                </div>
+
+                <div class="pitch-info">
+                    <div id="displayTenSan" class="pitch-name">Đang tải...</div>
+
+                    <div class="info-row">
+                        <p><strong>Chủ sân: </strong><span id="displayChuSan"></span></p>
+                    </div>
+                    <div class="info-row">
+                        <p><strong>Số điện thoại: </strong><span id="displaySDT"></span></p>
+                    </div>
+                    <div class="info-row">
+                        <p><strong>Loại sân: </strong><span id="displayLoaiSan"></span></p>
+                    </div>
+                    <div class="info-row">
+                        <p><strong>Địa chỉ:</strong> <span id="displayDiaChi"></span></p>
+                    </div>
+
+                    <div class="info-row">
+                        <p><strong>Giá thuê:</strong> <span id="displayGia"></span> (đồng/ca)</p>
+                    </div>
+
+                    <div class="info-row">
+                        <p><strong>Khung giờ:</strong> 06:00 - 24:00</p>
+                    </div>
+                    <div class="info-row">
+                        <p style="text-align: left;"><strong>Mô tả:</strong> Sân bóng cỏ nhân tạo tiêu chuẩn, có hệ
+                            thống chiếu sáng và thoát nước tốt.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <div id="scheduleModal" class="modal" style="display: none;">
+        <section id="booking-schedule" class="modal-content" style="max-width: 95%; width: 1100px; padding: 30px;">
+            <span class="close" onclick="closeScheduleModal()">&times;</span>
+            <h3 style="text-align: center; margin-bottom: 20px; font-size: 28px;">Lịch đặt sân</h3>
+
+            <div class="table-responsive" style="overflow-x: auto; max-height: 400px;">
+                <table class="pitch-schedule-table">
+                    <thead>
+                        <tr>
+                            <th class="diagonal-header">
+                                <div class="ca-text">Ca</div>
+                                <div class="ngay-text">Ngày</div>
+                            </th>
+                            <th>1<br><small>(06:00-07:30)</small></th>
+                            <th>2<br><small>(07:30-09:00)</small></th>
+                            <th>3<br><small>(09:00-10:30)</small></th>
+                            <th>4<br><small>(10:30-12:00)</small></th>
+                            <th>5<br><small>(12:00-13:30)</small></th>
+                            <th>6<br><small>(13:30-15:00)</small></th>
+                            <th>7<br><small>(15:00-16:30)</small></th>
+                            <th>8<br><small>(16:30-18:00)</small></th>
+                            <th>9<br><small>(18:00-19:30)</small></th>
+                            <th>10<br><small>(19:30-21:00)</small></th>
+                            <th>11<br><small>(21:00-22:30)</small></th>
+                            <th>12<br><small>(22:30-24:00)</small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <div style="margin-bottom: 15px;">
+                    <span
+                        style="display:inline-block; width:15px; height:15px; background:#ff4d4d; border-radius: 2px;"></span>
+                    Đã đặt &nbsp;
+                    <span
+                        style="display:inline-block; width:15px; height:15px; background:#fff; border:1px solid #ccc; border-radius: 2px;"></span>
+                    Còn trống &nbsp;
+                    <span
+                        style="display:inline-block; width:15px; height:15px; background:#28a745; border-radius: 2px;"></span>
+                    Đang chọn
+                </div>
+                <button class="book-now-button" onclick="proceedToBooking()"
+                    style="background-color: #28a745; padding: 10px 40px; font-weight: bold;">XÁC NHẬN CHỌN CA</button>
+            </div>
+        </section>
+    </div>
+
+    <div id="paymentModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; border-radius: 12px; padding: 25px;">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+
+            <div id="paymentStep1">
+                <h2 style="text-align:center; color: #2563eb; margin-bottom: 15px;">Thông tin thanh toán</h2>
+                <div style="background: #f8fafc; padding: 20px; border-radius: 10px; line-height: 1.8;">
+                    <p><strong>Ngân hàng:</strong> <span id="bankName">...</span></p>
+                    <p><strong>Số tài khoản:</strong> <span id="bankSTK"
+                            style="color: #0760c5; font-size: 1.2em; font-weight: bold;">...</span></p>
+                    <p><strong>Chủ tài khoản:</strong> <span id="bankOwner">...</span></p>
+                    <p><strong>Số tiền: </strong> <span id="bankAmount" style="font-weight: bold; color: red;"></span></p>
+                    <p><strong>Nội dung chuyển khoản: </strong> <span id="bankTransferNote" style="font-weight: bold; color: blue;"></span></p>
+                </div>
+                <button id="confirmPaidBtn" class="book-now-button"
+                    style="width: 100%; margin-top: 20px; background: #2563eb;">
+                    Tôi đã thanh toán
+                </button>
+            </div>
+
+            <div id="paymentStep2" style="display: none; text-align: center;">
+                <div style="font-size: 60px; color: #16a34a; margin-bottom: 10px;">✔</div>
+                <h2 style="color: #16a34a;">Cảm ơn bạn!</h2>
+                <p>Yêu cầu đặt sân đã được ghi nhận. <br>Vui lòng đợi chủ sân xác nhận trong một thời gian dài.</p>
+                <button onclick="closePaymentModal()" class="book-now-button"
+                    style="background: #64748b; margin-top: 20px;">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-info">
+        <div class="info-container">
+
+            <div class="info-box">
+                <h3>Thông tin</h3>
+                <p>Công ty cổ phần Nhóm 15</p>
+                <p>Địa chỉ: Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội</p>
+                <p>Mã số thuế: xxxxxxxxxx</p>
+                <p>Giấy phép ĐKKD số xxxxxxxxx do Sở KHĐT Hà Nội cấp ngày dd/mm/yyyy</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Liên hệ</h3>
+
+                <p>📧 Email: contact@datsanbk.com</p>
+                <p>📞 Điện thoại: 0363 636 363</p>
+                <p>📘 Fanpage: Đặt sân Bách Khoa</p>
+            </div>
+
+        </div>
+    </footer>
+</body>
+
+</html>
