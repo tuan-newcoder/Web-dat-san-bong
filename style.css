@@ -1377,21 +1377,21 @@ a {
     display: inline-block;
 }
 
-.status-badge.completed {
+.status-badge.completed.daxacnhan {
     background-color: #e6ffe6;
     /* Xanh lá nhạt */
     color: #388e3c;
     /* Xanh lá đậm */
 }
 
-.status-badge.upcoming {
+.status-badge.upcoming.chuaxacnhan {
     background-color: #fff8e1;
     /* Vàng nhạt */
     color: #fbc02d;
     /* Vàng đậm */
 }
 
-.status-badge.cancelled {
+.status-badge.cancelled.dahuy {
     background-color: #ffebee;
     /* Đỏ nhạt */
     color: #d32f2f;
@@ -2125,4 +2125,25 @@ td {
 @media (max-width: 1024px) {
     .dashboard-layout { grid-template-columns: 1fr; }
     .main-content { margin-left: 80px; }
+}
+
+/* Trạng thái: Chờ xác nhận (Vàng/Cam) */
+.status-pending {
+    background-color: #fff9db;
+    color: #f08c00;
+    border-color: #ffe066;
+}
+
+/* Trạng thái: Đã xác nhận (Xanh lá) */
+.status-confirmed {
+    background-color: #ebfbee;
+    color: #2b8a3e;
+    border-color: #b2f2bb;
+}
+
+/* Trạng thái: Đã hủy (Đỏ) */
+.status-cancelled {
+    background-color: #fff5f5;
+    color: #e03131;
+    border-color: #ffa8a8;
 }
