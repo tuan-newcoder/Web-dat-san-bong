@@ -275,7 +275,7 @@ exports.getRevenueByDay = async (req, res) => {
         // --- BƯỚC 1: Query Database (Chỉ lấy những ngày có dữ liệu) ---
         // DATE_FORMAT '%Y-%m-%d' để đầu ra giống format mặc định của Moment
         let sql = `
-            SELECT DATE_FORMAT(l.Ngay, '%Y-%m-%d') as NgayStr, SUM(l.TongTien) as TongTien
+            SELECT DATE_FORMAT(l.Ngay, '%Y-%m-%d') as NgayStr, SUM(l.TongTien) as TongTien, COUNT(l.MaDatSan) as SoDonThanhCong
             FROM LichDatSan l
             JOIN SanBong s ON l.MaSan = s.MaSan
             WHERE s.MaNguoiDung = ? 
@@ -340,7 +340,7 @@ exports.getRevenueByMonth = async (req, res) => {
 
         // 2. Query Database
         let sql = `
-            SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, SUM(l.TongTien) as TongTien
+            SELECT DATE_FORMAT(l.Ngay, '%Y-%m') as ThangStr, SUM(l.TongTien) as TongTien, COUNT(l.MaDatSan) as SoDonThanhCong
             FROM LichDatSan l
             JOIN SanBong s ON l.MaSan = s.MaSan
             WHERE s.MaNguoiDung = ? 

@@ -6,6 +6,9 @@ const { authenticateToken, requireAdmin } = require('../middleware/authMiddlewar
 router.use(authenticateToken, requireAdmin);
 
 router.get('/users', adminController.getAllUsers);
+
 router.put('/role/:id', adminController.updateUserRole); 
+
+router.get('/stats', adminController.getDashboardStats);
 
 module.exports = router;
