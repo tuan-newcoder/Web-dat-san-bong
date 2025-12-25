@@ -850,7 +850,6 @@ async function fetchBookings() {
     if (!tableBody) return;
 
     const userId = Auth.getUserId();
-    // Lấy giá trị filter để gửi lên API nếu Backend hỗ trợ lọc
     const statusFilter = document.getElementById('statusFilter')?.value || 'all';
 
     if (!userId) {
@@ -859,40 +858,37 @@ async function fetchBookings() {
     }
 
     try {
-        // Gọi API lấy danh sách đơn đặt của chủ sân
-        const response = await apiRequest(`${API_URL}/owner/bookings?maNguoiDung=${userId}&status=${statusFilter}`, {
+        // 2. Gọi API lấy danh sách đơn đặt của chủ sân
+        const response = await apiRequest(`${API_URL}/owner/bookings`, {
             method: 'GET'
         });
 
         const bookings = response.data || response;
 
-        if (!bookings || bookings.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px;">Không có dữ liệu đơn đặt.</td></tr>`;
+        // 3. LOGIC LỌC: Nếu filter là 'all' thì giữ nguyên, ngược lại thì lọc theo TrangThai
+        const displayData = statusFilter === 'all' 
+            ? bookings 
+            : bookings.filter(order => order.TrangThai === statusFilter);
+
+        if (!displayData || displayData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">Không có dữ liệu đơn đặt phù hợp.</td></tr>`;
             return;
         }
 
-        tableBody.innerHTML = bookings.map(order => {
+        // 4. Render dữ liệu theo các cột trong ảnh yêu cầu
+        tableBody.innerHTML = displayData.map(order => {
             const displayStatus = order.TrangThai || 'chuaxacnhan'; 
             
             return `
                 <tr>
-                    <td>#${order.MaDatSan}</td>
-                    <td>
-                        <strong>${order.HoTen || 'Khách vãng lai'}</strong><br>
-                        <small>${order.sdt || 'N/A'}</small>
-                    </td>
-                    <td>${order.TenSan}</td>
-                    <td>
-                        ${new Date(order.Ngay).toLocaleDateString('vi-VN')}<br>
-                        <small>Ca ${order.Ca}</small>
-                    </td>
-                    <td>${new Intl.NumberFormat('vi-VN').format(order.Gia)} VNĐ</td>
-                    <td>
+                    <td>#${order.MaDatSan}</td> <td>
+                        <strong>${order.TenKhachHang || 'N/A'}</strong><br>
+                        <small>${order.sdt || ''}</small>
+                    </td> <td>${order.TenSan}</td> <td>${new Date(order.Ngay).toLocaleDateString('vi-VN')}</td> <td>Ca ${order.Ca}</td> <td>${new Intl.NumberFormat('vi-VN').format(order.TongTien)} VNĐ</td> <td>
                         <span class="status-badge ${getStatusClass(displayStatus)}">
                             ${getStatusText(displayStatus)}
                         </span>
-                    </td>
-                    <td>
+                    </td> <td>
                         <div class="action-buttons">
                             ${displayStatus === 'chuaxacnhan' ? `
                                 <button class="btn-success" onclick="updateBookingStatus(${order.MaDatSan}, 'daxacnhan')">Xác nhận</button>
@@ -900,18 +896,61 @@ async function fetchBookings() {
                             ` : displayStatus === 'daxacnhan' ? `
                                 <button class="btn-danger" onclick="updateBookingStatus(${order.MaDatSan}, 'dahuy')">Huỷ đơn</button>
                             ` : `
-                                <small style="color: gray;">Không có thao tác</small>
+                                <small style="color: gray;">Đã hoàn thành</small>
                             `}
                         </div>
-                    </td>
-                </tr>
+                    </td> </tr>
             `;
         }).join('');
     } catch (error) {
         console.error("Lỗi khi tải đơn đặt sân:", error.message);
-        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Lỗi: ${error.message}</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: red; padding: 20px;">Lỗi hệ thống: ${error.message}</td></tr>`;
     }
 }
+// Hàm trả về màu sắc CSS
+function getStatusClass(status) {
+    switch (status) {
+        case 'chuaxacnhan': return 'status-pending';   // Màu vàng
+        case 'daxacnhan': return 'status-confirmed'; // Màu xanh
+        case 'dahuy': return 'status-cancelled';    // Màu đỏ
+        default: return '';
+    }
+}
+
+// Hàm trả về văn bản tiếng Việt
+function getStatusText(status) {
+    const map = {
+        'chuaxacnhan': 'Chờ xác nhận',
+        'daxacnhan': 'Đã xác nhận',
+        'dahuy': 'Đã huỷ'
+    };
+    return map[status] || status;
+}
+
+// Hàm cập nhật trạng thái đơn hàng (Duyệt/Hủy)
+async function updateBookingStatus(maDatSan, newStatus) {
+    const msg = newStatus === 'daxacnhan' ? "Bạn muốn xác nhận đơn này?" : "Bạn muốn hủy đơn này?";
+    if (!confirm(msg)) return;
+
+    try {
+        await apiRequest(`${API_URL}/owner/bookings/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ maDatSan, trangThai: newStatus })
+        });
+        alert("Cập nhật thành công!");
+        fetchBookings(); // Tải lại bảng để cập nhật giao diện
+    } catch (error) {
+        alert("Lỗi: " + error.message);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const bookingTable = document.getElementById('bookingTableBody');
+    
+    if (bookingTable) {
+        fetchBookings();
+    }
+});
 /* Script for chi tiết sân */
 
 const urlParams = new URLSearchParams(window.location.search);

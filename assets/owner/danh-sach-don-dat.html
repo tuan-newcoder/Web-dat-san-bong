@@ -14,7 +14,7 @@
 
 <body>
 
-        <!-- NAVBAR -->
+    <!-- NAVBAR -->
     <header class="navbar">
         <a href="chu-san.html" class="logo-link">
             <div class="logo">
@@ -39,7 +39,8 @@
 
                 <div id="ownerDropdown" class="dropdown-content">
                     <div class="has-submenu">
-                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý sân</a>
+                        <a href="#" id="managePitchesBtn" data-target="managePitchesDropdown" type="button">Quản lý
+                            sân</a>
                         <div id="managePitchesDropdown" class="submenu-content">
                             <a href="quan-ly-san.html">Danh sách sân</a>
                             <a href="danh-sach-don-dat.html">Danh sách đơn đặt</a>
@@ -78,14 +79,15 @@
             <div class="filter-group">
                 <select id="statusFilter" class="role-select" onchange="fetchBookings()">
                     <option value="all">Tất cả trạng thái</option>
-                    <option value="pending">Chờ xác nhận</option>
-                    <option value="confirmed">Đã xác nhận</option>
+                    <option value="chuaxacnhan">Chờ xác nhận</option>
+                    <option value="daxacnhan">Đã xác nhận</option>
+                    <option value="dahuy">Đã hủy</option>
                 </select>
             </div>
         </div>
 
         <div class="data-section">
-            <table class="admin-table">
+            <table class="booking-history-table2 admin-table">
                 <thead>
                     <tr>
                         <th>Mã đơn</th>

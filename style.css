@@ -2013,3 +2013,13 @@ button {
 .contact-text-info span {
     font-weight: 400;
 }
+
+.booking-history-table2 th:nth-child(2),
+.booking-history-table2 td:nth-child(2) {
+    width: 160px;
+}
+
+.booking-history-table2 th:first-child,
+.booking-history-table2 td:first-child {
+    width: 60px;
+}
