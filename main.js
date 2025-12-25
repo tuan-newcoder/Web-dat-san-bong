@@ -107,7 +107,7 @@ async function handleLogin(username, password) {
         // 3. Lưu Session (Token và Thông tin user)
         Auth.saveSession(result.token, userData);
 
-        // 4. Lấy 'role' an toàn 
+        // 4. Lấy 'role'
         const role = userData.role;
 
 
@@ -577,136 +577,202 @@ document.addEventListener('DOMContentLoaded', () => StadiumApp.init());
 
 document.addEventListener('DOMContentLoaded', () => {
     const ownerForm = document.getElementById('ownerForm');
-    const loginModal = document.getElementById('loginModal');
-    const loginBtn = document.getElementById('loginBtn');
-    const closeLogin = document.getElementById('closeLogin');
+    const priceInput = document.getElementById('price');
 
-    if (!localStorage.getItem('userToken')) localStorage.setItem('userToken', '');
-
-    // Mở modal đăng nhập
-    function openLoginModal() { loginModal.style.display = 'flex'; }
-    function closeLoginModal() { loginModal.style.display = 'none'; }
-
-    if (closeLogin) closeLogin.addEventListener('click', closeLoginModal);
-
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            if (username && password) {
-                localStorage.setItem('userToken', 'demo-token'); 
-                alert("Đăng nhập thành công!");
-                closeLoginModal();
-            } else {
-                alert("Vui lòng nhập đầy đủ thông tin đăng nhập!");
-            }
+    // 1. Kiểm soát nhập liệu cho ô Mức giá (chỉ cho phép nhập số)
+    if (priceInput) {
+        priceInput.addEventListener('input', function() {
+            // Loại bỏ tất cả ký tự không phải số
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
     }
 
+    // 2. Xử lý gửi Form đăng ký sân
     if (ownerForm) {
-        ownerForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+        ownerForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Ngăn trang web tải lại
 
-            const token = localStorage.getItem('userToken');
+            // Lấy giá trị từ các ô input
+            const stadiumName = document.getElementById('stadiumName').value;
+            const stadiumType = document.getElementById('stadiumType').value;
+            const address = document.getElementById('address').value;
+            const ward = document.getElementById('ward').value;
+            const priceValue = parseInt(priceInput.value);
 
-            const formData = new FormData(ownerForm);
+            // 3. Kiểm tra logic mức giá chia hết cho 1000
+            if (isNaN(priceValue) || priceValue % 1000 !== 0 || priceValue <= 0) {
+                alert("Mức giá không hợp lệ! Vui lòng nhập số tiền chia hết cho 1000 (Ví dụ: 200000, 350000).");
+                priceInput.focus();
+                return;
+            }
+
+            // 4. Chuẩn bị dữ liệu theo đúng yêu cầu của API
+            const stadiumData = {
+                TenSan: stadiumName,
+                LoaiSan: stadiumType,
+                DiaChi: address,
+                Phuong: ward,
+                Gia: priceValue
+            };
+
             try {
-                console.log("Dữ liệu gửi:", {
-                    stadiumName: formData.get('fullName'),
-                    type: formData.get('type'),
-                    address: formData.get('address'),
-                    price: parseInt(formData.get('price')),
-                    startTime: formData.get('startTime'),
-                    endTime: formData.get('endTime'),
-                    imageFile: formData.get('businessCert')
+                // Hiển thị trạng thái đang xử lý trên nút bấm
+                const submitBtn = ownerForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = "Đang gửi đăng ký...";
+                submitBtn.disabled = true;
+
+                // 5. Gọi API POST /api/fields
+                const response = await apiRequest(`${API_URL}/owner/fields`, {
+                    method: 'POST',
+                    body: JSON.stringify(stadiumData)
                 });
 
-                alert("Đăng ký sân thành công!");
-                ownerForm.reset();
+                // Xử lý thành công
+                alert("Đăng ký sân thành công! Sân của bạn đang chờ được duyệt.");
+                ownerForm.reset(); // Xóa sạch form sau khi gửi thành công
+                
+                window.location.href = "quan-ly-san.html";
 
             } catch (error) {
+                console.error("Lỗi đăng ký sân:", error.message);
                 alert("Có lỗi xảy ra: " + error.message);
+            } finally {
+                // Khôi phục trạng thái nút bấm
+                const submitBtn = ownerForm.querySelector('button[type="submit"]');
+                submitBtn.innerText = "Gửi đăng ký";
+                submitBtn.disabled = false;
             }
         });
     }
-
-    // Đóng modal khi click ngoài
-    window.addEventListener('click', (e) => {
-        if (e.target === loginModal) closeLoginModal();
-    });
 });
 
-
 /* Script cho admin-dashboard */
-// Dữ liệu giả lập cho bảng người dùng 
-const userData = [
-    { stt: 1, user_id: '#9A2D', username: 'Wibuchua', fullname: 'Nguyễn Duy V', phone: '0901xxxxxx', registerDate: '2025-10-01', role: 'Chủ sân' },
-    { stt: 2, user_id: '#F3E1', username: 'user_b', fullname: 'Trần Thị H', phone: '0912xxxxxx', registerDate: '2025-11-15', role: 'Người dùng' },
-    { stt: 3, user_id: '#B6C5', username: 'user_c', fullname: 'Lê Văn T', phone: '0987xxxxxx', registerDate: '2025-12-01', role: 'Người dùng' },
-    { stt: 4, user_id: '#1G4H', username: 'admin_d', fullname: 'Phạm Q', phone: '0977xxxxxx', registerDate: '2025-09-01', role: 'Admin' },
-];
 
 
-function createUserRowHTML(user) {
-    const roles = ['Người dùng', 'Chủ sân', 'Admin'];
 
-    // Tạo dropdown phân cấp
-    const roleOptions = roles.map(role =>
-        `<option value="${role}" ${user.role === role ? 'selected' : ''}>${role}</option>`
-    ).join('');
+/* Script cho quản lý người dùng */
 
-    return `
-        <tr data-user-id="${user.user_id}">
-            <td>${user.stt}</td>
-            <td>${user.user_id}</td> <td>${user.username}</td>
-            <td>${user.fullname}</td>
-            <td>${user.phone.substring(0, 4)}...</td>
-            <td>${user.registerDate}</td>
-            <td>
-                <select class="role-select" onchange="handleRoleChange(this, '${user.user_id}')">
-                    ${roleOptions}
-                </select>
-            </td>
-        </tr>
-    `;
-}
+const UserAdminApp = {
+    allUsers: [],      // Lưu trữ toàn bộ dữ liệu từ API
+    currentPage: 1,    // Trang hiện tại
+    itemsPerPage: 20,  // Số lượng người dùng mỗi trang
 
-/**
- * Tải dữ liệu người dùng vào bảng.
- */
-function loadUserTable() {
-    const tableBody = document.getElementById('user-management-table');
-    if (tableBody) {
-        const rowsHTML = userData.map(createUserRowHTML).join('');
-        tableBody.innerHTML = rowsHTML;
+    init() {
+        this.fetchUsers();
+    },
+
+    /**
+     * Lấy toàn bộ danh sách từ API
+     */
+    async fetchUsers() {
+        const tableBody = document.getElementById('user-management-table');
+        if (!tableBody) return;
+
+        try {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Đang tải dữ liệu...</td></tr>`;
+            
+            const response = await apiRequest(`${API_URL}/admin/users`, {
+                method: 'GET'
+            });
+
+            // Lưu dữ liệu vào biến toàn cục của đối tượng
+            this.allUsers = response.data || [];
+            this.renderPage(1); 
+
+        } catch (error) {
+            console.error("Lỗi tải bảng người dùng:", error.message);
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:red;">Lỗi: ${error.message}</td></tr>`;
+        }
+    },
+
+    /**
+     * Hiển thị dữ liệu của một trang cụ thể
+     */
+    renderPage(page) {
+        this.currentPage = page;
+        const tableBody = document.getElementById('user-management-table');
+        if (!tableBody) return;
+
+        if (this.allUsers.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Không có dữ liệu người dùng.</td></tr>`;
+            document.getElementById('user-pagination').innerHTML = "";
+            return;
+        }
+
+        // Tính toán vị trí cắt mảng dữ liệu
+        const startIndex = (page - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const paginatedUsers = this.allUsers.slice(startIndex, endIndex);
+
+        tableBody.innerHTML = paginatedUsers.map((user, index) => {
+            const roles = [
+                { id: 'admin', text: 'Admin' },
+                { id: 'chusan', text: 'Chủ sân' },
+                { id: 'khachhang', text: 'Khách hàng' }
+            ];
+
+            const roleOptions = roles.map(r => 
+                `<option value="${r.id}" ${user.quyen === r.id ? 'selected' : ''}>${r.text}</option>`
+            ).join('');
+
+            // STT phải tính theo trang để không bị lặp lại từ 1
+            const stt = startIndex + index + 1;
+
+            return `
+                <tr data-user-id="${user.MaNguoiDung}">
+                    <td>${stt}</td>
+                    <td>#${user.MaNguoiDung}</td>
+                    <td><strong>${user.username}</strong></td>
+                    <td>${user.HoTen}</td>
+                    <td>${user.email}</td>
+                    <td>${user.sdt || "N/A"}</td>
+                    <td>${user.bank || "<i>-</i>"}</td>
+                    <td style="color: red;">${user.stk || "<i>-</i>"}</td>
+                    <td>
+                        <select class="role-select" 
+                                data-old-role="${user.quyen}" 
+                                onchange="handleRoleChange(this, ${user.MaNguoiDung})">
+                            ${roleOptions}
+                        </select>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        this.renderPagination();
+    },
+
+    /**
+     * Tạo các nút bấm phân trang
+     */
+    renderPagination() {
+        const totalPages = Math.ceil(this.allUsers.length / this.itemsPerPage);
+        const container = document.getElementById('user-pagination');
+        if (!container || totalPages <= 1) {
+            if (container) container.innerHTML = "";
+            return;
+        }
+
+        let html = "";
+        for (let i = 1; i <= totalPages; i++) {
+            html += `
+                <button class="page-btn ${i === this.currentPage ? 'active' : ''}" 
+                        onclick="UserAdminApp.renderPage(${i})">
+                    ${i}
+                </button>
+            `;
+        }
+        container.innerHTML = html;
     }
-}
+};
 
-/** Xử lý khi phân cấp người dùng bị thay đổi. */
-function handleRoleChange(selectElement, userId) {
-    const newRole = selectElement.value;
-    const oldRole = selectElement.getAttribute('data-old-role');
-
-    // Lưu vai trò cũ trước khi xác nhận
-    if (!oldRole) selectElement.setAttribute('data-old-role', userData.find(u => u.user_id === userId).role);
-
-    if (confirm(`Xác nhận thay đổi phân cấp của người dùng ID ${userId} thành "${newRole}"?`)) {
-        console.log(`Đang gửi yêu cầu cập nhật vai trò: User ID ${userId}, Role: ${newRole}`);
-
-        alert(`Đã cập nhật vai trò của người dùng ID ${userId} thành: ${newRole} (Demo thành công)`);
-        selectElement.setAttribute('data-old-role', newRole); // Cập nhật vai trò cũ thành mới
-
-    } else {
-        // Nếu hủy bỏ, quay lại giá trị cũ
-        selectElement.value = oldRole || userData.find(u => u.user_id === userId).role;
+// Khởi tạo ứng dụng quản trị
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('user-management-table')) {
+        UserAdminApp.init();
     }
-}
-
-// Gán hàm vào window để HTML có thể gọi
-window.handleRoleChange = handleRoleChange;
-
-document.addEventListener('DOMContentLoaded', loadUserTable);
-
+});
 /* Script check access */
 // document.addEventListener("DOMContentLoaded", function () {
 
@@ -989,7 +1055,7 @@ async function loadUserProfile() {
         if (response && response.data) {
             const userData = response.data;
 
-            // 3. Đổ dữ liệu vào các ID tương ứng trong HTML của bạn
+            // 3. Đổ dữ liệu vào các ID tương ứng trong HTML 
             document.getElementById('profileUsername').value = userData.username || "";
             document.getElementById('profileFullName').value = userData.HoTen || "";
             document.getElementById('profileEmail').value = userData.email || "";
@@ -1205,7 +1271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const OwnerPitchApp = {
     allData: [],
     currentPage: 1,
-    itemsPerPage: 6, // Số lượng sân trên mỗi trang
+    itemsPerPage: 4, // Số lượng sân trên mỗi trang
 
     init() {
         this.fetchOwnerFields();
@@ -1230,7 +1296,6 @@ const OwnerPitchApp = {
                 method: 'GET'
             });
 
-            // Giả sử Backend trả về mảng trực tiếp hoặc { data: [...] }
             this.allData = response.data || response;
             this.renderPage(1);
 
@@ -1244,7 +1309,7 @@ const OwnerPitchApp = {
     /**
      * Hiển thị danh sách sân theo trang
      */
-    renderPage(page) {
+renderPage(page) {
         this.currentPage = page;
         const listContainer = document.getElementById('ownerStadiumList');
         if (!listContainer) return;
@@ -1260,10 +1325,21 @@ const OwnerPitchApp = {
         const items = this.allData.slice(start, end);
 
         listContainer.innerHTML = items.map(s => {
-            // Xử lý trạng thái để gán Class CSS tương ứng
-            const isMaintenance = s.TrangThai === 'baotri';
-            const statusText = isMaintenance ? "Bảo trì" : "Đang hoạt động";
-            const statusClass = isMaintenance ? "inactive" : "active";
+            // --- LOGIC XỬ LÝ TRẠNG THÁI MỚI ---
+            let statusText = "";
+            let statusClass = "";
+
+            if (s.TrangThai === 'baotri') {
+                statusText = "Bảo trì";
+                statusClass = "inactive";
+            } else if (s.TrangThai === 'ngunghoatdong') {
+                statusText = "Ngừng hoạt động";
+                statusClass = "stopped";  
+            } else {
+                statusText = "Đang hoạt động";
+                statusClass = "active";  
+            }
+            // ----------------------------------
 
             return `
                 <a href="chi-tiet-san-chu-san.html?id=${s.MaSan}" class="manage-card-link" data-stadium-id="${s.MaSan}">
@@ -1319,93 +1395,134 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* === QUẢN LÝ CHI TIẾT SÂN (DÀNH CHO CHỦ SÂN) === */
+/* Script cho chi tiết sân chủ sân */
 
-// 1. Lấy ID sân từ URL (ví dụ: chi-tiet.html?id=5)
 const pitchUrlParams = new URLSearchParams(window.location.search);
 const pitchId = pitchUrlParams.get('id');
 
 /**
- * Tải thông tin sân hiện tại và đổ vào Form
+ * Tải thông tin sân và đổ vào Form
  */
 async function loadPitchDetailsForEdit() {
-    if (!pitchId) {
-        alert("Không tìm thấy mã sân!");
-        return;
-    }
+    if (!pitchId) return;
 
     try {
         const stadium = await apiRequest(`${API_URL}/fields/${pitchId}`, { method: 'GET' });
-
         if (stadium) {
-            // Đổ dữ liệu vào các ô input dựa trên ID
             document.getElementById('name').value = stadium.TenSan || "";
             document.getElementById('type').value = stadium.LoaiSan || "";
             document.getElementById('address').value = stadium.DiaChi || "";
             document.getElementById('ward').value = stadium.Phuong || "";
-            document.getElementById('price').value = stadium.Gia || 0;
+            // Đổ giá vào ô text
+            document.getElementById('price').value = stadium.Gia || "";
             
-            // Nếu có trường trạng thái trong HTML
             const statusField = document.getElementById('status');
             if (statusField) statusField.value = stadium.TrangThai || "hoatdong";
-
-            console.log("Đã tải thông tin sân để chỉnh sửa.");
         }
     } catch (error) {
-        console.error("Lỗi khi tải thông tin sân:", error.message);
-        alert("Không thể tải thông tin sân.");
+        console.error("Lỗi tải thông tin sân:", error.message);
     }
 }
 
 /**
- * Hàm lưu thay đổi - Gửi yêu cầu PUT
+ * Hàm lưu thay đổi - PUT /api/fields/:id
  */
 async function savePitchInfo() {
-    // 1. Thu thập dữ liệu từ các ô input
+    const priceInput = document.getElementById('price');
+    // Loại bỏ mọi ký tự không phải số trước khi tính toán
+    const rawPrice = priceInput.value.replace(/[^0-9]/g, '');
+    const priceVal = parseInt(rawPrice);
+
+    // 1. Kiểm tra logic giá thuê (Số và chia hết cho 1000)
+    if (isNaN(priceVal) || priceVal % 1000 !== 0 || priceVal <= 0) {
+        alert("Mức giá không hợp lệ! Vui lòng nhập số tiền chia hết cho 1000 (Ví dụ: 300000).");
+        priceInput.focus();
+        return;
+    }
+
     const updatedData = {
         TenSan: document.getElementById('name').value,
         LoaiSan: document.getElementById('type').value,
         DiaChi: document.getElementById('address').value,
         Phuong: document.getElementById('ward').value,
-        Gia: parseInt(document.getElementById('price').value),
-        TrangThai: document.getElementById('status')?.value || 'hoatdong'
+        Gia: priceVal,
+        TrangThai: document.getElementById('status').value // Gửi hoatdong, baotri hoặc ngunghoatdong
     };
 
-    // 2. Kiểm tra dữ liệu cơ bản
-    if (!updatedData.TenSan || !updatedData.Gia) {
-        alert("Vui lòng điền đầy đủ Tên sân và Giá thuê!");
-        return;
-    }
+    if (!updatedData.TenSan) return alert("Vui lòng nhập tên sân!");
 
     try {
         const btn = document.querySelector('.actions button');
         btn.innerText = "Đang lưu...";
         btn.disabled = true;
 
-        // 3. Gọi API PUT để cập nhật
         await apiRequest(`${API_URL}/fields/${pitchId}`, {
             method: 'PUT',
             body: JSON.stringify(updatedData)
         });
 
         alert("Sân đã cập nhật thành công!");
-        
-        // Có thể chuyển hướng về trang danh sách sân sau khi lưu thành công
-        // window.location.href = "quan-ly-san.html";
+        window.location.href = "/assets/owner/quan-ly-san.html";
 
     } catch (error) {
-        alert("Lỗi khi cập nhật thông tin: " + error.message);
+        alert("Lỗi khi cập nhật: " + error.message);
     } finally {
         const btn = document.querySelector('.actions button');
         btn.innerText = "Lưu thay đổi";
         btn.disabled = false;
     }
 }
-
-// 4. Khởi tạo khi trang tải xong
+// Khởi tạo
 document.addEventListener('DOMContentLoaded', () => {
-    // Chỉ chạy hàm tải dữ liệu nếu đang ở trang chi tiết có các ID này
-    if (document.getElementById('name')) {
-        loadPitchDetailsForEdit();
+    // 1. Tự động ngăn nhập chữ vào ô giá
+    const priceInput = document.getElementById('price');
+    if (priceInput) {
+        priceInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
     }
+
+    if (document.getElementById('name')) loadPitchDetailsForEdit();
 });
+
+/* Script cho nút dành cho chủ sân */
+
+async function checkBank(event, targetUrl) {
+
+    event.preventDefault(); 
+
+    const userId = Auth.getUserId();
+    if (!userId) {
+        alert("Vui lòng đăng nhập để thực hiện hành động này!");
+        if (typeof openModal === 'function') openModal();
+        return;
+    }
+
+    try {
+
+        const response = await apiRequest(`${API_URL}/users/${userId}`, {
+            method: 'GET'
+        });
+
+        if (response && response.data) {
+            const userData = response.data;
+            const nbank = userData.bank; 
+            const nstk = userData.stk;   
+
+            if (!nbank || !nstk) {
+                alert("Bạn cần thêm thông tin Ngân hàng và Số tài khoản để sử dụng chức năng này!");
+
+                window.location.href = '/assets/after-login/profile.html';
+            } else {
+
+                window.location.href = targetUrl;
+            }
+        } else {
+            throw new Error("Không thể truy xuất dữ liệu người dùng.");
+        }
+
+    } catch (error) {
+        console.error("Lỗi khi kiểm tra ngân hàng:", error.message);
+        alert("Có lỗi xảy ra khi xác thực thông tin: " + error.message);
+    }
+}

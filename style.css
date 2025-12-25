@@ -619,7 +619,7 @@ a {
 
 .manage-stadiums-section {
     max-width: 1000px;
-    margin: 40px auto;
+    margin: 20px auto;
     padding: 20px;
 }
 
@@ -695,7 +695,17 @@ a {
 }
 
 .manage-info .status.inactive {
-    color: #721c24;
+    color: #625c5d;
+    background-color: #f8d7da;
+}
+
+.manage-info .status.active {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.manage-info .status.stopped {
+    color: #bd0f20;
     background-color: #f8d7da;
 }
 
@@ -1267,7 +1277,7 @@ a {
 
 .admin-table th:nth-child(2),
 .admin-table td:nth-child(2) {
-    width: 200px;
+    width: 60px;
 }
 
 /* Dropdown Phân cấp */

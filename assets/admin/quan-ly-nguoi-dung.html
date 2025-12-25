@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Quản lý Hệ thống</title>
+    <title>Admin Dashboard | Quản lý Người dùng</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -29,22 +29,29 @@
             <h1>Quản lý Người dùng</h1>
 
             <div class="data-section">
-                <h3>Danh sách Người dùng Hệ thống</h3>
-                <table class="admin-table quan-ly-nguoi-dung-table">
+                <div class="section-header">
+                    <h3>Danh sách Người dùng Hệ thống</h3>
+                    <button onclick="loadUserTable()" class="btn-refresh">Làm mới dữ liệu</button>
+                </div>
+
+                <table class="admin-table">
                     <thead>
                         <tr>
                             <th>STT</th>
                             <th>ID</th>
-                            <th>Tên người dùng</th>
+                            <th>Username</th>
                             <th>Họ và tên</th>
+                            <th>Email</th>
                             <th>Số điện thoại</th>
-                            <th>Ngày đăng ký</th>
+                            <th>Ngân hàng</th>
+                            <th>Số tài khoản</th>
                             <th>Phân cấp</th>
                         </tr>
                     </thead>
                     <tbody id="user-management-table">
                     </tbody>
                 </table>
+                <div id="user-pagination" class="pagination-container" style="margin-top: 20px; text-align: center;"></div>
             </div>
         </div>
     </div>

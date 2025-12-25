@@ -74,52 +74,58 @@
             </div>
         </div>
     </header>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="pitch-container" style="margin: 150px auto;">
 
-    <div class="pitch-container">
+                <img src="/images/sanA.png" alt="Sân A" class="pitch-image" style="margin-top: 15px;">
 
-        <img src="/images/sanA.png" alt="Sân A" class="pitch-image">
+                <div class="pitch-info">
 
-        <div class="pitch-info">
+                    <div class="info-row">
+                        <label>Tên sân:</label>
+                        <input type="text" id="name">
+                    </div>
 
-            <div class="pitch-name">
-                <input type="text" id="name" value="Sân A">
+                    <div class="info-row">
+                        <label>Loại sân:</label>
+                        <input type="text" id="type">
+                    </div>
+
+                    <div class="info-row">
+                        <label>Địa chỉ:</label>
+                        <input type="text" id="address">
+                    </div>
+
+                    <div class="info-row">
+                        <label>Phường:</label>
+                        <input type="text" id="ward">
+                    </div>
+
+                    <div class="info-row">
+                        <label>Giá thuê:</label>
+                        <input type="text" id="price" placeholder="Ví dụ: 300000"> đồng/ca
+                    </div>
+
+                    <div class="info-row">
+                        <label>Trạng thái:</label>
+                        <select id="status"
+                            style="flex: 1; padding: 8px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 15px;">
+                            <option value="hoatdong">Hoạt động</option>
+                            <option value="baotri">Bảo trì</option>
+                            <option value="ngunghoatdong">Ngừng hoạt động</option>
+                        </select>
+                    </div>
+
+                    <div class="actions">
+                        <button onclick="savePitchInfo()">Lưu thay đổi</button>
+                    </div>
+
+                </div>
             </div>
-
-            <div class="info-row">
-                <label>Loại sân:</label>
-                <input type="text" id="type" value="Sân 5">
-            </div>
-
-            <div class="info-row">
-                <label>Địa chỉ:</label>
-                <input type="text" id="address" value="Số 1 Đại Cồ Việt, Hà Nội">
-            </div>
-
-            <div class="info-row">
-                <label>Phường:</label>
-                <input type="text" id="ward" value="Hai Bà Trưng">
-            </div>
-
-            <div class="info-row">
-                <label>Giá thuê:</label>
-                <input type="number" id="price" value="300000"> VNĐ / giờ
-            </div>
-
-            <div class="info-row">
-                <label>Trạng thái:</label>
-                <select id="status">
-                    <option value="hoatdong">Hoạt động</option>
-                    <option value="baotri">Bảo trì</option>
-                    <option value="ngung">Ngừng hoạt động</option>
-                </select>
-            </div>
-
-            <div class="actions">
-                <button onclick="savePitchInfo()">Lưu thay đổi</button>
-            </div>
-
         </div>
-    </div>
+    </section>
+
 
     <!-- FOOTER INFO SECTION -->
     <section class="footer-info">

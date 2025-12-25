@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi tiết Sân bóng A</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <script src="/main.js" defer></script>
 </head>
@@ -68,7 +71,6 @@
         </div>
     </header>
 
-
     <!-- MAIN CONTENT - Chi tiết sân bóng -->
     <main class="detail-container">
         <!-- BỘ LỌC TÌM KIẾM -->
@@ -76,9 +78,9 @@
             <div class="filter-group">
                 <label>Loại sân</label>
                 <div class="calendar-type-buttons">
-                    <button class="calendar-type-button" data-type="san-5">Sân 5</button>
-                    <button class="calendar-type-button" data-type="san-7">Sân 7</button>
-                    <button class="calendar-type-button" data-type="san-11">Sân 11</button>
+                    <button class="calendar-type-button" data-type="san-trong">Sân 5</button>
+                    <button class="calendar-type-button" data-type="su-kien">Sân 7</button>
+                    <button class="calendar-type-button" data-type="ghep-doi">Sân 11</button>
                 </div>
             </div>
 
@@ -99,6 +101,11 @@
                     <option>Tương Mai</option>
                     <option>Yên Sở</option>
                 </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Chọn Ngày</label>
+                <input type="date" id="dateSelect" class="date-input">
             </div>
 
             <div class="filter-group">
@@ -137,6 +144,7 @@
         </section>
         <div id="pagination" class="pagination-container"></div>
     </main>
+
 
     <!-- FOOTER INFO SECTION -->
     <section class="footer-info">
