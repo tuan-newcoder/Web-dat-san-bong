@@ -686,7 +686,7 @@ async function handleRoleChange(selectElement, userId) {
 
     try {
         // 2. Gọi API PUT
-        await apiRequest(`${API_URL}/admin/users/${userId}`, {
+        await apiRequest(`${API_URL}/admin/role/${userId}`, {
             method: 'PUT',
             body: JSON.stringify({ quyen: newRole })
         });
@@ -1720,3 +1720,58 @@ async function checkBank(event, targetUrl) {
         alert("Có lỗi xảy ra khi xác thực thông tin: " + error.message);
     }
 }
+
+/* Script cho doanh thu ngày */
+
+async function fetch7DaysRevenue() {
+    const tableBody = document.getElementById('revenueTableBody');
+    const totalEl = document.getElementById('total7DaysRevenue');
+    if (!tableBody) return;
+
+    const userId = Auth.getUserId();
+    if (!userId) return;
+
+    try {
+        // 1. Lấy dữ liệu từ API
+        // Giả sử API nhận query maNguoiDung để lọc theo chủ sân
+        const response = await apiRequest(`${API_URL}/owner/bookings/day?maNguoiDung=${userId}`, {
+            method: 'GET'
+        });
+
+        const data = response.data || response;
+        let totalSum = 0;
+
+        // 2. Xử lý dữ liệu hiển thị
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Không có dữ liệu doanh thu.</td></tr>`;
+            return;
+        }
+
+        tableBody.innerHTML = data.map(item => {
+            const revenue = parseFloat(item.TongDoanhThu || 0);
+            totalSum += revenue;
+
+            return `
+                <tr>
+                    <td>${new Date(item.Ngay).toLocaleDateString('vi-VN')}</td>
+                    <td style="text-align:center;">${item.SoDonThanhCong || 0}</td>
+                    <td style="font-weight:bold;">${new Intl.NumberFormat('vi-VN').format(revenue)} VNĐ</td>
+                </tr>
+            `;
+        }).join('');
+
+        // 3. Cập nhật tổng tiền
+        totalEl.innerText = new Intl.NumberFormat('vi-VN').format(totalSum) + " VNĐ";
+
+    } catch (error) {
+        console.error("Lỗi tải doanh thu:", error.message);
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">Lỗi: ${error.message}</td></tr>`;
+    }
+}
+
+// Khởi chạy khi vào đúng trang doanh thu
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('revenueTableBody')) {
+        fetch7DaysRevenue();
+    }
+});

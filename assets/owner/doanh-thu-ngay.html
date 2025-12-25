@@ -1,72 +1,41 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biểu đồ Doanh thu theo Ngày</title>
-    <link rel="stylesheet" href="../../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Doanh thu 7 ngày gần nhất</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/main.js" defer></script>
 </head>
-
 <body>
-    
-    <div class="chart-container">
-        <canvas id="revenueChart"></canvas>
-    </div>
-    <script>
-    async function fetchRevenueData() {
-        try {
-            const response = await fetch('http://localhost:3000/api/bookings/revenue-last-7-days');
-            if (!response.ok) {
-                throw new Error('Không thể tải dữ liệu doanh thu');
-            }
-            const data = await response.json();
-            return data; 
-        } catch (error) {
-            console.error("Lỗi khi fetch data:", error);
+    <header class="navbar">
+        </header>
 
-            return []; 
-        }
-    }
+    <main class="detail-container">
+        <section class="revenue-section">
+            <div class="manage-header">
+                <h2>Doanh thu 7 ngày gần nhất</h2>
+                <a href="chu-san.html" class="btn-back"> Quay lại</a>
+            </div>
 
-    // Hàm khởi tạo biểu đồ chính
-    async function initializeChart() {
-        const apiData = await fetchRevenueData();
-
-        // Tách dữ liệu ngày và doanh thu từ phản hồi API
-        const dates = apiData.map(item => item.date);
-        const revenues = apiData.map(item => item.revenue);
-
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-
-        new Chart(ctx, {
-            type: 'line', 
-            data: {
-                labels: dates, // Dữ liệu ngày từ server
-                datasets: [{
-                    label: 'Doanh thu (VNĐ)',
-                    data: revenues, // Dữ liệu doanh thu từ server
-                    borderColor: 'rgba(75, 192, 192, 1)', 
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)', 
-                    tension: 0.3, 
-                }]
-            },
-            options: {
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Doanh thu 7 ngày gần nhất '
-                    }
-                }
-            }
-        });
-    }
-
-    // Chạy hàm khởi tạo biểu đồ
-    initializeChart();
-
-</script>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Số đơn hoàn thành</th>
+                        <th>Doanh thu</th>
+                    </tr>
+                </thead>
+                <tbody id="revenueTableBody">
+                    <tr><td colspan="3" style="text-align:center;">Đang tải dữ liệu...</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background: #f9f9f9;">
+                        <td colspan="2" style="text-align: right;">Tổng doanh thu (7 ngày):</td>
+                        <td id="total7DaysRevenue" style="color: #2b8a3e;">0 VNĐ</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+    </main>
 </body>
-
 </html>
