@@ -7,7 +7,7 @@
     - Chuyển vào thư mục userBackend: cd userBackend
     - Chạy server: node Server.js
     - Mở New Request của Thunder Client
-
+---------------------------------------------------------------- AUTH ----------------------------------------------------------------
     // Đăng kí
     - Method: POST
     - URL API: http://localhost:3000/api/auth/register
@@ -20,6 +20,15 @@
             "sdt": "0987654321"
         }
 
+    // Lấy thông tin cá nhân
+    - Method: GET
+    - URL API: http://localhost:3000/api/users/1
+    - body json: 
+        {
+            
+        }
+
+---------------------------------------------------------------- USER ----------------------------------------------------------------
     // Sửa thông tin
     - Method: PUT
     - URL API: http://localhost:3000/api/users/2
@@ -30,6 +39,7 @@
             "sdt": "0987361232"
         }
 
+---------------------------------------------------------------- FIELDS ----------------------------------------------------------------
     // Lấy danh sách sân
     - Method: GET
     - URL API: http://localhost:3000/api/fields
@@ -75,17 +85,17 @@
     
     // Thêm sân mới
     - Method: POST
-    - URL API: http://localhost:3000/api/fields/1
+    - URL API: http://localhost:3000/api/owner/fields
     - body json: 
         {
             "TenSan": "Sân Bóng BK - Sân C (VIP)",
             "LoaiSan": "Sân 7",
             "DiaChi": "Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
             "Phuong": "Hai Bà Trưng",
-            "TrangThai": "hoatdong"
+            "Gia": "500000"
         }
                 
-    // Xóa sân
+    // Xóa sân ???
     - Method: DELETE
     - URL API: http://localhost:3000/api/fields/1
     - body json: 
@@ -93,17 +103,10 @@
             
         }
 
+---------------------------------------------------------------- BOOKING ----------------------------------------------------------------
     // Lấy thông tin ca đã đặt của sân
     - Method: GET
     - URL API: http://localhost:3000/api/slots/fields/7
-    - body json: 
-        {
-            
-        }
-
-    // Lấy thông tin cá nhân
-    - Method: GET
-    - URL API: http://localhost:3000/api/users/1
     - body json: 
         {
             
@@ -136,6 +139,8 @@
           
         }
 
+
+---------------------------------------------------------------- OWNER ----------------------------------------------------------------
     // Lấy thông tin người dùng
     - Method: GET
     - URL API: http://localhost:3000/api/admin/users
@@ -145,18 +150,6 @@
         }
     *dùng tài khoản có quyen = admin đăng nhập bằng api login => copy token => vào Auth => chọn Bearer paste token vào => chạy api
 
-    // Tạo sân
-    - Method: POST
-    - URL API: http://localhost:3000/api/owner/fields
-    - body json: 
-        {
-            "TenSan": "Sân Lỗi",
-            "LoaiSan": "Sân 5",
-            "DiaChi": "Hà Nội",
-            "Phuong": "Minh Khai",
-            "Gia": "500000" 
-        }
-
     // Lấy danh sách sân của mình
     - Method: GET
     - URL API: http://localhost:3000/api/owner/fields
@@ -165,4 +158,10 @@
             
         }
         
-    
+    // Xem lịch đặt sân của tất cả các sân của Owner
+    - Method: GET
+    - URL API: http://localhost:3000/api/owner/bookings
+    - body json: 
+        {
+            
+        }   
