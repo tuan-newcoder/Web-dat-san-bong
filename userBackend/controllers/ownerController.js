@@ -24,6 +24,7 @@ exports.getMyFields = async (req, res) => {
         const [fields] = await db.query(sql, [req.user.id]);
         res.status(200).json({ data: fields });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
@@ -37,6 +38,7 @@ exports.getFieldDetail = async (req, res) => {
         if (rows.length === 0) return res.status(404).json({ message: "Không tìm thấy sân" });
         res.status(200).json({ data: rows[0] });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
@@ -106,6 +108,7 @@ exports.getFieldBookings = async (req, res) => {
         const [bookings] = await db.query(sql, [maSan]);
         res.status(200).json({ data: bookings });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
