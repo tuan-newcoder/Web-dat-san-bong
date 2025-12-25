@@ -312,7 +312,6 @@ exports.getRevenueByDay = async (req, res) => {
 
             fullStats.push({
                 Ngay: dateKey,                         // Dữ liệu gốc để vẽ biểu đồ
-                NgayHienThi: dayObj.format('DD/MM'),   // Dữ liệu đẹp để hiển thị (Ví dụ: 25/12)
                 TongTien: found ? Number(found.TongTien) : 0 // Nếu tìm thấy thì lấy tiền, không thì = 0
             });
         }
