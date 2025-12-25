@@ -2,7 +2,7 @@
     - Tạo database bằng schema.sql (khi tạo nhớ password để thay dòng này "password: '123456' ")
     - npm run dev để chạy Server
     - mở Terminal mới gõ node test-db.js hoặc node test-dbV2.js để chạy
-
+///
 2. Chạy bằng URL API (Thunder Client):
     - Chuyển vào thư mục userBackend: cd userBackend
     - Chạy server: node Server.js
@@ -164,3 +164,5 @@
         {
             
         }
+        
+    
