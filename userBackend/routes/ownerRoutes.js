@@ -21,15 +21,16 @@ router.get('/fields/:id', ownerController.getFieldDetail);
 // Dùng bản của fieldsController
 router.put('/fields/:id', ownerController.updateField);
 
-// Chưa dùng
+// Xóa sân http://localhost:3000/api/owner/fields/11
 router.delete('/fields/:id', ownerController.deleteField);
 
 // Xem tất cả lịch đặt sân của Owner
 router.get('/bookings', ownerController.getAllBookings); 
 
-// 
-router.get('/bookings/fields/:idsan', ownerController.getFieldBookings); // Sửa lại path chút để tránh conflict, hoặc nếu bạn muốn giữ nguyên /bookings/:idsan thì nó sẽ bị trùng với route trên. 
+// Bỏ
+// router.get('/bookings/fields/:idsan', ownerController.getFieldBookings);  
 
+// Chuyển trạng thái http://localhost:3000/api/owner/bookings/:id
 router.put('/bookings/:id', ownerController.updateBookingStatus);
 
 module.exports = router;
