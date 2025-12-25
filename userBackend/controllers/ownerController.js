@@ -1,4 +1,5 @@
 const db = require('../db');
+const moment = require('moment');
 
 // 1. Tạo sân mới
 exports.createField = async (req, res) => {
@@ -265,34 +266,68 @@ exports.updateBookingStatus = async (req, res) => {
 };
 
 // 9. Doanh thu theo ngày (7 ngày gần nhất)
-// Input: maSan (Lấy từ query param ?maSan=... hoặc tính tổng hết)
+
 exports.getRevenueByDay = async (req, res) => {
-    const maSan = req.query.maSan; 
-    let sql = `
-        SELECT DATE_FORMAT(l.Ngay, '%Y-%m-%d') as Ngay, SUM(l.TongTien) as TongTien
-        FROM LichDatSan l
-        JOIN SanBong s ON l.MaSan = s.MaSan
-        WHERE s.MaNguoiDung = ? AND l.TrangThai = 'daxacnhan' 
-        AND l.Ngay >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-    `;
-    
-    const params = [req.user.id];
-
-    if (maSan) {
-        sql += ` AND s.MaSan = ?`;
-        params.push(maSan);
-    }
-    
-    sql += ` GROUP BY Ngay ORDER BY Ngay ASC`;
-
     try {
-        const [stats] = await db.query(sql, params);
-        res.status(200).json({ data: stats });
+        const maSan = req.query.maSan; // Lấy tham số lọc theo sân (nếu có)
+        const userId = req.user.id;    // Lấy ID chủ sân từ token xác thực
+
+        // --- BƯỚC 1: Query Database (Chỉ lấy những ngày có dữ liệu) ---
+        // DATE_FORMAT '%Y-%m-%d' để đầu ra giống format mặc định của Moment
+        let sql = `
+            SELECT DATE_FORMAT(l.Ngay, '%Y-%m-%d') as NgayStr, SUM(l.TongTien) as TongTien
+            FROM LichDatSan l
+            JOIN SanBong s ON l.MaSan = s.MaSan
+            WHERE s.MaNguoiDung = ? 
+            AND l.TrangThai = 'daxacnhan' 
+            AND l.Ngay >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+        `;
+        
+        const params = [userId];
+
+        // Nếu user chọn lọc theo một sân cụ thể
+        if (maSan) {
+            sql += ` AND s.MaSan = ?`;
+            params.push(maSan);
+        }
+        
+        sql += ` GROUP BY NgayStr ORDER BY NgayStr ASC`;
+
+        const [rows] = await db.query(sql, params);
+
+        // --- BƯỚC 2: Xử lý Logic "Zero-filling" (Lấp đầy ngày trống) bằng Moment ---
+        
+        const fullStats = [];
+        
+        // Vòng lặp 7 lần (Từ 6 ngày trước -> Hôm nay)
+        for (let i = 6; i >= 0; i--) {
+            // Dùng moment lấy ngày quá khứ
+            const dayObj = moment().subtract(i, 'days');
+            
+            // Format thành chuỗi 'YYYY-MM-DD' (Ví dụ: '2025-12-25') để so sánh với SQL
+            const dateKey = dayObj.format('YYYY-MM-DD');
+
+            // Tìm xem ngày này có trong kết quả SQL trả về không
+            const found = rows.find(row => row.NgayStr === dateKey);
+
+            fullStats.push({
+                Ngay: dateKey,                         // Dữ liệu gốc để vẽ biểu đồ
+                NgayHienThi: dayObj.format('DD/MM'),   // Dữ liệu đẹp để hiển thị (Ví dụ: 25/12)
+                TongTien: found ? Number(found.TongTien) : 0 // Nếu tìm thấy thì lấy tiền, không thì = 0
+            });
+        }
+
+        // --- BƯỚC 3: Trả về kết quả ---
+        res.status(200).json({ 
+            message: "Lấy thống kê thành công",
+            data: fullStats 
+        });
+
     } catch (err) {
-        res.status(500).json({ message: "Lỗi Server" });
+        console.error("Lỗi API getRevenueByDay:", err);
+        res.status(500).json({ message: "Lỗi Server nội bộ" });
     }
 };
-
 // 10. Doanh thu theo tháng (6 tháng gần nhất)
 exports.getRevenueByMonth = async (req, res) => {
     const maSan = req.query.maSan;

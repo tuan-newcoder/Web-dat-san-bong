@@ -11,6 +11,7 @@ router.post('/fields', ownerController.createField);
 // Lấy danh sách sân của mình http://localhost:3000/api/owner/fields
 router.get('/fields', ownerController.getMyFields);
 
+// Doanh thu trong 7 ngày của Owner http://localhost:3000/api/owner/fields/day
 router.get('/fields/day', ownerController.getRevenueByDay);   // Đặt trước route :id để tránh nhầm lẫn
 
 router.get('/fields/month', ownerController.getRevenueByMonth); // Đặt trước route :id
