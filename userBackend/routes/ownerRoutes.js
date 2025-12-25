@@ -25,7 +25,7 @@ router.put('/fields/:id', ownerController.updateField);
 router.delete('/fields/:id', ownerController.deleteField);
 
 // Xem tất cả lịch đặt sân của Owner
-router.get('/bookings/:idnguoidung', ownerController.getAllBookings); 
+router.get('/bookings', ownerController.getAllBookings); 
 
 // 
 router.get('/bookings/fields/:idsan', ownerController.getFieldBookings); // Sửa lại path chút để tránh conflict, hoặc nếu bạn muốn giữ nguyên /bookings/:idsan thì nó sẽ bị trùng với route trên. 

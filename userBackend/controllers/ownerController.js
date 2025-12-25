@@ -5,41 +5,54 @@ exports.createField = async (req, res) => {
     const ownerId = req.user.id; 
     const { TenSan, LoaiSan, DiaChi, Phuong, Gia } = req.body;
 
-    if (!TenSan || !Gia || !DiaChi) return res.status(400).json({ message: "Vui lòng điền đầy đủ Tên sân, Địa chỉ và Giá!" });
-
+    // --- 1. VALIDATION ĐẦU VÀO (Giữ nguyên) ---
+    if (!TenSan || !Gia || !DiaChi) {
+        return res.status(400).json({ message: "Vui lòng điền đầy đủ Tên sân, Địa chỉ và Giá!" });
+    }
     if (isNaN(Gia) || Number(Gia) <= 0) {
         return res.status(400).json({ message: "Giá sân không hợp lệ!" });
     }
+    
+    // Validate LoaiSan và Phuong (Giữ nguyên code cũ của bạn)
+    const validLoaiSan = ['Sân 5', 'Sân 7', 'Sân 11'];
+    if (!validLoaiSan.includes(String(LoaiSan))) return res.status(400).json({ message: 'Loại sân không hợp lệ' });
 
-    const validLoaiSan = ['Sân 5', 'Sân 7', 'Sân 11']; // Ví dụ danh sách loại sân
-    if (!validLoaiSan.includes(String(LoaiSan))) {
-         return res.status(400).json({ message: 'Loại sân không hợp lệ (chỉ chấp nhận "Sân 5", "Sân 7", "Sân 11")' });
-    }
+    const validPhuong = ['Bách Khoa', 'Trung Hòa', 'Kim Giang', 'Phương Liệt', 'Thanh Xuân', 
+                         'Thanh Lương', 'Trương Định', 'Hoàng Văn Thụ', 'Minh Khai', 
+                         'Mai Động', 'Tương Mai', 'Yên Sở']; 
+    if (!validPhuong.includes(String(Phuong))) return res.status(400).json({ message: 'Phường không hợp lệ' });
 
-    const validPhuong = ['Bách Khoa', 'Trung Hòa', 'Kim Giang', 'Phương Liệt', 'Thanh Xuân', 'Thanh Lương', 
-                        'Trương Định', 'Hoàng Văn Thụ', 'Minh Khai', 'Mai Động', 'Hoàng Văn Thụ', 'Tương Mai', 'Yên Sở']; 
-    if (!validPhuong.includes(String(Phuong))) {
-         return res.status(400).json({ message: 'Phường không hợp lệ ' });
-    }
 
     try {
-        const sql = `INSERT INTO SanBong (MaNguoiDung, TenSan, LoaiSan, DiaChi, Phuong, Gia, TrangThai) 
-                    VALUES (?, ?, ?, ?, ?, ?, 'hoatdong')`;
+        // --- 2. MỚI: CHECK TRÙNG TÊN TRONG DATABASE ---
+        // Query xem tên sân đã có chưa (LIMIT 1 để tối ưu hiệu năng)
+        const checkSql = `SELECT MaSan FROM SanBong WHERE TenSan = ? LIMIT 1`;
+        const [existingFields] = await db.query(checkSql, [TenSan]);
 
-        await db.query(sql, [ownerId, TenSan, LoaiSan, DiaChi, Phuong, Gia]);
+        if (existingFields.length > 0) {
+            // Trả về lỗi 409 (Conflict) - Xung đột dữ liệu
+            return res.status(409).json({ message: "Tên sân này đã tồn tại, vui lòng chọn tên khác!" });
+        }
+
+        // --- 3. INSERT DỮ LIỆU (Nếu không trùng) ---
+        const sql = `INSERT INTO SanBong (MaNguoiDung, TenSan, LoaiSan, DiaChi, Phuong, Gia, TrangThai) 
+                     VALUES (?, ?, ?, ?, ?, ?, 'hoatdong')`;
+
+        const [result] = await db.query(sql, [ownerId, TenSan, LoaiSan, DiaChi, Phuong, Gia]);
 
         res.status(201).json({ 
             message: "Tạo sân thành công",
             data: {
-                id: result.insertId, // Rất quan trọng cho Frontend
+                id: result.insertId,
                 TenSan,
+                LoaiSan,
                 Gia
             }
         });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+        console.error("Lỗi tạo sân:", err);
+        res.status(500).json({ message: "Lỗi Server", error: err.message });
     }
 };
 
@@ -118,41 +131,24 @@ exports.deleteField = async (req, res) => {
 
 // 6. Xem lịch đặt sân của tất cả các sân của Owner
 exports.getAllBookings = async (req, res) => {
-    // Không cần check req.params.idnguoidung nữa
-    // Tin tưởng tuyệt đối vào req.user.id từ Token
+    const ownerId = req.user.id;
 
     try {
-        // Thêm điều kiện lọc để tối ưu (Ví dụ: Frontend có thể gửi query ?status=choxacnhan)
-        const { status, date } = req.query; 
 
-        let sql = `
+        const sql = `
             SELECT 
-                l.MaLich, l.Ngay, l.Ca, l.TrangThai, l.GiaTien,
+                l.MaDatSan, l.Ngay, l.Ca, l.TrangThai, l.TongTien,
                 s.TenSan, 
-                u.HoTen as TenKhach, u.sdt 
+                u.HoTen as TenKhachHang, u.sdt as SoDienThoai
             FROM LichDatSan l 
             JOIN SanBong s ON l.MaSan = s.MaSan 
             JOIN User u ON l.MaNguoiDung = u.MaNguoiDung
             WHERE s.MaNguoiDung = ?
+            ORDER BY l.Ngay DESC, l.Ca DESC
         `;
 
-        const params = [req.user.id];
-
-        // Nếu Frontend muốn lọc theo trạng thái (ví dụ chỉ xem đơn chờ duyệt)
-        if (status) {
-            sql += ` AND l.TrangThai = ?`;
-            params.push(status);
-        }
-
-        // Nếu Frontend muốn xem lịch ngày cụ thể
-        if (date) {
-            sql += ` AND l.Ngay = ?`;
-            params.push(date);
-        }
-
-        sql += ` ORDER BY l.Ngay DESC, l.Ca DESC`;
-
-        const [bookings] = await db.query(sql, params);
+        // Chỉ cần truyền 1 tham số duy nhất là ID chủ sân
+        const [bookings] = await db.query(sql, [ownerId]);
         
         res.status(200).json({ 
             message: "Lấy danh sách đặt sân thành công",
@@ -161,7 +157,7 @@ exports.getAllBookings = async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err); // Log lỗi ra console để debug
+        console.error("Lỗi lấy danh sách đặt sân:", err);
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
