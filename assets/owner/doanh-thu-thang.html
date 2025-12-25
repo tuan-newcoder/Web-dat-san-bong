@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doanh thu tháng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/main.js" defer></script>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --sidebar-width: 240px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: #1e293b;
+            display: flex;
+        }
+
+        
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <main class="main-content">
+        <header>
+            <h1>Báo cáo doanh thu theo tháng</h1>
+            <div class="date-filter">
+                <input type="month" value="2025-12" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+            </div>
+        </header>
+
+        <div class="stat-grid">
+            <div class="stats-card">
+                <span>Doanh thu tháng này</span>
+                <h3>45.500.000đ</h3>
+            </div>
+            <div class="stats-card">
+                <span>Số giờ đã thuê</span>
+                <h3>320 giờ</h3>
+            </div>
+            <div class="stats-card">
+                <span>Tỷ lệ lấp đầy</span>
+                <h3 style="color: var(--primary);">78%</h3>
+            </div>
+        </div>
+
+        <div class="dashboard-layout">
+            <div class="card-container">
+                <h3>Xu hướng 6 tháng</h3>
+                <div class="chart-wrapper">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <h3>Giao dịch gần đây</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Khách hàng</th>
+                            <th>Số tiền</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nguyễn Văn A</td>
+                            <td>350.000đ</td>
+                            <td><span class="badge badge-success">Xong</span></td>
+                        </tr>
+                        <tr>
+                            <td>Trần Thị B</td>
+                            <td>200.000đ</td>
+                            <td><span class="badge badge-warning">Chờ</span></td>
+                        </tr>
+                        <tr>
+                            <td>Lê Văn C</td>
+                            <td>1.200.000đ</td>
+                            <td><span class="badge badge-success">Xong</span></td>
+                        </tr>
+                        <tr>
+                            <td>Bùi Thị D</td>
+                            <td>450.000đ</td>
+                            <td><span class="badge badge-success">Xong</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line', // Biểu đồ đường cho trang nhã
+            data: {
+                labels: ['Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
+                datasets: [{
+                    label: 'Doanh thu (Triệu VNĐ)',
+                    data: [28, 35, 32, 48, 42, 55],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: true,
+                    tension: 0.4, // Tạo độ cong cho đường
+                    borderWidth: 3,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
