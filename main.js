@@ -601,7 +601,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const ownerForm = document.getElementById('ownerForm');
     const priceInput = document.getElementById('price');
 
-    // 1. Kiểm soát nhập liệu cho ô Mức giá (chỉ cho phép nhập số)
     if (priceInput) {
         priceInput.addEventListener('input', function() {
             // Loại bỏ tất cả ký tự không phải số
@@ -609,26 +608,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Xử lý gửi Form đăng ký sân
     if (ownerForm) {
         ownerForm.addEventListener('submit', async (e) => {
             e.preventDefault(); // Ngăn trang web tải lại
 
-            // Lấy giá trị từ các ô input
+
             const stadiumName = document.getElementById('stadiumName').value;
             const stadiumType = document.getElementById('stadiumType').value;
             const address = document.getElementById('address').value;
-            const ward = document.getElementById('ward').value;
+            const ward = document.getElementById('stadiumWard').value;
             const priceValue = parseInt(priceInput.value);
 
-            // 3. Kiểm tra logic mức giá chia hết cho 1000
+
             if (isNaN(priceValue) || priceValue % 1000 !== 0 || priceValue <= 0) {
                 alert("Mức giá không hợp lệ! Vui lòng nhập số tiền chia hết cho 1000 (Ví dụ: 200000, 350000).");
                 priceInput.focus();
                 return;
             }
 
-            // 4. Chuẩn bị dữ liệu theo đúng yêu cầu của API
             const stadiumData = {
                 TenSan: stadiumName,
                 LoaiSan: stadiumType,
@@ -644,7 +641,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.innerText = "Đang gửi đăng ký...";
                 submitBtn.disabled = true;
 
-                // 5. Gọi API POST /api/fields
                 const response = await apiRequest(`${API_URL}/owner/fields`, {
                     method: 'POST',
                     body: JSON.stringify(stadiumData)
@@ -654,7 +650,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Đăng ký sân thành công! Sân của bạn đang chờ được duyệt.");
                 ownerForm.reset(); // Xóa sạch form sau khi gửi thành công
                 
-                window.location.href = "quan-ly-san.html";
+                // Chuyển hướng về trang quản lý sân nếu cần
+                // window.location.href = "quan-ly-san.html";
 
             } catch (error) {
                 console.error("Lỗi đăng ký sân:", error.message);
@@ -852,39 +849,69 @@ async function fetchBookings() {
     const tableBody = document.getElementById('bookingTableBody');
     if (!tableBody) return;
 
-    const status = document.getElementById('statusFilter')?.value || 'all';
+    const userId = Auth.getUserId();
+    // Lấy giá trị filter để gửi lên API nếu Backend hỗ trợ lọc
+    const statusFilter = document.getElementById('statusFilter')?.value || 'all';
+
+    if (!userId) {
+        console.error("Không tìm thấy MaNguoiDung");
+        return;
+    }
 
     try {
-        const response = await apiRequest(`${API_URL}/lichdatsan/owner?status=${status}`, {
+        // Gọi API lấy danh sách đơn đặt của chủ sân
+        const response = await apiRequest(`${API_URL}/owner/bookings?maNguoiDung=${userId}&status=${statusFilter}`, {
             method: 'GET'
         });
 
-        tableBody.innerHTML = response.map(order => `
-            <tr>
-                <td>#${order.id}</td>
-                <td><strong>${order.customerName}</strong><br><small>${order.phone}</small></td>
-                <td>${order.pitchName}</td>
-                <td>${order.date}<br><small>${order.startTime} - ${order.endTime}</small></td>
-                <td>${formatCurrency(order.totalPrice)}</td>
-                <td><span class="status-badge ${getStatusClass(order.status)}">${getStatusText(order.status)}</span></td>
-                <td>
-                    ${order.status === 'pending' ? `
-                        <button class="action-button btn-success" onclick="updateBookingStatus(${order.id}, 'confirmed')">Duyệt</button>
-                        <button class="action-button btn-danger" onclick="updateBookingStatus(${order.id}, 'cancelled')">Từ chối</button>
-                    ` : `<button class="action-button btn-info" onclick="viewDetail(${order.id})">Chi tiết</button>`}
-                </td>
-            </tr>
-        `).join('');
+        const bookings = response.data || response;
+
+        if (!bookings || bookings.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px;">Không có dữ liệu đơn đặt.</td></tr>`;
+            return;
+        }
+
+        tableBody.innerHTML = bookings.map(order => {
+            const displayStatus = order.TrangThai || 'chuaxacnhan'; 
+            
+            return `
+                <tr>
+                    <td>#${order.MaDatSan}</td>
+                    <td>
+                        <strong>${order.HoTen || 'Khách vãng lai'}</strong><br>
+                        <small>${order.sdt || 'N/A'}</small>
+                    </td>
+                    <td>${order.TenSan}</td>
+                    <td>
+                        ${new Date(order.Ngay).toLocaleDateString('vi-VN')}<br>
+                        <small>Ca ${order.Ca}</small>
+                    </td>
+                    <td>${new Intl.NumberFormat('vi-VN').format(order.Gia)} VNĐ</td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(displayStatus)}">
+                            ${getStatusText(displayStatus)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            ${displayStatus === 'chuaxacnhan' ? `
+                                <button class="btn-success" onclick="updateBookingStatus(${order.MaDatSan}, 'daxacnhan')">Xác nhận</button>
+                                <button class="btn-danger" onclick="updateBookingStatus(${order.MaDatSan}, 'dahuy')">Huỷ</button>
+                            ` : displayStatus === 'daxacnhan' ? `
+                                <button class="btn-danger" onclick="updateBookingStatus(${order.MaDatSan}, 'dahuy')">Huỷ đơn</button>
+                            ` : `
+                                <small style="color: gray;">Không có thao tác</small>
+                            `}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
     } catch (error) {
-        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Không có dữ liệu đơn đặt.</td></tr>`;
+        console.error("Lỗi khi tải đơn đặt sân:", error.message);
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Lỗi: ${error.message}</td></tr>`;
     }
 }
-
-// Đăng ký tự động chạy khi vào trang
-document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('bookingTableBody')) fetchBookings();
-});
-
 /* Script for chi tiết sân */
 
 const urlParams = new URLSearchParams(window.location.search);

@@ -5,10 +5,12 @@
     box-sizing: border-box;
 }
 
-body {
+html ,body {
     font-family: "Roboto", sans-serif;
     background: #fff;
     height: 100%;
+    min-height: 100%;
+    margin: 0;
 }
 
 /* NAVBAR */
@@ -65,6 +67,7 @@ a {
     position: relative;
     margin: 0 auto;
     z-index: 0;
+    flex: 1 0 auto;
 }
 
 /* DARK OVERLAY */
@@ -441,6 +444,7 @@ a {
     background: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    min-height: 400px;
 }
 
 /* --- Style cho Filter Component (theo hình ảnh) --- */
