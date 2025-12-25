@@ -312,7 +312,8 @@ exports.getRevenueByDay = async (req, res) => {
 
             fullStats.push({
                 Ngay: dateKey,                         // Dữ liệu gốc để vẽ biểu đồ
-                TongTien: found ? Number(found.TongTien) : 0 // Nếu tìm thấy thì lấy tiền, không thì = 0
+                TongTien: found ? Number(found.TongTien) : 0, // Nếu tìm thấy thì lấy tiền, không thì = 0
+                SoDonThanhCong: SoDonThanhCong
             });
         }
 
@@ -383,7 +384,8 @@ exports.getRevenueByMonth = async (req, res) => {
             fullStats.push({
                 Thang: monthKey,
                 ThangHienThi: monthObj.format('MM/YYYY'), // VD: 12/2025
-                TongTien: found ? Number(found.TongTien) : 0
+                TongTien: found ? Number(found.TongTien) : 0,
+                SoDonThanhCong: SoDonThanhCong
             });
         }
 
