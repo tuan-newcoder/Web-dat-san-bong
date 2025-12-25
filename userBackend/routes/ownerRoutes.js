@@ -16,10 +16,10 @@ router.get('/fields/day', ownerController.getRevenueByDay);   // Đặt trước
 router.get('/fields/month', ownerController.getRevenueByMonth); // Đặt trước route :id
 
 // Dùng bản của fieldsController 
-router.get('/fields/:id', ownerController.getFieldDetail);
+//router.get('/fields/:id', ownerController.getFieldDetail);
 
 // Dùng bản của fieldsController
-router.put('/fields/:id', ownerController.updateField);
+//router.put('/fields/:id', ownerController.updateField);
 
 // Xóa sân http://localhost:3000/api/owner/fields/11
 router.delete('/fields/:id', ownerController.deleteField);

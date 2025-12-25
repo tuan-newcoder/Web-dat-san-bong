@@ -87,6 +87,7 @@ exports.getMyFields = async (req, res) => {
 };
 
 
+/*
 // 3. Xem chi tiết 1 sân (Dùng bản của fieldsController)
 exports.getFieldDetail = async (req, res) => {
     try {
@@ -116,6 +117,7 @@ exports.updateField = async (req, res) => {
         res.status(500).json({ message: "Lỗi Server" });
     }
 };
+*/
 
 // 5. Xóa sân (Chuyển trạng thái sang ngunghoatdong hoặc xóa hẳn tùy logic, ở đây tôi dùng DELETE theo bảng mô tả) (chưa dùng)
 exports.deleteField = async (req, res) => {
